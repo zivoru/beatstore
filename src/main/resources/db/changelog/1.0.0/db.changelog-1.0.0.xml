@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <!--users-->
+    <changeSet id="1.0.0" author="zivo">
+        <preConditions>
+            <not>
+                <tableExists tableName="users"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="users">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="username" type="varchar(25)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="status" type="varchar(25)" defaultValue="ACTIVE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <!--profile-->
+    <changeSet id="1.0.1" author="zivo">
+        <preConditions>
+            <not>
+                <tableExists tableName="profile"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="profile">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="user_id" type="bigserial">
+                <constraints nullable="false" unique="true" referencedTableName="users" referencedColumnNames="id"
+                             foreignKeyName="user_id"/>
+            </column>
+            <column name="image_name" type="varchar(500)" defaultValue="profileImage">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_name" type="varchar(25)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="last_name" type="varchar(25)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="display_name" type="varchar(120)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="location" type="varchar(120)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="biography" type="varchar(120)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <!--social-->
+    <changeSet id="1.0.2" author="zivo">
+        <preConditions>
+            <not>
+                <tableExists tableName="social"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="social">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="user_id" type="bigserial">
+                <constraints nullable="false" unique="true" referencedTableName="users" referencedColumnNames="id"
+                             foreignKeyName="user_id"/>
+            </column>
+            <column name="instagram" type="varchar(120)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="youtube" type="varchar(120)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="tiktok" type="varchar(120)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="vkontakte" type="varchar(120)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <!--license-->
+    <changeSet id="1.0.3" author="zivo">
+        <preConditions>
+            <not>
+                <tableExists tableName="license"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="license">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="user_id" type="bigserial">
+                <constraints nullable="false" unique="true" referencedTableName="users" referencedColumnNames="id"
+                             foreignKeyName="user_id"/>
+            </column>
+            <column name="price_mp3" type="int" defaultValue="1000">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price_wav" type="int" defaultValue="2000">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price_unlimited" type="int" defaultValue="5000">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price_exclusive" type="int" defaultValue="10000">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <!--roles-->
+    <changeSet id="1.0.4" author="zivo">
+        <createTable tableName="roles">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <!--user_roles-->
+    <changeSet id="1.0.5" author="zivo">
+        <createTable tableName="user_roles">
+            <column name="user_id" type="bigint">
+            </column>
+
+            <column name="role_id" type="bigint">
+            </column>
+        </createTable>
+    </changeSet>
+    <!--roles addForeignKey-->
+    <changeSet id="1.0.6" author="zivo">
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="user_roles"
+                                 constraintName="fk_user_roles_user"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+    <!--roles addForeignKey-->
+    <changeSet id="1.0.7" author="zivo">
+        <addForeignKeyConstraint baseColumnNames="role_id"
+                                 baseTableName="user_roles"
+                                 constraintName="fk_user_roles_roles"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="roles"/>
+    </changeSet>
+    <!--roles insert-->
+    <changeSet id="1.0.8" author="zivo">
+        <insert tableName="roles">
+            <column name="name" value="ROLE_USER"/>
+        </insert>
+
+        <insert tableName="roles">
+            <column name="name" value="ROLE_ADMIN"/>
+        </insert>
+    </changeSet>
+    <!--user_subscriptions-->
+    <changeSet id="1.0.9" author="zivo">
+        <preConditions>
+            <not>
+                <tableExists tableName="user_subscriptions"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="user_subscriptions">
+            <column name="channel_id" type="bigint">
+                <constraints primaryKey="true" nullable="false" referencedTableName="users" referencedColumnNames="id"
+                             foreignKeyName="channel_id"/>
+            </column>
+            <column name="subscriber_id" type="bigint">
+                <constraints primaryKey="true" nullable="false" referencedTableName="users" referencedColumnNames="id"
+                             foreignKeyName="subscriber_id"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <!--beat-->
+    <changeSet id="1.1.0" author="zivo">
+        <preConditions>
+            <not>
+                <tableExists tableName="beat"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="beat">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false" referencedTableName="users" referencedColumnNames="id"
+                             foreignKeyName="user_id"/>
+            </column>
+            <column name="title" type="varchar(60)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="image_name" type="varchar(500)" defaultValue="beatImage">
+                <constraints nullable="false"/>
+            </column>
+            <column name="free" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="genre" type="varchar(25)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mood" type="varchar(25)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(120)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="bpm" type="int">
+                <constraints nullable="true"/>
+            </column>
+            <column name="key" type="varchar(25)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="youtube_link" type="varchar(120)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="plays" type="int" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="release_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar(25)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <!--playlist-->
+    <changeSet id="1.1.1" author="zivo">
+        <preConditions>
+            <not>
+                <tableExists tableName="playlist"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="playlist">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="varchar(60)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="image_name" type="varchar(500)" defaultValue="playlistImage">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(500)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="visibility" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false" referencedTableName="users" referencedColumnNames="id"
+                             foreignKeyName="user_id"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <!--playlist_beat-->
+    <changeSet id="1.1.2" author="zivo">
+        <preConditions>
+            <not>
+                <tableExists tableName="playlist_beat"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="playlist_beat">
+            <column name="playlists_id" type="bigint">
+                <constraints primaryKey="true" nullable="false" referencedTableName="playlist" referencedColumnNames="id"
+                             foreignKeyName="playlists_id"/>
+            </column>
+            <column name="beat_id" type="bigint">
+                <constraints primaryKey="true" nullable="false" referencedTableName="beat" referencedColumnNames="id"
+                             foreignKeyName="beat_id"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <!--cart-->
+    <changeSet id="1.1.3" author="zivo">
+        <preConditions>
+            <not>
+                <tableExists tableName="cart"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="cart">
+            <column name="user_id" type="bigint">
+                <constraints primaryKey="true" nullable="false" referencedTableName="users" referencedColumnNames="id"
+                             foreignKeyName="user_id"/>
+            </column>
+            <column name="beat_id" type="bigint">
+                <constraints primaryKey="true" nullable="false" referencedTableName="beat" referencedColumnNames="id"
+                             foreignKeyName="beat_id"/>
+            </column>
+            <column name="license" type="varchar(128)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <!--purchased-->
+    <changeSet id="1.1.4" author="zivo">
+        <preConditions>
+            <not>
+                <tableExists tableName="purchased"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="purchased">
+            <column name="user_id" type="bigint">
+                <constraints primaryKey="true" nullable="false" referencedTableName="users" referencedColumnNames="id"
+                             foreignKeyName="user_id"/>
+            </column>
+            <column name="beat_id" type="bigint">
+                <constraints primaryKey="true" nullable="false" referencedTableName="beat" referencedColumnNames="id"
+                             foreignKeyName="beat_id"/>
+            </column>
+            <column name="license" type="varchar(128)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <!--favorite-->
+    <changeSet id="1.1.5" author="zivo">
+        <preConditions>
+            <not>
+                <tableExists tableName="favorite"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="favorite">
+            <column name="user_id" type="bigint">
+                <constraints primaryKey="true" nullable="false" referencedTableName="users" referencedColumnNames="id"
+                             foreignKeyName="user_id"/>
+            </column>
+            <column name="beat_id" type="bigint">
+                <constraints primaryKey="true" nullable="false" referencedTableName="beat" referencedColumnNames="id"
+                             foreignKeyName="beat_id"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <!--history-->
+    <changeSet id="1.1.6" author="zivo">
+        <preConditions>
+            <not>
+                <tableExists tableName="history"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="history">
+            <column name="user_id" type="bigint">
+                <constraints primaryKey="true" nullable="false" referencedTableName="users" referencedColumnNames="id"
+                             foreignKeyName="user_id"/>
+            </column>
+            <column name="beat_id" type="bigint">
+                <constraints primaryKey="true" nullable="false" referencedTableName="beat" referencedColumnNames="id"
+                             foreignKeyName="beat_id"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <!--beat_comments-->
+    <changeSet id="1.1.7" author="zivo">
+        <preConditions>
+            <not>
+                <tableExists tableName="beat_comments"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="beat_comments">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="comment" type="varchar(500)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="beat_id" type="bigint">
+                <constraints nullable="false" referencedTableName="beat" referencedColumnNames="id"
+                             foreignKeyName="beat_id"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false" referencedTableName="users" referencedColumnNames="id"
+                             foreignKeyName="user_id"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <!--tag-->
+    <changeSet id="1.1.8" author="zivo">
+        <preConditions>
+            <not>
+                <tableExists tableName="tag"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="tag">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="tag" type="varchar(25)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <!--beat_tags-->
+    <changeSet id="1.1.9" author="zivo">
+        <preConditions>
+            <not>
+                <tableExists tableName="beat_tags"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="beat_tags">
+            <column name="tag_id" type="bigint">
+                <constraints primaryKey="true" nullable="false" referencedTableName="tag" referencedColumnNames="id"
+                             foreignKeyName="tag_id"/>
+            </column>
+            <column name="beat_id" type="bigint">
+                <constraints primaryKey="true" nullable="false" referencedTableName="beat" referencedColumnNames="id"
+                             foreignKeyName="beat_id"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <!--audio-->
+    <changeSet id="1.2.0" author="zivo">
+        <preConditions>
+            <not>
+                <tableExists tableName="audio"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="audio">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="beat_id" type="bigserial">
+                <constraints nullable="false" unique="true" referencedTableName="beat" referencedColumnNames="id"
+                             foreignKeyName="beat_id"/>
+            </column>
+            <column name="mp3_name" type="varchar(500)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="wav_name" type="varchar(500)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="track_stems_name" type="varchar(500)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
