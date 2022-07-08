@@ -217,10 +217,10 @@
             <column name="title" type="varchar(60)">
                 <constraints nullable="false"/>
             </column>
-            <column name="image_name" type="varchar(500)" defaultValue="beatImage">
-                <constraints nullable="false"/>
+            <column name="image_name" type="varchar(500)">
+                <constraints nullable="true"/>
             </column>
-            <column name="free" type="boolean">
+            <column name="free" type="boolean" defaultValue="false">
                 <constraints nullable="false"/>
             </column>
             <column name="genre" type="varchar(25)">
@@ -236,7 +236,7 @@
                 <constraints nullable="true"/>
             </column>
             <column name="key" type="varchar(25)">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
             <column name="youtube_link" type="varchar(120)">
                 <constraints nullable="true"/>
@@ -310,6 +310,12 @@
         </preConditions>
 
         <createTable tableName="cart">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="license" type="varchar(128)">
+                <constraints nullable="false"/>
+            </column>
             <column name="user_id" type="bigint">
                 <constraints primaryKey="true" nullable="false" referencedTableName="users" referencedColumnNames="id"
                              foreignKeyName="user_id"/>
@@ -317,9 +323,6 @@
             <column name="beat_id" type="bigint">
                 <constraints primaryKey="true" nullable="false" referencedTableName="beat" referencedColumnNames="id"
                              foreignKeyName="beat_id"/>
-            </column>
-            <column name="license" type="varchar(128)">
-                <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
@@ -332,6 +335,12 @@
         </preConditions>
 
         <createTable tableName="purchased">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
+            </column>
+            <column name="license" type="varchar(128)">
+                <constraints nullable="false"/>
+            </column>
             <column name="user_id" type="bigint">
                 <constraints primaryKey="true" nullable="false" referencedTableName="users" referencedColumnNames="id"
                              foreignKeyName="user_id"/>
@@ -339,9 +348,6 @@
             <column name="beat_id" type="bigint">
                 <constraints primaryKey="true" nullable="false" referencedTableName="beat" referencedColumnNames="id"
                              foreignKeyName="beat_id"/>
-            </column>
-            <column name="license" type="varchar(128)">
-                <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
@@ -461,7 +467,7 @@
                              foreignKeyName="beat_id"/>
             </column>
             <column name="mp3_name" type="varchar(500)">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
             <column name="wav_name" type="varchar(500)">
                 <constraints nullable="true"/>

@@ -29,14 +29,14 @@ public class User extends AbstractLongPersistable {
     @Column(name = "email")
     private String email;
 
-    @OneToOne(mappedBy = "user")
-    private Profile profile = new Profile();
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Profile profile;
 
-    @OneToOne(mappedBy = "user")
-    private Social social = new Social();
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Social social;
 
-    @OneToOne(mappedBy = "user")
-    private License license = new License();
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private License license;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -70,21 +70,11 @@ public class User extends AbstractLongPersistable {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Beat> beats = new LinkedHashSet<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "cart",
-            joinColumns = { @JoinColumn(name= "user_id") },
-            inverseJoinColumns = { @JoinColumn(name = "beat_id")}
-    )
-    private Set<Beat> cart = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Cart> cart = new LinkedHashSet<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "purchased",
-            joinColumns = { @JoinColumn(name= "user_id") },
-            inverseJoinColumns = { @JoinColumn(name = "beat_id")}
-    )
-    private Set<Beat> purchased = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Purchased> purchased = new LinkedHashSet<>();
 
     @ManyToMany
     @JoinTable(

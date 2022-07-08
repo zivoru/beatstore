@@ -33,7 +33,7 @@ public class Beat extends AbstractLongPersistable {
     @Column(name = "title")
     private String title;
 
-    @OneToOne(mappedBy = "beat")
+    @OneToOne(mappedBy = "beat", cascade = CascadeType.ALL)
     private Audio audio;
 
     @Column(name = "image_name")
@@ -93,4 +93,7 @@ public class Beat extends AbstractLongPersistable {
             inverseJoinColumns = { @JoinColumn(name = "user_id")}
     )
     private Set<User> likes = new HashSet<>();
+
+    @OneToMany(mappedBy = "beat", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Cart> cart = new LinkedHashSet<>();
 }
