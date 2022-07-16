@@ -26,6 +26,9 @@
             <column name="email" type="varchar(255)">
                 <constraints nullable="false" unique="true"/>
             </column>
+            <column name="verified" type="boolean" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
             <column name="status" type="varchar(25)" defaultValue="ACTIVE">
                 <constraints nullable="false"/>
             </column>
@@ -97,32 +100,56 @@
             </column>
         </createTable>
     </changeSet>
-    <!--license-->
+    <!--beat-->
     <changeSet id="1.0.3" author="zivo">
         <preConditions>
             <not>
-                <tableExists tableName="license"/>
+                <tableExists tableName="beat"/>
             </not>
         </preConditions>
 
-        <createTable tableName="license">
+        <createTable tableName="beat">
             <column name="id" type="bigserial">
                 <constraints primaryKey="true" nullable="false" unique="true"/>
             </column>
-            <column name="user_id" type="bigserial">
-                <constraints nullable="false" unique="true" referencedTableName="users" referencedColumnNames="id"
+            <column name="user_id" type="bigint">
+                <constraints nullable="false" referencedTableName="users" referencedColumnNames="id"
                              foreignKeyName="user_id"/>
             </column>
-            <column name="price_mp3" type="int" defaultValue="1000">
+            <column name="title" type="varchar(60)">
                 <constraints nullable="false"/>
             </column>
-            <column name="price_wav" type="int" defaultValue="2000">
+            <column name="image_name" type="varchar(500)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="free" type="boolean" defaultValue="false">
                 <constraints nullable="false"/>
             </column>
-            <column name="price_unlimited" type="int" defaultValue="5000">
+            <column name="genre" type="varchar(25)">
                 <constraints nullable="false"/>
             </column>
-            <column name="price_exclusive" type="int" defaultValue="10000">
+            <column name="mood" type="varchar(25)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(120)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="bpm" type="int">
+                <constraints nullable="true"/>
+            </column>
+            <column name="key" type="varchar(25)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="youtube_link" type="varchar(120)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="plays" type="int" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="release_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar(25)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -198,56 +225,32 @@
             </column>
         </createTable>
     </changeSet>
-    <!--beat-->
+    <!--license-->
     <changeSet id="1.1.0" author="zivo">
         <preConditions>
             <not>
-                <tableExists tableName="beat"/>
+                <tableExists tableName="license"/>
             </not>
         </preConditions>
 
-        <createTable tableName="beat">
+        <createTable tableName="license">
             <column name="id" type="bigserial">
                 <constraints primaryKey="true" nullable="false" unique="true"/>
             </column>
-            <column name="user_id" type="bigint">
-                <constraints nullable="false" referencedTableName="users" referencedColumnNames="id"
-                             foreignKeyName="user_id"/>
+            <column name="beat_id" type="bigserial">
+                <constraints nullable="false" unique="true" referencedTableName="beat" referencedColumnNames="id"
+                             foreignKeyName="beat_id"/>
             </column>
-            <column name="title" type="varchar(60)">
+            <column name="price_mp3" type="int" defaultValue="1000">
                 <constraints nullable="false"/>
             </column>
-            <column name="image_name" type="varchar(500)">
-                <constraints nullable="true"/>
-            </column>
-            <column name="free" type="boolean" defaultValue="false">
+            <column name="price_wav" type="int" defaultValue="2000">
                 <constraints nullable="false"/>
             </column>
-            <column name="genre" type="varchar(25)">
+            <column name="price_unlimited" type="int" defaultValue="5000">
                 <constraints nullable="false"/>
             </column>
-            <column name="mood" type="varchar(25)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="description" type="varchar(120)">
-                <constraints nullable="true"/>
-            </column>
-            <column name="bpm" type="int">
-                <constraints nullable="true"/>
-            </column>
-            <column name="key" type="varchar(25)">
-                <constraints nullable="true"/>
-            </column>
-            <column name="youtube_link" type="varchar(120)">
-                <constraints nullable="true"/>
-            </column>
-            <column name="plays" type="int" defaultValue="0">
-                <constraints nullable="false"/>
-            </column>
-            <column name="release_date" type="TIMESTAMP">
-                <constraints nullable="false"/>
-            </column>
-            <column name="status" type="varchar(25)">
+            <column name="price_exclusive" type="int" defaultValue="10000">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -310,18 +313,18 @@
         </preConditions>
 
         <createTable tableName="cart">
-            <column name="id" type="bigserial">
+            <column name="id" type="bigserial" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false" unique="true"/>
             </column>
             <column name="license" type="varchar(128)">
                 <constraints nullable="false"/>
             </column>
             <column name="user_id" type="bigint">
-                <constraints primaryKey="true" nullable="false" referencedTableName="users" referencedColumnNames="id"
+                <constraints nullable="false" referencedTableName="users" referencedColumnNames="id"
                              foreignKeyName="user_id"/>
             </column>
             <column name="beat_id" type="bigint">
-                <constraints primaryKey="true" nullable="false" referencedTableName="beat" referencedColumnNames="id"
+                <constraints nullable="false" referencedTableName="beat" referencedColumnNames="id"
                              foreignKeyName="beat_id"/>
             </column>
         </createTable>
@@ -476,6 +479,41 @@
                 <constraints nullable="true"/>
             </column>
         </createTable>
+    </changeSet>
+    <!--tags insert-->
+    <changeSet id="1.2.1" author="zivo">
+        <insert tableName="tag">
+            <column name="tag" value="drill"/>
+        </insert>
+
+        <insert tableName="tag">
+            <column name="tag" value="free"/>
+        </insert>
+
+        <insert tableName="tag">
+            <column name="tag" value="808"/>
+        </insert>
+
+        <insert tableName="tag">
+            <column name="tag" value="trap"/>
+        </insert>
+
+        <insert tableName="tag">
+            <column name="tag" value="hyperpop"/>
+        </insert>
+
+        <insert tableName="tag">
+            <column name="tag" value="guitar"/>
+        </insert>
+
+        <insert tableName="tag">
+            <column name="tag" value="lil baby"/>
+        </insert>
+
+        <insert tableName="tag">
+            <column name="tag" value="gunna"/>
+        </insert>
+
     </changeSet>
 
 </databaseChangeLog>

@@ -1,5 +1,6 @@
 package ru.zivo.beatstore.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,11 +24,12 @@ public class Tag extends AbstractLongPersistable {
     @Column(name = "tag")
     private String tag;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "beat_tags",
             joinColumns = { @JoinColumn(name= "tag_id") },
             inverseJoinColumns = { @JoinColumn(name = "beat_id")}
     )
-    private Set<Beat> tags = new LinkedHashSet<>();
+    private Set<Beat> beats = new LinkedHashSet<>();
 }

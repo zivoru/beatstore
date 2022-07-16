@@ -1,5 +1,7 @@
 package ru.zivo.beatstore.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,10 +14,7 @@ import ru.zivo.beatstore.model.enums.Mood;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,6 +24,7 @@ import java.util.Set;
 @Table(name = "beat")
 public class Beat extends AbstractLongPersistable {
 
+//    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
@@ -73,7 +73,8 @@ public class Beat extends AbstractLongPersistable {
     @Column(name = "status")
     private BeatStatus status;
 
-    private final static int MAX_SIZE_TAGS = 3;
+    @OneToOne(mappedBy = "beat", cascade = CascadeType.ALL)
+    private License license;
 
     @ManyToMany
     @JoinTable(
@@ -81,19 +82,20 @@ public class Beat extends AbstractLongPersistable {
             joinColumns = { @JoinColumn(name= "beat_id") },
             inverseJoinColumns = { @JoinColumn(name = "tag_id")}
     )
-    private Set<Tag> tags = new LinkedHashSet<>();
+    private List<Tag> tags = new ArrayList<>();
 
     @OneToMany(mappedBy = "beat", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Comment> comments = new LinkedHashSet<>();
+    private List<Comment> comments = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
             name = "favorite",
-            joinColumns = { @JoinColumn(name= "beat_id") },
+            joinColumns = { @JoinColumn(name = "beat_id") },
             inverseJoinColumns = { @JoinColumn(name = "user_id")}
     )
     private Set<User> likes = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "beat", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Cart> cart = new LinkedHashSet<>();
 }

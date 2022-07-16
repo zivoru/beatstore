@@ -1,5 +1,6 @@
 package ru.zivo.beatstore.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ import javax.persistence.*;
 @Table(name = "audio")
 public class Audio extends AbstractLongPersistable {
 
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "beat_id")
     private Beat beat;

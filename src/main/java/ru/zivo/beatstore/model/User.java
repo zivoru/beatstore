@@ -1,5 +1,6 @@
 package ru.zivo.beatstore.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import ru.zivo.beatstore.model.common.AbstractLongPersistable;
 import ru.zivo.beatstore.model.enums.Role;
@@ -29,14 +30,15 @@ public class User extends AbstractLongPersistable {
     @Column(name = "email")
     private String email;
 
+    @NotBlank
+    @Column(name = "verified")
+    private Boolean verified;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Profile profile;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Social social;
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private License license;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -64,31 +66,36 @@ public class User extends AbstractLongPersistable {
     )
     private Set<User> subscriptions = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Playlist> playlist = new LinkedHashSet<>();
+    private List<Playlist> playlist = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Beat> beats = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Cart> cart = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Beat> beats = new LinkedHashSet<>();
+    private List<Purchased> purchased = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Cart> cart = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Purchased> purchased = new LinkedHashSet<>();
-
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "favorite",
-            joinColumns = { @JoinColumn(name= "user_id") },
+            joinColumns = { @JoinColumn(name = "user_id") },
             inverseJoinColumns = { @JoinColumn(name = "beat_id")}
     )
-    private Set<Beat> favorite = new LinkedHashSet<>();
+    private List<Beat> favorite = new ArrayList<>();
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "history",
             joinColumns = { @JoinColumn(name= "user_id") },
             inverseJoinColumns = { @JoinColumn(name = "beat_id")}
     )
-    private Set<Beat> history = new LinkedHashSet<>();
+    private List<Beat> history = new ArrayList<>();
 }

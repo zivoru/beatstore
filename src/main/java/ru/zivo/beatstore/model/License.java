@@ -1,5 +1,6 @@
 package ru.zivo.beatstore.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import ru.zivo.beatstore.model.common.AbstractLongPersistable;
 
@@ -13,9 +14,10 @@ import javax.persistence.*;
 @Table(name = "license")
 public class License extends AbstractLongPersistable {
 
+    @JsonIgnore
     @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "beat_id")
+    private Beat beat;
 
     @Column(name = "price_mp3")
     private Integer price_mp3;

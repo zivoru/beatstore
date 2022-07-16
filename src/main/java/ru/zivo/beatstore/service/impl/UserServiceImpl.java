@@ -2,23 +2,24 @@ package ru.zivo.beatstore.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.multipart.MultipartFile;
 import org.webjars.NotFoundException;
 import ru.zivo.beatstore.model.Beat;
-import ru.zivo.beatstore.model.Profile;
+import ru.zivo.beatstore.model.Cart;
+import ru.zivo.beatstore.model.Purchased;
 import ru.zivo.beatstore.model.User;
+import ru.zivo.beatstore.model.enums.BeatStatus;
 import ru.zivo.beatstore.repository.ProfileRepository;
 import ru.zivo.beatstore.repository.UserRepository;
 import ru.zivo.beatstore.service.UserService;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -37,53 +38,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User register(Long userId, MultipartFile photo) throws IOException {
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь с id = %d не найден".formatted(userId)));
-
-        if (photo != null && !photo.getOriginalFilename().isEmpty()) {
-            File uploadDir = new File(uploadPath);
-            File uploadDir1 = new File(uploadPath + "/user-" + userId );
-            File uploadDir2 = new File(uploadPath + "/user-" + userId + "/profile");
-
-            if (!uploadDir.exists()) {
-                uploadDir.mkdir();
-            }
-
-            if (!uploadDir1.exists()) {
-                uploadDir1.mkdir();
-            }
-
-            if (!uploadDir2.exists()) {
-                uploadDir2.mkdir();
-            }
-
-            String uuidFile = UUID.randomUUID().toString();
-            String resultFilename = uuidFile + "." + photo.getOriginalFilename();
-
-            photo.transferTo(new File(uploadPath + "/user-" + userId + "/profile" + "/" + resultFilename));
-
-            Profile profile = user.getProfile();
-
-            if (profile == null) {
-                profile = new Profile();
-            }
-            if (user.getProfile() != null) {
-                String imageName = user.getProfile().getImageName();
-                if (imageName != null) {
-                    File file = new File(uploadPath + "/user-" + userId + "/profile" + "/" + imageName);
-                    file.delete();
-                }
-            }
-            profile.setUser(user);
-            profile.setImageName(resultFilename);
-            profileRepository.save(profile);
-
-            user.setProfile(profile);
-        }
-
-        return userRepository.save(user);
+    public User register() {
+        return null;
     }
 
     @Override
@@ -98,13 +54,66 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Page<Beat> getBeats(Long userId, Pageable pageable) {
+        User user = findById(userId);
+
+        List<Beat> beats = user.getBeats();
+
+        return sortedPublishedBeats(beats, pageable);
+    }
+
+    @Override
+    public List<Cart> getCart(Long userId) {
+        User user = findById(userId);
+        List<Cart> carts = user.getCart();
+
+        List<Cart> publishedBeats = new ArrayList<>();
+
+        for (Cart cart : carts) {
+            if (cart.getBeat().getStatus() == BeatStatus.PUBLISHED) {
+                publishedBeats.add(cart);
+            }
+        }
+
+        return publishedBeats;
+    }
+
+    @Override
+    public Page<Purchased> getPurchasedBeats(Long userId, Pageable pageable) {
+        User user = findById(userId);
+
+        List<Purchased> purchased = user.getPurchased();
+
+        final int start = (int) pageable.getOffset();
+        final int end = Math.min((start + pageable.getPageSize()), purchased.size());
+
+        return new PageImpl<>(purchased.subList(start, end), pageable, purchased.size());
+    }
+
+    @Override
+    public Page<Beat> getFavoriteBeats(Long userId, Pageable pageable) {
+        User user = findById(userId);
+
+        List<Beat> favorite = user.getFavorite();
+
+        return sortedPublishedBeats(favorite, pageable);
+    }
+
+    @Override
+    public Page<Beat> getHistoryBeats(Long userId, Pageable pageable) {
+        User user = findById(userId);
+
+        List<Beat> history = user.getHistory();
+
+        return sortedPublishedBeats(history, pageable);
+    }
+
+    @Override
     public void delete(Long id) {
-
-
 
         User user = findById(id);
 
-        Set<Beat> beats = user.getBeats();
+        List<Beat> beats = user.getBeats();
 
         if (!CollectionUtils.isEmpty(beats)) {
             for (Beat beat : beats) {
@@ -136,5 +145,36 @@ public class UserServiceImpl implements UserService {
         file1.delete();
 
         userRepository.delete(user);
+    }
+
+    @Override
+    public List<User> getRecommendedUsers(Integer limit) {
+        List<User> users = userRepository.findAll();
+
+        return users.stream()
+                .sorted((o1, o2) -> Integer.compare(o2.getSubscribers().size(), o1.getSubscribers().size()))
+                .limit(limit)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException("Пользователь с username = %s не найден".formatted(username)));
+    }
+
+    public Page<Beat> sortedPublishedBeats(List<Beat> beats, Pageable pageable) {
+        List<Beat> publishedBeats = new ArrayList<>();
+
+        for (Beat beat : beats) {
+            if (beat.getStatus() == BeatStatus.PUBLISHED) {
+                publishedBeats.add(beat);
+            }
+        }
+
+        final int start = (int) pageable.getOffset();
+        final int end = Math.min((start + pageable.getPageSize()), publishedBeats.size());
+
+        return new PageImpl<>(publishedBeats.subList(start, end), pageable, publishedBeats.size());
     }
 }
