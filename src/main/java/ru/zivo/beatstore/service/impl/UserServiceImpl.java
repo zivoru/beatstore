@@ -2,7 +2,9 @@ package ru.zivo.beatstore.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.webjars.NotFoundException;
@@ -11,14 +13,13 @@ import ru.zivo.beatstore.model.Cart;
 import ru.zivo.beatstore.model.Purchased;
 import ru.zivo.beatstore.model.User;
 import ru.zivo.beatstore.model.enums.BeatStatus;
-import ru.zivo.beatstore.repository.ProfileRepository;
 import ru.zivo.beatstore.repository.UserRepository;
 import ru.zivo.beatstore.service.UserService;
+import ru.zivo.beatstore.web.dto.DisplayUserDto;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,14 +28,11 @@ public class UserServiceImpl implements UserService {
     @Value("${upload.path}")
     private String uploadPath;
 
-    private UserRepository userRepository;
-
-    private ProfileRepository profileRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, ProfileRepository profileRepository) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.profileRepository = profileRepository;
     }
 
     @Override
@@ -158,9 +156,42 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username)
+    public DisplayUserDto getDisplayUserDto(String username, Long authUserId) {
+
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("Пользователь с username = %s не найден".formatted(username)));
+
+        int amountPlays = 0;
+
+        for (Beat beat : user.getBeats()) {
+            amountPlays = amountPlays + beat.getPlays();
+        }
+
+        DisplayUserDto displayUserDto = DisplayUserDto.builder()
+                .username(user.getUsername())
+                .verified(user.getVerified())
+                .profile(user.getProfile())
+                .social(user.getSocial())
+                .amountSubscribers(user.getSubscribers().size())
+                .amountBeats(user.getBeats().size())
+                .amountPlays(amountPlays)
+                .subscriptionStatus(false)
+                .build();
+
+        if (authUserId == null) {
+            return displayUserDto;
+        }
+
+        User authUser = findById(authUserId);
+
+        for (User u : authUser.getSubscriptions()) {
+            if (u == user) {
+                displayUserDto.setSubscriptionStatus(true);
+                break;
+            }
+        }
+
+        return displayUserDto;
     }
 
     public Page<Beat> sortedPublishedBeats(List<Beat> beats, Pageable pageable) {

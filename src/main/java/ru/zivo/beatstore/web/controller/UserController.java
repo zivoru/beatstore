@@ -1,4 +1,4 @@
-package ru.zivo.beatstore.controller;
+package ru.zivo.beatstore.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,9 +12,9 @@ import ru.zivo.beatstore.model.Cart;
 import ru.zivo.beatstore.model.Purchased;
 import ru.zivo.beatstore.model.User;
 import ru.zivo.beatstore.service.UserService;
+import ru.zivo.beatstore.web.dto.DisplayUserDto;
 
 import java.util.List;
-import java.util.Set;
 
 @Tag(name = "UserController", description = "API для работы с пользователями")
 @RequestMapping("api/v1/users")
@@ -34,10 +34,13 @@ public class UserController {
         return ResponseEntity.ok(userService.findById(id));
     }
 
-    @Operation(summary = "Пользователь по username")
-    @GetMapping("username/{username}")
-    public ResponseEntity<User> findByUsername(@PathVariable String username)  {
-        return ResponseEntity.ok(userService.findByUsername(username));
+    @Operation(summary = "Пользователь по username с дополнительными данными для отображения на странице профиля")
+    @GetMapping("username/{username}/authUser/{authUserId}")
+    public ResponseEntity<DisplayUserDto> getDisplayUserDto(@PathVariable String username,
+                                                            @PathVariable(required = false) Long authUserId)  {
+        DisplayUserDto displayUserDto = userService.getDisplayUserDto(username, authUserId);
+
+        return ResponseEntity.ok(displayUserDto);
     }
 
     @Operation(summary = "Удаление пользователя")

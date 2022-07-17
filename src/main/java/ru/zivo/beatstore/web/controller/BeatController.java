@@ -1,4 +1,4 @@
-package ru.zivo.beatstore.controller;
+package ru.zivo.beatstore.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;

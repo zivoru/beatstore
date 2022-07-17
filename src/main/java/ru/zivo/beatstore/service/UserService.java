@@ -6,9 +6,9 @@ import ru.zivo.beatstore.model.Beat;
 import ru.zivo.beatstore.model.Cart;
 import ru.zivo.beatstore.model.Purchased;
 import ru.zivo.beatstore.model.User;
+import ru.zivo.beatstore.web.dto.DisplayUserDto;
 
 import java.util.List;
-import java.util.Set;
 
 public interface UserService {
 
@@ -32,5 +32,5 @@ public interface UserService {
 
     List<User> getRecommendedUsers(Integer limit);
 
-    User findByUsername(String username);
+    DisplayUserDto getDisplayUserDto(String username, Long authUserId);
 }
