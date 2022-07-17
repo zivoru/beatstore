@@ -7,6 +7,7 @@ import ru.zivo.beatstore.model.Beat;
 import ru.zivo.beatstore.model.Cart;
 import ru.zivo.beatstore.model.License;
 import ru.zivo.beatstore.model.Tag;
+import ru.zivo.beatstore.web.dto.BeatDto;
 
 import java.io.IOException;
 import java.util.List;
@@ -38,15 +39,16 @@ public interface BeatService {
 
     void addToHistory(Long userId, Long beatId);
 
-    Page<Beat> getTopChart(String nameFilter,
-                           Long[] tags,
-                           String[] genres,
-                           Integer priceMin,
-                           Integer priceMax,
-                           String key,
-                           Integer bpmMin,
-                           Integer bpmMax,
-                           Pageable pageable);
+    Page<BeatDto> getTopChart(String nameFilter,
+                              Long[] tags,
+                              String[] genres,
+                              Integer priceMin,
+                              Integer priceMax,
+                              String key,
+                              Integer bpmMin,
+                              Integer bpmMax,
+                              Long userId,
+                              Pageable pageable);
 
     void addLicense(Long beatId, License license);
 }

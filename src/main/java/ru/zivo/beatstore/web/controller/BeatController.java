@@ -13,6 +13,7 @@ import ru.zivo.beatstore.model.License;
 import ru.zivo.beatstore.model.Tag;
 import ru.zivo.beatstore.service.BeatService;
 import ru.zivo.beatstore.service.TagService;
+import ru.zivo.beatstore.web.dto.BeatDto;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -66,11 +67,12 @@ public class BeatController {
     ) {
 
         Tag tag1 = new Tag();
-        tag1.setTag(nameTag1);
         Tag tag2 = new Tag();
-        tag2.setTag(nameTag2);
         Tag tag3 = new Tag();
-        tag3.setTag(nameTag3);
+
+        tag1.setName(nameTag1);
+        tag2.setName(nameTag2);
+        tag3.setName(nameTag3);
 
         Tag createdTag1 = tagService.create(tag1);
         Tag createdTag2 = tagService.create(tag2);
@@ -100,20 +102,19 @@ public class BeatController {
     }
 
     @Operation(summary = "Получение топ чарт")
-    @GetMapping("/top-charts")
-    public ResponseEntity<Page<Beat>> getTopChart(@RequestParam(required = false) String nameFilter,
-                                                  @RequestParam(required = false) Long[] tags,
-                                                  @RequestParam(required = false) String[] genres,
-                                                  @RequestParam(required = false) Integer priceMin,
-                                                  @RequestParam(required = false) Integer priceMax,
-                                                  @RequestParam(required = false) String key,
-                                                  @RequestParam(required = false) Integer bpmMin,
-                                                  @RequestParam(required = false) Integer bpmMax,
-                                                  Pageable pageable
+    @GetMapping("/top-charts/{userId}")
+    public ResponseEntity<Page<BeatDto>> getTopChart(@RequestParam(required = false) String nameFilter,
+                                                     @RequestParam(required = false) Long[] tags,
+                                                     @RequestParam(required = false) String[] genres,
+                                                     @RequestParam(required = false) Integer priceMin,
+                                                     @RequestParam(required = false) Integer priceMax,
+                                                     @RequestParam(required = false) String key,
+                                                     @RequestParam(required = false) Integer bpmMin,
+                                                     @RequestParam(required = false) Integer bpmMax,
+                                                     @PathVariable(required = false) Long userId,
+                                                     Pageable pageable
     ) {
-        Page<Beat> beats = beatService.getTopChart(nameFilter, tags, genres, priceMin, priceMax, key, bpmMin, bpmMax, pageable);
-
-        return ResponseEntity.ok(beats);
+        return ResponseEntity.ok(beatService.getTopChart(nameFilter, tags, genres, priceMin, priceMax, key, bpmMin, bpmMax, userId, pageable));
     }
 
     @Operation(summary = "Бит по id")
@@ -136,10 +137,10 @@ public class BeatController {
 
     @Operation(summary = "Добавление в корзину")
     @PostMapping("/user/{userId}/beat/{beatId}/license/{license}")
-    public ResponseEntity<Cart> addToCart(@PathVariable Long userId, @PathVariable Long beatId, @PathVariable String license) {
-        Cart cart = beatService.addToCart(userId, beatId, license);
-
-        return ResponseEntity.ok(cart);
+    public ResponseEntity<Cart> addToCart(@PathVariable Long userId,
+                                          @PathVariable Long beatId,
+                                          @PathVariable String license) {
+        return ResponseEntity.ok(beatService.addToCart(userId, beatId, license));
     }
 
     @Operation(summary = "Добавление в историю")

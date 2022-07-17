@@ -429,7 +429,7 @@
             <column name="id" type="bigserial">
                 <constraints primaryKey="true" nullable="false" unique="true"/>
             </column>
-            <column name="tag" type="varchar(25)">
+            <column name="name" type="varchar(25)">
                 <constraints nullable="false" unique="true"/>
             </column>
         </createTable>
@@ -483,35 +483,35 @@
     <!--tags insert-->
     <changeSet id="1.2.1" author="zivo">
         <insert tableName="tag">
-            <column name="tag" value="drill"/>
+            <column name="name" value="drill"/>
         </insert>
 
         <insert tableName="tag">
-            <column name="tag" value="free"/>
+            <column name="name" value="free"/>
         </insert>
 
         <insert tableName="tag">
-            <column name="tag" value="808"/>
+            <column name="name" value="808"/>
         </insert>
 
         <insert tableName="tag">
-            <column name="tag" value="trap"/>
+            <column name="name" value="trap"/>
         </insert>
 
         <insert tableName="tag">
-            <column name="tag" value="hyperpop"/>
+            <column name="name" value="hyperpop"/>
         </insert>
 
         <insert tableName="tag">
-            <column name="tag" value="guitar"/>
+            <column name="name" value="guitar"/>
         </insert>
 
         <insert tableName="tag">
-            <column name="tag" value="lil baby"/>
+            <column name="name" value="lil baby"/>
         </insert>
 
         <insert tableName="tag">
-            <column name="tag" value="gunna"/>
+            <column name="name" value="gunna"/>
         </insert>
 
     </changeSet>

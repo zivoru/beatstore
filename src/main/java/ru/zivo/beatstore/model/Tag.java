@@ -21,8 +21,8 @@ import java.util.Set;
 public class Tag extends AbstractLongPersistable {
 
     @NotBlank
-    @Column(name = "tag")
-    private String tag;
+    @Column(name = "name")
+    private String name;
 
     @JsonIgnore
     @ManyToMany

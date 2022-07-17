@@ -16,6 +16,7 @@ import ru.zivo.beatstore.repository.BeatRepository;
 import ru.zivo.beatstore.repository.CartRepository;
 import ru.zivo.beatstore.repository.UserRepository;
 import ru.zivo.beatstore.service.BeatService;
+import ru.zivo.beatstore.web.dto.BeatDto;
 
 import java.io.File;
 import java.io.IOException;
@@ -297,7 +298,7 @@ public class BeatServiceImpl implements BeatService {
     }
 
     @Override
-    public Page<Beat> getTopChart(
+    public Page<BeatDto> getTopChart(
             String nameFilter,
             Long[] tags,
             String[] genres,
@@ -306,10 +307,15 @@ public class BeatServiceImpl implements BeatService {
             String key,
             Integer bpmMin,
             Integer bpmMax,
+            Long userId,
             Pageable pageable
     ) {
 
         List<Beat> beats = beatRepository.findAll();
+        User user = null;
+        if (userId != null) {
+            user = getUser(userId);
+        }
 
         List<Beat> publishedBeats = new ArrayList<>();
 
@@ -331,10 +337,10 @@ public class BeatServiceImpl implements BeatService {
                 && bpmMin == null
                 && bpmMax == null
         ) {
-            final int start = (int) pageable.getOffset();
-            final int end = Math.min((start + pageable.getPageSize()), sortedBeats.size());
 
-            return new PageImpl<>(sortedBeats.subList(start, end), pageable, sortedBeats.size());
+            List<BeatDto> beatDtoList = getDtoList(user, sortedBeats);
+
+            return listToPage(pageable, beatDtoList);
         }
 
         Set<Beat> filteredBeats = new LinkedHashSet<>();
@@ -391,9 +397,38 @@ public class BeatServiceImpl implements BeatService {
 
         List<Beat> collect = filteredBeats.stream().toList();
 
-        final int start = (int) pageable.getOffset();
-        final int end = Math.min((start + pageable.getPageSize()), collect.size());
+        List<BeatDto> beatDtoList = getDtoList(user, collect);
 
-        return new PageImpl<>(collect.subList(start, end), pageable, collect.size());
+        return listToPage(pageable, beatDtoList);
+    }
+
+    private PageImpl<BeatDto> listToPage(Pageable pageable, List<BeatDto> beatDtoList) {
+        final int start = (int) pageable.getOffset();
+        final int end = Math.min((start + pageable.getPageSize()), beatDtoList.size());
+        return new PageImpl<>(beatDtoList.subList(start, end), pageable, beatDtoList.size());
+    }
+
+    private List<BeatDto> getDtoList(User user, List<Beat> sortedBeats) {
+        List<BeatDto> beatDtoList = new ArrayList<>();
+
+        for (Beat sortedBeat : sortedBeats) {
+
+            BeatDto beatDto = BeatDto.builder()
+                    .beat(sortedBeat)
+                    .addedToCart(false)
+                    .build();
+
+            if (user != null) {
+                for (Cart cart : user.getCart()) {
+                    if (cart.getBeat() == sortedBeat) {
+                        beatDto.setAddedToCart(true);
+                    }
+                }
+            }
+
+            beatDtoList.add(beatDto);
+        }
+
+        return beatDtoList;
     }
 }

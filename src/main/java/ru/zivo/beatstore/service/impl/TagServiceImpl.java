@@ -8,7 +8,6 @@ import ru.zivo.beatstore.model.Tag;
 import ru.zivo.beatstore.repository.TagRepository;
 import ru.zivo.beatstore.service.TagService;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +23,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public Tag create(Tag tag) {
-        Tag tagByRepository = tagRepository.findByTagIgnoreCase(tag.getTag());
+        Tag tagByRepository = tagRepository.findByNameIgnoreCase(tag.getName());
         if (tagByRepository != null) {
             return tagByRepository;
         }
@@ -45,6 +44,6 @@ public class TagServiceImpl implements TagService {
     public Page<Tag> getPageTags(String nameFilter, Pageable pageable) {
         return nameFilter == null
                 ? tagRepository.findAll(pageable)
-                : tagRepository.findAllByTagContainsIgnoreCase(nameFilter, pageable);
+                : tagRepository.findAllByNameContainsIgnoreCase(nameFilter, pageable);
     }
 }
