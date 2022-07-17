@@ -129,7 +129,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getRecommendedUsers(Integer limit) {
+    public List<User> getRecommended(Integer limit) {
         List<User> users = userRepository.findAll();
 
         return users.stream()

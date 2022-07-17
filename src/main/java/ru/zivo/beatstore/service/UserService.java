@@ -27,7 +27,7 @@ public interface UserService {
 
     void delete(Long id);
 
-    List<User> getRecommendedUsers(Integer limit);
+    List<User> getRecommended(Integer limit);
 
     DisplayUserDto getDisplayUserDto(String username, Long authUserId);
 }
