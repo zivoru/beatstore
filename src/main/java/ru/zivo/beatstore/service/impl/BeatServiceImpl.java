@@ -16,6 +16,7 @@ import ru.zivo.beatstore.repository.BeatRepository;
 import ru.zivo.beatstore.repository.CartRepository;
 import ru.zivo.beatstore.repository.UserRepository;
 import ru.zivo.beatstore.service.BeatService;
+import ru.zivo.beatstore.service.impl.common.DeleteAudioFiles;
 import ru.zivo.beatstore.web.dto.BeatDto;
 
 import java.io.File;
@@ -113,7 +114,7 @@ public class BeatServiceImpl implements BeatService {
 
         Audio audio = beat.getAudio();
 
-        deleteFiles(beat, pathname);
+        DeleteAudioFiles.delete(beat, pathname);
 
         String mp3Name = saveFile(mp3, pathname);
         String wavName = saveFile(wav, pathname);
@@ -167,7 +168,7 @@ public class BeatServiceImpl implements BeatService {
 
         String pathname = uploadPath + "/user-" + beat.getUser().getId() + "/beats" + "/beat-" + id;
 
-        deleteFiles(beat, pathname);
+        DeleteAudioFiles.delete(beat, pathname);
 
         File file = new File(pathname);
         file.delete();
@@ -209,23 +210,6 @@ public class BeatServiceImpl implements BeatService {
         user.getFavorite().add(byId);
 
         userRepository.save(user);
-    }
-
-    private void deleteFiles(Beat beat, String pathname) {
-        if (beat.getAudio() != null) {
-            List<String> names = new ArrayList<>();
-
-            names.add(beat.getAudio().getMp3Name());
-            names.add(beat.getAudio().getWavName());
-            names.add(beat.getAudio().getTrackStemsName());
-
-            for (String name : names) {
-                if (name != null) {
-                    File file = new File(pathname + "/" + name);
-                    file.delete();
-                }
-            }
-        }
     }
 
     private String saveFile(MultipartFile file, String pathname) throws IOException {

@@ -14,6 +14,7 @@ import ru.zivo.beatstore.model.User;
 import ru.zivo.beatstore.model.enums.BeatStatus;
 import ru.zivo.beatstore.repository.UserRepository;
 import ru.zivo.beatstore.service.UserService;
+import ru.zivo.beatstore.service.impl.common.DeleteAudioFiles;
 import ru.zivo.beatstore.web.dto.DisplayUserDto;
 
 import java.io.File;
@@ -100,21 +101,8 @@ public class UserServiceImpl implements UserService {
             for (Beat beat : beats) {
                 String pathname = uploadPath + "/user-" + id + "/beats" + "/beat-" + beat.getId();
 
-                if (beat.getAudio() != null) {
+                DeleteAudioFiles.delete(beat, pathname);
 
-                    List<String> names = new ArrayList<>();
-
-                    names.add(beat.getAudio().getMp3Name());
-                    names.add(beat.getAudio().getWavName());
-                    names.add(beat.getAudio().getTrackStemsName());
-
-                    for (String name : names) {
-                        if (name != null) {
-                            File file = new File(pathname + "/" + name);
-                            file.delete();
-                        }
-                    }
-                }
                 File file = new File(pathname);
                 file.delete();
             }
