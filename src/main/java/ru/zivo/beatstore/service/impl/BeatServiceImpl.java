@@ -57,15 +57,6 @@ public class BeatServiceImpl implements BeatService {
         audioRepository.save(audio);
         beat.setAudio(audio);
 
-        License license = new License();
-        license.setPrice_mp3(1000);
-        license.setPrice_wav(2000);
-        license.setPrice_unlimited(5000);
-        license.setPrice_exclusive(10000);
-        license.setBeat(beat);
-
-        beat.setLicense(license);
-
         return beatRepository.save(beat);
     }
 
@@ -140,6 +131,14 @@ public class BeatServiceImpl implements BeatService {
     public void addTags(Long beatId, List<Tag> tags) {
         Beat beat = findById(beatId);
         beat.setTags(tags);
+        beatRepository.save(beat);
+    }
+
+    @Override
+    public void addLicense(Long beatId, License license) {
+        Beat beat = findById(beatId);
+        license.setBeat(beat);
+        beat.setLicense(license);
         beatRepository.save(beat);
     }
 
@@ -229,13 +228,11 @@ public class BeatServiceImpl implements BeatService {
     }
 
     private String saveFile(MultipartFile file, String pathname) throws IOException {
-        if (file == null || file.getOriginalFilename().isEmpty()) {
+        if (file == null || Objects.requireNonNull(file.getOriginalFilename()).isEmpty()) {
             return null;
         }
 
-        String uuidFile = UUID.randomUUID().toString();
-//        String resultFilename = uuidFile + "." + file.getOriginalFilename();
-        String resultFilename = uuidFile;
+        String resultFilename = UUID.randomUUID().toString();
 
         file.transferTo(new File(pathname + "/" + resultFilename));
 

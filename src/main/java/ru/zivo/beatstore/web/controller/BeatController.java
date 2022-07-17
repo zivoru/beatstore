@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.zivo.beatstore.model.Beat;
 import ru.zivo.beatstore.model.Cart;
+import ru.zivo.beatstore.model.License;
 import ru.zivo.beatstore.model.Tag;
 import ru.zivo.beatstore.service.BeatService;
 import ru.zivo.beatstore.service.TagService;
@@ -38,14 +39,14 @@ public class BeatController {
     }
 
     @Operation(summary = "Загрузка фото бита")
-    @PostMapping("image/{beatId}")
+    @PostMapping("uploadImage/{beatId}")
     public void uploadImage(@PathVariable Long beatId,
                             @RequestParam(name = "image") MultipartFile image) throws IOException {
         beatService.uploadImage(beatId, image);
     }
 
     @Operation(summary = "Загрузка аудио бита")
-    @PostMapping("beatId/{beatId}")
+    @PostMapping("uploadAudio/{beatId}")
     public ResponseEntity<Long> uploadAudio(
             @PathVariable Long beatId,
             @RequestParam(name = "mp3") MultipartFile mp3,
@@ -57,7 +58,7 @@ public class BeatController {
     }
 
     @Operation(summary = "Создание и добавление тегов")
-    @PostMapping("createTag/beatId/{beatId}")
+    @PostMapping("createTag/{beatId}")
     public void createTag(@PathVariable Long beatId,
                           @RequestParam String nameTag1,
                           @RequestParam String nameTag2,
@@ -82,6 +83,12 @@ public class BeatController {
         tags.add(createdTag3);
 
         beatService.addTags(beatId, tags);
+    }
+
+    @Operation(summary = "Добавление лицензии")
+    @PostMapping("createLicense/{beatId}")
+    public void addLicense(@PathVariable Long beatId, @RequestBody License license) {
+        beatService.addLicense(beatId, license);
     }
 
     @Operation(summary = "Получение трендовых битов")

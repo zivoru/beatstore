@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 import ru.zivo.beatstore.model.Beat;
 import ru.zivo.beatstore.model.Cart;
+import ru.zivo.beatstore.model.License;
 import ru.zivo.beatstore.model.Tag;
 
 import java.io.IOException;
@@ -46,4 +47,6 @@ public interface BeatService {
                            Integer bpmMin,
                            Integer bpmMax,
                            Pageable pageable);
+
+    void addLicense(Long beatId, License license);
 }
