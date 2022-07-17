@@ -44,12 +44,14 @@ public class User extends AbstractLongPersistable {
     @Column(name = "status")
     private Status status;
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
     private List<Role> roles;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "user_subscriptions",
@@ -58,6 +60,7 @@ public class User extends AbstractLongPersistable {
     )
     private Set<User> subscribers = new HashSet<>();
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "user_subscriptions",
@@ -78,6 +81,7 @@ public class User extends AbstractLongPersistable {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Cart> cart = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Purchased> purchased = new ArrayList<>();
 

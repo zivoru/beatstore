@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.webjars.NotFoundException;
 import ru.zivo.beatstore.model.Beat;
-import ru.zivo.beatstore.model.Cart;
 import ru.zivo.beatstore.model.Purchased;
 import ru.zivo.beatstore.model.User;
 import ru.zivo.beatstore.model.enums.BeatStatus;
@@ -58,22 +57,6 @@ public class UserServiceImpl implements UserService {
         List<Beat> beats = user.getBeats();
 
         return sortedPublishedBeats(beats, pageable);
-    }
-
-    @Override
-    public List<Cart> getCart(Long userId) {
-        User user = findById(userId);
-        List<Cart> carts = user.getCart();
-
-        List<Cart> publishedBeats = new ArrayList<>();
-
-        for (Cart cart : carts) {
-            if (cart.getBeat().getStatus() == BeatStatus.PUBLISHED) {
-                publishedBeats.add(cart);
-            }
-        }
-
-        return publishedBeats;
     }
 
     @Override

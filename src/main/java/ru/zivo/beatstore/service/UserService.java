@@ -3,7 +3,6 @@ package ru.zivo.beatstore.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ru.zivo.beatstore.model.Beat;
-import ru.zivo.beatstore.model.Cart;
 import ru.zivo.beatstore.model.Purchased;
 import ru.zivo.beatstore.model.User;
 import ru.zivo.beatstore.web.dto.DisplayUserDto;
@@ -19,8 +18,6 @@ public interface UserService {
     User findById(Long id);
 
     Page<Beat> getBeats(Long userId, Pageable pageable);
-
-    List<Cart> getCart(Long userId);
 
     Page<Purchased> getPurchasedBeats(Long userId, Pageable pageable);
 

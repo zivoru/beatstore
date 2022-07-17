@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.zivo.beatstore.model.Beat;
-import ru.zivo.beatstore.model.Cart;
 import ru.zivo.beatstore.model.Purchased;
 import ru.zivo.beatstore.model.User;
 import ru.zivo.beatstore.service.UserService;
@@ -47,12 +46,6 @@ public class UserController {
     @DeleteMapping("{id}")
     public void deleteUser(@PathVariable Long id) {
         userService.delete(id);
-    }
-
-    @Operation(summary = "Корзина по id пользователя")
-    @GetMapping("/cart/{id}")
-    public ResponseEntity<List<Cart>> getCart(@PathVariable Long id)  {
-        return ResponseEntity.ok(userService.getCart(id));
     }
 
     @Operation(summary = "Все биты пользователя по id")
