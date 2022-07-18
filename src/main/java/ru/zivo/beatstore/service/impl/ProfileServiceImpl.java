@@ -10,6 +10,7 @@ import ru.zivo.beatstore.model.User;
 import ru.zivo.beatstore.repository.ProfileRepository;
 import ru.zivo.beatstore.repository.UserRepository;
 import ru.zivo.beatstore.service.ProfileService;
+import ru.zivo.beatstore.service.impl.common.Users;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,9 +23,9 @@ public class ProfileServiceImpl implements ProfileService {
     @Value("${upload.path}")
     private String uploadPath;
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    private ProfileRepository profileRepository;
+    private final ProfileRepository profileRepository;
 
     @Autowired
     public ProfileServiceImpl(UserRepository userRepository, ProfileRepository profileRepository) {
@@ -34,9 +35,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public Profile updateProfile(Long userId, Profile profile) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь с id = %d не найден".formatted(userId)));
-
+        User user = Users.getUser(userId);
         profile.setUser(user);
         Profile savedProfile = profileRepository.save(profile);
 
@@ -53,7 +52,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         Long userId = profile.getUser().getId();
 
-        if (photo != null && !photo.getOriginalFilename().isEmpty()) {
+        if (photo != null) {
 
             String pathname = uploadPath + "/user-" + userId + "/profile";
 
@@ -76,9 +75,7 @@ public class ProfileServiceImpl implements ProfileService {
                 file.delete();
             }
 
-            String uuidFile = UUID.randomUUID().toString();
-//            String resultFilename = uuidFile + "." + photo.getOriginalFilename();
-            String resultFilename = uuidFile;
+            String resultFilename = UUID.randomUUID().toString();
 
             photo.transferTo(new File(pathname + "/" + resultFilename));
 

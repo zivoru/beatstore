@@ -17,6 +17,7 @@ import ru.zivo.beatstore.repository.CartRepository;
 import ru.zivo.beatstore.repository.UserRepository;
 import ru.zivo.beatstore.service.BeatService;
 import ru.zivo.beatstore.service.impl.common.DeleteAudioFiles;
+import ru.zivo.beatstore.service.impl.common.Users;
 import ru.zivo.beatstore.web.dto.BeatDto;
 
 import java.io.File;
@@ -48,7 +49,7 @@ public class BeatServiceImpl implements BeatService {
 
     @Override
     public Beat create(Long userId, Beat beat) {
-        User user = getUser(userId);
+        User user = Users.getUser(userId);
 
         beat.setUser(user);
 
@@ -60,11 +61,6 @@ public class BeatServiceImpl implements BeatService {
         beat.setAudio(audio);
 
         return beatRepository.save(beat);
-    }
-
-    private User getUser(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Бит с id = %d не найден".formatted(userId)));
     }
 
     @Override
@@ -196,7 +192,7 @@ public class BeatServiceImpl implements BeatService {
 
     @Override
     public void addAndDeleteFavorite(Long beatId, Long userId) {
-        User user = getUser(userId);
+        User user = Users.getUser(userId);
         Beat byId = findById(beatId);
 
         for (Beat beat : user.getFavorite()) {
@@ -213,7 +209,7 @@ public class BeatServiceImpl implements BeatService {
     }
 
     private String saveFile(MultipartFile file, String pathname) throws IOException {
-        if (file == null || Objects.requireNonNull(file.getOriginalFilename()).isEmpty()) {
+        if (file == null) {
             return null;
         }
 
@@ -226,7 +222,7 @@ public class BeatServiceImpl implements BeatService {
 
     @Override
     public Cart addToCart(Long userId, Long beatId, String license) {
-        User user = getUser(userId);
+        User user = Users.getUser(userId);
         Beat beat = findById(beatId);
 
         if (!cartRepository.existsByBeatAndUserAndLicensing(beat, user, Licensing.valueOf(license))) {
@@ -265,7 +261,7 @@ public class BeatServiceImpl implements BeatService {
 
     @Override
     public void addToHistory(Long userId, Long beatId) {
-        User user = getUser(userId);
+        User user = Users.getUser(userId);
         Beat beat = findById(beatId);
 
         List<Beat> history = user.getHistory();
@@ -298,7 +294,7 @@ public class BeatServiceImpl implements BeatService {
         List<Beat> beats = beatRepository.findAll();
         User user = null;
         if (userId != null) {
-            user = getUser(userId);
+            user = Users.getUser(userId);
         }
 
         List<Beat> publishedBeats = sortedPublishedBeats(beats);
@@ -381,7 +377,7 @@ public class BeatServiceImpl implements BeatService {
 
     @Override
     public Page<BeatDto> getHistoryBeats(Long userId, Pageable pageable) {
-        User user = getUser(userId);
+        User user = Users.getUser(userId);
 
         List<Beat> history = user.getHistory();
 
@@ -394,7 +390,7 @@ public class BeatServiceImpl implements BeatService {
 
     @Override
     public Page<BeatDto> getFavoriteBeats(Long userId, Pageable pageable) {
-        User user = getUser(userId);
+        User user = Users.getUser(userId);
 
         List<Beat> history = user.getFavorite();
 
@@ -407,14 +403,14 @@ public class BeatServiceImpl implements BeatService {
 
     @Override
     public Page<BeatDto> getBeats(Long userId, Long authUserId, Pageable pageable) {
-        List<Beat> history = getUser(userId).getBeats();
+        List<Beat> history = Users.getUser(userId).getBeats();
 
         List<Beat> publishedBeats = sortedPublishedBeats(history);
 
         User authUser = null;
 
         if (authUserId != null) {
-            authUser = getUser(authUserId);
+            authUser = Users.getUser(authUserId);
         }
 
         List<BeatDto> dtoList = getDtoList(authUser, publishedBeats);

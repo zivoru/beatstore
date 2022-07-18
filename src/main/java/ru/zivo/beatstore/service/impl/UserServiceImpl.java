@@ -52,18 +52,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<Purchased> getPurchasedBeats(Long userId, Pageable pageable) {
-        User user = findById(userId);
-
-        List<Purchased> purchased = user.getPurchased();
-
-        final int start = (int) pageable.getOffset();
-        final int end = Math.min((start + pageable.getPageSize()), purchased.size());
-
-        return new PageImpl<>(purchased.subList(start, end), pageable, purchased.size());
-    }
-
-    @Override
     public void delete(Long id) {
 
         User user = findById(id);
