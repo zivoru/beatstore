@@ -301,13 +301,7 @@ public class BeatServiceImpl implements BeatService {
             user = getUser(userId);
         }
 
-        List<Beat> publishedBeats = new ArrayList<>();
-
-        for (Beat beat : beats) {
-            if (beat.getStatus() == BeatStatus.PUBLISHED) {
-                publishedBeats.add(beat);
-            }
-        }
+        List<Beat> publishedBeats = sortedPublishedBeats(beats);
 
         List<Beat> sortedBeats = publishedBeats.stream()
                 .sorted((o1, o2) -> Integer.compare(o2.getPlays(), o1.getPlays())).toList();
@@ -321,7 +315,6 @@ public class BeatServiceImpl implements BeatService {
                 && bpmMin == null
                 && bpmMax == null
         ) {
-
             List<BeatDto> beatDtoList = getDtoList(user, sortedBeats);
 
             return listToPage(pageable, beatDtoList);
@@ -384,6 +377,61 @@ public class BeatServiceImpl implements BeatService {
         List<BeatDto> beatDtoList = getDtoList(user, collect);
 
         return listToPage(pageable, beatDtoList);
+    }
+
+    @Override
+    public Page<BeatDto> getHistoryBeats(Long userId, Pageable pageable) {
+        User user = getUser(userId);
+
+        List<Beat> history = user.getHistory();
+
+        List<Beat> publishedBeats = sortedPublishedBeats(history);
+
+        List<BeatDto> dtoList = getDtoList(user, publishedBeats);
+
+        return listToPage(pageable, dtoList);
+    }
+
+    @Override
+    public Page<BeatDto> getFavoriteBeats(Long userId, Pageable pageable) {
+        User user = getUser(userId);
+
+        List<Beat> history = user.getFavorite();
+
+        List<Beat> publishedBeats = sortedPublishedBeats(history);
+
+        List<BeatDto> dtoList = getDtoList(user, publishedBeats);
+
+        return listToPage(pageable, dtoList);
+    }
+
+    @Override
+    public Page<BeatDto> getBeats(Long userId, Long authUserId, Pageable pageable) {
+        List<Beat> history = getUser(userId).getBeats();
+
+        List<Beat> publishedBeats = sortedPublishedBeats(history);
+
+        User authUser = null;
+
+        if (authUserId != null) {
+            authUser = getUser(authUserId);
+        }
+
+        List<BeatDto> dtoList = getDtoList(authUser, publishedBeats);
+
+        return listToPage(pageable, dtoList);
+    }
+
+    public List<Beat> sortedPublishedBeats(List<Beat> beats) {
+        List<Beat> publishedBeats = new ArrayList<>();
+
+        for (Beat beat : beats) {
+            if (beat.getStatus() == BeatStatus.PUBLISHED) {
+                publishedBeats.add(beat);
+            }
+        }
+
+        return publishedBeats;
     }
 
     private PageImpl<BeatDto> listToPage(Pageable pageable, List<BeatDto> beatDtoList) {

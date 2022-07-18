@@ -39,24 +39,6 @@ public class UserController {
         userService.delete(id);
     }
 
-    @Operation(summary = "Биты пользователя по его id")
-    @GetMapping("/beats/{id}")
-    public ResponseEntity<Page<Beat>> getBeats(@PathVariable Long id, Pageable pageable)  {
-        return ResponseEntity.ok(userService.getBeats(id, pageable));
-    }
-
-    @Operation(summary = "Избранные пользователя по его id")
-    @GetMapping("/favorite/{id}")
-    public ResponseEntity<Page<Beat>> getFavorite(@PathVariable Long id, Pageable pageable)  {
-        return ResponseEntity.ok(userService.getFavoriteBeats(id, pageable));
-    }
-
-    @Operation(summary = "История пользователя по его id")
-    @GetMapping("/history/{id}")
-    public ResponseEntity<Page<Beat>> getHistory(@PathVariable Long id, Pageable pageable)  {
-        return ResponseEntity.ok(userService.getHistoryBeats(id, pageable));
-    }
-
     @Operation(summary = "Купленные пользователя по его id")
     @GetMapping("/purchased/{id}")
     public ResponseEntity<Page<Purchased>> getPurchased(@PathVariable Long id, Pageable pageable)  {

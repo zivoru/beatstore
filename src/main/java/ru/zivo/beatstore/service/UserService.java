@@ -17,13 +17,7 @@ public interface UserService {
 
     User findById(Long id);
 
-    Page<Beat> getBeats(Long userId, Pageable pageable);
-
     Page<Purchased> getPurchasedBeats(Long userId, Pageable pageable);
-
-    Page<Beat> getFavoriteBeats(Long userId, Pageable pageable);
-
-    Page<Beat> getHistoryBeats(Long userId, Pageable pageable);
 
     void delete(Long id);
 

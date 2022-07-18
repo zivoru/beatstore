@@ -51,4 +51,10 @@ public interface BeatService {
                               Pageable pageable);
 
     void addLicense(Long beatId, License license);
+
+    Page<BeatDto> getFavoriteBeats(Long userId, Pageable pageable);
+
+    Page<BeatDto> getHistoryBeats(Long userId, Pageable pageable);
+
+    Page<BeatDto> getBeats(Long userId, Long authUserId, Pageable pageable);
 }

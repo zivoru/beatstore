@@ -52,15 +52,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<Beat> getBeats(Long userId, Pageable pageable) {
-        User user = findById(userId);
-
-        List<Beat> beats = user.getBeats();
-
-        return sortedPublishedBeats(beats, pageable);
-    }
-
-    @Override
     public Page<Purchased> getPurchasedBeats(Long userId, Pageable pageable) {
         User user = findById(userId);
 
@@ -70,24 +61,6 @@ public class UserServiceImpl implements UserService {
         final int end = Math.min((start + pageable.getPageSize()), purchased.size());
 
         return new PageImpl<>(purchased.subList(start, end), pageable, purchased.size());
-    }
-
-    @Override
-    public Page<Beat> getFavoriteBeats(Long userId, Pageable pageable) {
-        User user = findById(userId);
-
-        List<Beat> favorite = user.getFavorite();
-
-        return sortedPublishedBeats(favorite, pageable);
-    }
-
-    @Override
-    public Page<Beat> getHistoryBeats(Long userId, Pageable pageable) {
-        User user = findById(userId);
-
-        List<Beat> history = user.getHistory();
-
-        return sortedPublishedBeats(history, pageable);
     }
 
     @Override
