@@ -1,10 +1,10 @@
 package ru.zivo.beatstore.service;
 
-import ru.zivo.beatstore.model.Cart;
+import ru.zivo.beatstore.web.dto.CartDto;
 
 import java.util.List;
 
 public interface CartService {
 
-    List<Cart> findByUserId(Long userId);
+    List<CartDto> findByUserId(Long userId);
 }

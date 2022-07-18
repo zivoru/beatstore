@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.zivo.beatstore.model.Cart;
 import ru.zivo.beatstore.service.CartService;
+import ru.zivo.beatstore.web.dto.CartDto;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class CartController {
 
     @Operation(summary = "Корзина по id пользователя")
     @GetMapping("/{userId}")
-    public ResponseEntity<List<Cart>> findByUserId(@PathVariable Long userId)  {
+    public ResponseEntity<List<CartDto>> findByUserId(@PathVariable Long userId)  {
 
         return ResponseEntity.ok(cartService.findByUserId(userId));
     }
