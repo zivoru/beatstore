@@ -8,6 +8,7 @@ import ru.zivo.beatstore.model.Social;
 @Data
 @Builder
 public class DisplayUserDto {
+    private Long id;
     private String username;
     private Boolean verified;
     private Profile profile;

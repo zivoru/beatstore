@@ -33,6 +33,7 @@ public class CartServiceImpl implements CartService {
 
         for (Cart cart : publishedBeats) {
             CartDto cartDto = CartDto.builder()
+                    .licensing(cart.getLicensing())
                     .beat(cart.getBeat())
                     .build();
 

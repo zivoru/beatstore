@@ -42,9 +42,15 @@ public class UserController {
     }
 
     @Operation(summary = "Пользователь по username с дополнительными данными для отображения на странице профиля")
-    @GetMapping("username/{username}/authUser/{authUserId}")
+    @GetMapping("username/{username}")
     public ResponseEntity<DisplayUserDto> getDisplayUserDto(@PathVariable String username,
-                                                            @PathVariable(required = false) Long authUserId)  {
+                                                            @RequestParam(required = false) Long authUserId)  {
         return ResponseEntity.ok(userService.getDisplayUserDto(username, authUserId));
+    }
+
+    @Operation(summary = "Подписка и отписка")
+    @PostMapping("/subscribe/user/{userId}/channel/{channelId}")
+    public void subscribeAndUnsubscribe(@PathVariable Long userId, @PathVariable Long channelId) {
+        userService.subscribeAndUnsubscribe(userId, channelId);
     }
 }

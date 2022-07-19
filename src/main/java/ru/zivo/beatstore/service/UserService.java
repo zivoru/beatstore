@@ -18,4 +18,6 @@ public interface UserService {
     List<User> getRecommended(Integer limit);
 
     DisplayUserDto getDisplayUserDto(String username, Long authUserId);
+
+    void subscribeAndUnsubscribe(Long userId, Long channelId);
 }

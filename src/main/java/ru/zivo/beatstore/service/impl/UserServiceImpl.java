@@ -2,23 +2,17 @@ package ru.zivo.beatstore.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.webjars.NotFoundException;
 import ru.zivo.beatstore.model.Beat;
-import ru.zivo.beatstore.model.Purchased;
 import ru.zivo.beatstore.model.User;
-import ru.zivo.beatstore.model.enums.BeatStatus;
 import ru.zivo.beatstore.repository.UserRepository;
 import ru.zivo.beatstore.service.UserService;
 import ru.zivo.beatstore.service.impl.common.DeleteAudioFiles;
 import ru.zivo.beatstore.web.dto.DisplayUserDto;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -100,6 +94,7 @@ public class UserServiceImpl implements UserService {
         }
 
         DisplayUserDto displayUserDto = DisplayUserDto.builder()
+                .id(user.getId())
                 .username(user.getUsername())
                 .verified(user.getVerified())
                 .profile(user.getProfile())
@@ -126,18 +121,20 @@ public class UserServiceImpl implements UserService {
         return displayUserDto;
     }
 
-    public Page<Beat> sortedPublishedBeats(List<Beat> beats, Pageable pageable) {
-        List<Beat> publishedBeats = new ArrayList<>();
+    @Override
+    public void subscribeAndUnsubscribe(Long userId, Long channelId) {
+        User user = findById(userId);
+        User channel = findById(channelId);
 
-        for (Beat beat : beats) {
-            if (beat.getStatus() == BeatStatus.PUBLISHED) {
-                publishedBeats.add(beat);
+        for (User subscription : user.getSubscriptions()) {
+            if (subscription == channel) {
+                user.getSubscriptions().remove(subscription);
+                userRepository.save(user);
+                return;
             }
         }
 
-        final int start = (int) pageable.getOffset();
-        final int end = Math.min((start + pageable.getPageSize()), publishedBeats.size());
-
-        return new PageImpl<>(publishedBeats.subList(start, end), pageable, publishedBeats.size());
+        user.getSubscriptions().add(channel);
+        userRepository.save(user);
     }
 }
