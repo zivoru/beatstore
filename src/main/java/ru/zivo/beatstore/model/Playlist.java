@@ -40,4 +40,12 @@ public class Playlist extends AbstractLongPersistable {
             inverseJoinColumns = { @JoinColumn(name = "beat_id")}
     )
     private Set<Beat> beats = new LinkedHashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "favorite_playlists",
+            joinColumns = { @JoinColumn(name = "playlist_id") },
+            inverseJoinColumns = { @JoinColumn(name = "user_id")}
+    )
+    private Set<User> likes = new HashSet<>();
 }

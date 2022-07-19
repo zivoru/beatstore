@@ -89,7 +89,7 @@ public class Beat extends AbstractLongPersistable {
 
     @ManyToMany
     @JoinTable(
-            name = "favorite",
+            name = "favorite_beats",
             joinColumns = { @JoinColumn(name = "beat_id") },
             inverseJoinColumns = { @JoinColumn(name = "user_id")}
     )

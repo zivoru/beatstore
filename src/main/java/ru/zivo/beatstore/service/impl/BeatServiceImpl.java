@@ -195,15 +195,15 @@ public class BeatServiceImpl implements BeatService {
         User user = Users.getUser(userId);
         Beat byId = findById(beatId);
 
-        for (Beat beat : user.getFavorite()) {
+        for (Beat beat : user.getFavoriteBeats()) {
             if (beat == byId) {
-                user.getFavorite().remove(beat);
+                user.getFavoriteBeats().remove(beat);
                 userRepository.save(user);
                 return;
             }
         }
 
-        user.getFavorite().add(byId);
+        user.getFavoriteBeats().add(byId);
 
         userRepository.save(user);
     }
@@ -392,7 +392,7 @@ public class BeatServiceImpl implements BeatService {
     public Page<BeatDto> getFavoriteBeats(Long userId, Pageable pageable) {
         User user = Users.getUser(userId);
 
-        List<Beat> history = user.getFavorite();
+        List<Beat> history = user.getFavoriteBeats();
 
         List<Beat> publishedBeats = sortedPublishedBeats(history);
 

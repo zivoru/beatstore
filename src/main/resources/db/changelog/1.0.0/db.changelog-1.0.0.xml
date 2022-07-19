@@ -354,15 +354,15 @@
             </column>
         </createTable>
     </changeSet>
-    <!--favorite-->
+    <!--favorite_beats-->
     <changeSet id="1.1.5" author="zivo">
         <preConditions>
             <not>
-                <tableExists tableName="favorite"/>
+                <tableExists tableName="favorite_beats"/>
             </not>
         </preConditions>
 
-        <createTable tableName="favorite">
+        <createTable tableName="favorite_beats">
             <column name="user_id" type="bigint">
                 <constraints primaryKey="true" nullable="false" referencedTableName="users" referencedColumnNames="id"
                              foreignKeyName="user_id"/>
@@ -514,6 +514,25 @@
             <column name="name" value="gunna"/>
         </insert>
 
+    </changeSet>
+    <!--favorite_playlists-->
+    <changeSet id="1.2.2" author="zivo">
+        <preConditions>
+            <not>
+                <tableExists tableName="favorite_playlists"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="favorite_playlists">
+            <column name="user_id" type="bigint">
+                <constraints primaryKey="true" nullable="false" referencedTableName="users" referencedColumnNames="id"
+                             foreignKeyName="user_id"/>
+            </column>
+            <column name="playlist_id" type="bigint">
+                <constraints primaryKey="true" nullable="false" referencedTableName="playlist" referencedColumnNames="id"
+                             foreignKeyName="playlist_id"/>
+            </column>
+        </createTable>
     </changeSet>
 
 </databaseChangeLog>

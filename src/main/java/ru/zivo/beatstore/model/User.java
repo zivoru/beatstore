@@ -88,11 +88,11 @@ public class User extends AbstractLongPersistable {
     @JsonIgnore
     @ManyToMany
     @JoinTable(
-            name = "favorite",
+            name = "favorite_beats",
             joinColumns = { @JoinColumn(name = "user_id") },
             inverseJoinColumns = { @JoinColumn(name = "beat_id")}
     )
-    private List<Beat> favorite = new ArrayList<>();
+    private List<Beat> favoriteBeats = new ArrayList<>();
 
     @JsonIgnore
     @ManyToMany
@@ -102,4 +102,13 @@ public class User extends AbstractLongPersistable {
             inverseJoinColumns = { @JoinColumn(name = "beat_id")}
     )
     private List<Beat> history = new ArrayList<>();
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = "favorite_playlists",
+            joinColumns = { @JoinColumn(name = "user_id") },
+            inverseJoinColumns = { @JoinColumn(name = "playlist_id")}
+    )
+    private List<Playlist> favoritePlaylists = new ArrayList<>();
 }
