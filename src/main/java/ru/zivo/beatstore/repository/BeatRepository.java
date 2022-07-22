@@ -10,5 +10,5 @@ import java.util.Set;
 @Repository
 public interface BeatRepository extends JpaRepository<Beat, Long> {
 
-    Set<Beat> findAllByTitleContainsIgnoreCase(String nameFilter);
+    List<Beat> findAllByTitleContainsIgnoreCase(String nameFilter);
 }

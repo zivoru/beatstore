@@ -50,7 +50,7 @@ public class UserController {
 
     @Operation(summary = "Подписка и отписка")
     @PostMapping("/subscribe/user/{userId}/channel/{channelId}")
-    public void subscribeAndUnsubscribe(@PathVariable Long userId, @PathVariable Long channelId) {
-        userService.subscribeAndUnsubscribe(userId, channelId);
+    public boolean subscribeAndUnsubscribe(@PathVariable Long userId, @PathVariable Long channelId) {
+        return userService.subscribeAndUnsubscribe(userId, channelId);
     }
 }

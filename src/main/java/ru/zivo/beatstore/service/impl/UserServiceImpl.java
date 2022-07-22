@@ -122,7 +122,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void subscribeAndUnsubscribe(Long userId, Long channelId) {
+    public boolean subscribeAndUnsubscribe(Long userId, Long channelId) {
         User user = findById(userId);
         User channel = findById(channelId);
 
@@ -130,11 +130,13 @@ public class UserServiceImpl implements UserService {
             if (subscription == channel) {
                 user.getSubscriptions().remove(subscription);
                 userRepository.save(user);
-                return;
+                return false;
             }
         }
 
         user.getSubscriptions().add(channel);
         userRepository.save(user);
+
+        return true;
     }
 }

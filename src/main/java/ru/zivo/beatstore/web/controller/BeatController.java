@@ -104,17 +104,18 @@ public class BeatController {
     @Operation(summary = "Получение топ чарт")
     @GetMapping("/top-charts")
     public ResponseEntity<Page<BeatDto>> getTopChart(@RequestParam(required = false) String nameFilter,
-                                                     @RequestParam(required = false) Long[] tags,
-                                                     @RequestParam(required = false) String[] genres,
+                                                     @RequestParam(required = false) Long tag,
+                                                     @RequestParam(required = false) String genre,
                                                      @RequestParam(required = false) Integer priceMin,
                                                      @RequestParam(required = false) Integer priceMax,
                                                      @RequestParam(required = false) String key,
+                                                     @RequestParam(required = false) String mood,
                                                      @RequestParam(required = false) Integer bpmMin,
                                                      @RequestParam(required = false) Integer bpmMax,
                                                      @RequestParam(required = false) Long userId,
                                                      Pageable pageable
     ) {
-        return ResponseEntity.ok(beatService.getTopChart(nameFilter, tags, genres, priceMin, priceMax, key, bpmMin, bpmMax, userId, pageable));
+        return ResponseEntity.ok(beatService.getTopChart(nameFilter, tag, genre, priceMin, priceMax, key, mood, bpmMin, bpmMax, userId, pageable));
     }
 
     @Operation(summary = "Бит по id")

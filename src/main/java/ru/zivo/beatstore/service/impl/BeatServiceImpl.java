@@ -23,6 +23,7 @@ import ru.zivo.beatstore.web.dto.BeatDto;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
@@ -280,11 +281,12 @@ public class BeatServiceImpl implements BeatService {
     @Override
     public Page<BeatDto> getTopChart(
             String nameFilter,
-            Long[] tags,
-            String[] genres,
+            Long tag,
+            String genre,
             Integer priceMin,
             Integer priceMax,
             String key,
+            String mood,
             Integer bpmMin,
             Integer bpmMax,
             Long userId,
@@ -300,77 +302,96 @@ public class BeatServiceImpl implements BeatService {
         List<Beat> publishedBeats = sortedPublishedBeats(beats);
 
         List<Beat> sortedBeats = publishedBeats.stream()
-                .sorted((o1, o2) -> Integer.compare(o2.getPlays(), o1.getPlays())).toList();
+                .sorted((o1, o2) -> Integer.compare(o2.getPlays(), o1.getPlays()))
+                .toList();
 
         if (nameFilter == null
-                && tags == null
-                && genres == null
-                && priceMin == null
-                && priceMax == null
-                && key == null
-                && bpmMin == null
-                && bpmMax == null
+            && tag == null
+            && genre == null
+            && priceMin == null
+            && priceMax == null
+            && key == null
+            && mood == null
+            && bpmMin == null
+            && bpmMax == null
         ) {
             List<BeatDto> beatDtoList = getDtoList(user, sortedBeats);
 
             return listToPage(pageable, beatDtoList);
         }
 
-        Set<Beat> filteredBeats = new LinkedHashSet<>();
+        List<Beat> filteredBeats = new ArrayList<>();
 
         if (nameFilter != null) {
             filteredBeats = beatRepository.findAllByTitleContainsIgnoreCase(nameFilter);
         }
 
         for (Beat sortedBeat : sortedBeats) {
-            if (tags != null) {
-                for (Long tag : tags) {
-                    List<Tag> beatTags = sortedBeat.getTags();
-                    for (Tag beatTag : beatTags) {
-                        if (Objects.equals(beatTag.getId(), tag)) {
-                            filteredBeats.add(sortedBeat);
-                        }
+
+            boolean add = true;
+
+            if (tag != null) {
+                boolean addTag = false;
+                List<Tag> beatTags = sortedBeat.getTags();
+                for (Tag beatTag : beatTags) {
+                    if (Objects.equals(beatTag.getId(), tag)) {
+                        addTag = true;
+                        break;
+                    }
+                }
+                if (!addTag) {
+                    add = false;
+                }
+            }
+
+            if (add) {
+                if (genre != null) {
+                    if (!sortedBeat.getGenre().name().equals(genre)) {
+                        add = false;
                     }
                 }
             }
 
-            if (genres != null) {
-                for (String genre : genres) {
-                    if (sortedBeat.getGenre().name().equals(genre)) {
-                        filteredBeats.add(sortedBeat);
+            if (add) {
+                if (priceMin != null && priceMax != null) {
+                    if (sortedBeat.getLicense().getPrice_mp3() < priceMin
+                        || sortedBeat.getLicense().getPrice_mp3() > priceMax
+                    ) {
+                        add = false;
                     }
                 }
             }
 
-            if (priceMin != null && priceMax != null) {
-                if (sortedBeat.getLicense().getPrice_mp3() >= priceMin
-                    &&
-                    sortedBeat.getLicense().getPrice_mp3() <= priceMax
-                ) {
-                    filteredBeats.add(sortedBeat);
+            if (add) {
+                if (key != null) {
+                    if (!sortedBeat.getKey().name().equals(key)) {
+                        add = false;
+                    }
                 }
             }
 
-
-            if (key != null) {
-                if (sortedBeat.getKey().name().equals(key)) {
-                    filteredBeats.add(sortedBeat);
+            if (add) {
+                if (mood != null) {
+                    if (!sortedBeat.getMood().name().equals(mood)) {
+                        add = false;
+                    }
                 }
             }
 
-            if (bpmMin != null && bpmMax != null) {
-                if (sortedBeat.getBpm() >= bpmMin
-                    &&
-                    sortedBeat.getBpm() <= bpmMax
-                ) {
-                    filteredBeats.add(sortedBeat);
+            if (add) {
+                if (bpmMin != null && bpmMax != null) {
+                    if (sortedBeat.getBpm() < bpmMin || sortedBeat.getBpm() > bpmMax) {
+                        add = false;
+                    }
                 }
+            }
+
+            if (add ) {
+                filteredBeats.add(sortedBeat);
             }
         }
 
-        List<Beat> collect = filteredBeats.stream().toList();
-
-        List<BeatDto> beatDtoList = getDtoList(user, collect);
+        List<BeatDto> beatDtoList = getDtoList(user, filteredBeats);
 
         return listToPage(pageable, beatDtoList);
     }

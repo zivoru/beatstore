@@ -40,11 +40,12 @@ public interface BeatService {
     void addToHistory(Long userId, Long beatId);
 
     Page<BeatDto> getTopChart(String nameFilter,
-                              Long[] tags,
-                              String[] genres,
+                              Long tag,
+                              String genre,
                               Integer priceMin,
                               Integer priceMax,
                               String key,
+                              String mood,
                               Integer bpmMin,
                               Integer bpmMax,
                               Long userId,

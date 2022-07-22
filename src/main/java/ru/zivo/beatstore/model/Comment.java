@@ -24,7 +24,7 @@ public class Comment extends AbstractLongPersistable {
     @JoinColumn(name = "beat_id")
     private Beat beat;
 
-    @JsonIgnore
+//    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;

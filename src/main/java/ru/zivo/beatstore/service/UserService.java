@@ -19,5 +19,5 @@ public interface UserService {
 
     DisplayUserDto getDisplayUserDto(String username, Long authUserId);
 
-    void subscribeAndUnsubscribe(Long userId, Long channelId);
+    boolean subscribeAndUnsubscribe(Long userId, Long channelId);
 }
