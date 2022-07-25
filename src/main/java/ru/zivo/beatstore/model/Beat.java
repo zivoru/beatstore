@@ -1,7 +1,6 @@
 package ru.zivo.beatstore.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +23,6 @@ import java.util.*;
 @Table(name = "beat")
 public class Beat extends AbstractLongPersistable {
 
-//    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
@@ -79,8 +77,8 @@ public class Beat extends AbstractLongPersistable {
     @ManyToMany
     @JoinTable(
             name = "beat_tags",
-            joinColumns = { @JoinColumn(name= "beat_id") },
-            inverseJoinColumns = { @JoinColumn(name = "tag_id")}
+            joinColumns = {@JoinColumn(name = "beat_id")},
+            inverseJoinColumns = {@JoinColumn(name = "tag_id")}
     )
     private List<Tag> tags = new ArrayList<>();
 
@@ -90,8 +88,8 @@ public class Beat extends AbstractLongPersistable {
     @ManyToMany
     @JoinTable(
             name = "favorite_beats",
-            joinColumns = { @JoinColumn(name = "beat_id") },
-            inverseJoinColumns = { @JoinColumn(name = "user_id")}
+            joinColumns = {@JoinColumn(name = "beat_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
     private Set<User> likes = new HashSet<>();
 

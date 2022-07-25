@@ -11,11 +11,16 @@ import ru.zivo.beatstore.web.dto.BeatDto;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 public interface BeatService {
 
+    Beat findById(Long id);
+
     Beat create(Long userId, Beat beat);
+
+    void update(Beat beat);
+
+    void delete(Long id);
 
     void uploadImage(Long beatId, MultipartFile image) throws IOException;
 
@@ -23,21 +28,21 @@ public interface BeatService {
 
     void addTags(Long beatId, List<Tag> tags);
 
-    Beat update(Beat beat);
-
-    Beat findById(Long id);
+    void addLicense(Long beatId, License license);
 
     void addPlay(Long id);
 
-    void delete(Long id);
+    void addToFavorite(Long beatId, Long userId);
 
-    List<Beat> getTrendBeats(Integer limit);
-
-    void addAndDeleteFavorite(Long beatId, Long userId);
+    void removeFromFavorite(Long beatId, Long userId);
 
     Cart addToCart(Long userId, Long beatId, String license);
 
+    void removeFromCart(Long userId, Long beatId);
+
     void addToHistory(Long userId, Long beatId);
+
+    List<Beat> getTrendBeats(Integer limit);
 
     Page<BeatDto> getTopChart(String nameFilter,
                               Long tag,
@@ -50,8 +55,6 @@ public interface BeatService {
                               Integer bpmMax,
                               Long userId,
                               Pageable pageable);
-
-    void addLicense(Long beatId, License license);
 
     Page<BeatDto> getFavoriteBeats(Long userId, Pageable pageable);
 

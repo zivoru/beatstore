@@ -36,10 +36,13 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public Profile updateProfile(Long userId, Profile profile) {
         User user = Users.getUser(userId);
+
         profile.setUser(user);
+
         Profile savedProfile = profileRepository.save(profile);
 
         user.setProfile(savedProfile);
+
         userRepository.save(user);
 
         return savedProfile;
@@ -53,7 +56,6 @@ public class ProfileServiceImpl implements ProfileService {
         Long userId = profile.getUser().getId();
 
         if (photo != null) {
-
             String pathname = uploadPath + "/user-" + userId + "/profile";
 
             List<File> files = List.of(
@@ -63,23 +65,17 @@ public class ProfileServiceImpl implements ProfileService {
             );
 
             for (File file : files) {
-                if (!file.exists()) {
-                    file.mkdir();
-                }
+                if (!file.exists()) System.out.println(file.mkdir());
             }
 
             String imageName = profile.getImageName();
 
-            if (imageName != null) {
-                File file = new File(pathname + "/" + imageName);
-                file.delete();
-            }
+            if (imageName != null) System.out.println(new File(pathname + "/" + imageName).delete());
 
             String resultFilename = UUID.randomUUID().toString();
-
             photo.transferTo(new File(pathname + "/" + resultFilename));
-
             profile.setImageName(resultFilename);
+
             profileRepository.save(profile);
         }
     }

@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 import ru.zivo.beatstore.model.Beat;
 
 import java.util.List;
-import java.util.Set;
 
 @Repository
 public interface BeatRepository extends JpaRepository<Beat, Long> {

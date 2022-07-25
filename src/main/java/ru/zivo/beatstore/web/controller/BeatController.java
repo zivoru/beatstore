@@ -16,7 +16,6 @@ import ru.zivo.beatstore.service.TagService;
 import ru.zivo.beatstore.web.dto.BeatDto;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @RequestMapping("api/v1/beats")
@@ -32,11 +31,24 @@ public class BeatController {
         this.tagService = tagService;
     }
 
+    @Operation(summary = "Бит по id")
+    @GetMapping("{id}")
+    public ResponseEntity<Beat> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(beatService.findById(id));
+    }
+
     @Operation(summary = "Создание бита")
     @PostMapping("{userId}")
     public ResponseEntity<Long> create(@PathVariable Long userId, @RequestBody Beat beat) {
         Beat savedBeat = beatService.create(userId, beat);
         return ResponseEntity.ok(savedBeat.getId());
+    }
+
+    @Operation(summary = "Изменение бита")
+    @PutMapping("{id}")
+    public void update(@PathVariable Long id, @RequestBody Beat beat) {
+        beat.setId(id);
+        beatService.update(beat);
     }
 
     @Operation(summary = "Загрузка фото бита")
@@ -65,24 +77,11 @@ public class BeatController {
                           @RequestParam String nameTag2,
                           @RequestParam String nameTag3
     ) {
-
-        Tag tag1 = new Tag();
-        Tag tag2 = new Tag();
-        Tag tag3 = new Tag();
-
-        tag1.setName(nameTag1);
-        tag2.setName(nameTag2);
-        tag3.setName(nameTag3);
-
-        Tag createdTag1 = tagService.create(tag1);
-        Tag createdTag2 = tagService.create(tag2);
-        Tag createdTag3 = tagService.create(tag3);
-
-        List<Tag> tags = new ArrayList<>();
-
-        tags.add(createdTag1);
-        tags.add(createdTag2);
-        tags.add(createdTag3);
+        List<Tag> tags = List.of(
+                tagService.create(Tag.builder().name(nameTag1).build()),
+                tagService.create(Tag.builder().name(nameTag2).build()),
+                tagService.create(Tag.builder().name(nameTag3).build())
+        );
 
         beatService.addTags(beatId, tags);
     }
@@ -96,9 +95,7 @@ public class BeatController {
     @Operation(summary = "Получение трендовых битов")
     @GetMapping("/trend-beats")
     public ResponseEntity<List<Beat>> getTrendBeats(@RequestParam Integer limit) {
-        List<Beat> beats = beatService.getTrendBeats(limit);
-
-        return ResponseEntity.ok(beats);
+        return ResponseEntity.ok(beatService.getTrendBeats(limit));
     }
 
     @Operation(summary = "Получение топ чарт")
@@ -118,22 +115,22 @@ public class BeatController {
         return ResponseEntity.ok(beatService.getTopChart(nameFilter, tag, genre, priceMin, priceMax, key, mood, bpmMin, bpmMax, userId, pageable));
     }
 
-    @Operation(summary = "Бит по id")
-    @GetMapping("{id}")
-    public ResponseEntity<Beat> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(beatService.findById(id));
-    }
-
     @Operation(summary = "Добавление прослушивания бита")
     @PostMapping("plays/{beatId}")
     public void create(@PathVariable Long beatId) {
         beatService.addPlay(beatId);
     }
 
-    @Operation(summary = "Добавление и удаление из избранного")
-    @PostMapping("favorite/{beatId}/{userId}")
-    public void addAndDeleteFavorite(@PathVariable Long beatId, @PathVariable Long userId) {
-        beatService.addAndDeleteFavorite(beatId, userId);
+    @Operation(summary = "Добавление в избранное")
+    @PostMapping("addToFavorite/{beatId}/{userId}")
+    public void addToFavorite(@PathVariable Long beatId, @PathVariable Long userId) {
+        beatService.addToFavorite(beatId, userId);
+    }
+
+    @Operation(summary = "Удаление из избранного")
+    @PostMapping("removeFromFavorite/{beatId}/{userId}")
+    public void removeFromFavorite(@PathVariable Long beatId, @PathVariable Long userId) {
+        beatService.removeFromFavorite(beatId, userId);
     }
 
     @Operation(summary = "Добавление в корзину")
@@ -142,6 +139,12 @@ public class BeatController {
                                           @PathVariable Long beatId,
                                           @PathVariable String license) {
         return ResponseEntity.ok(beatService.addToCart(userId, beatId, license));
+    }
+
+    @Operation(summary = "Удаление из корзины")
+    @PostMapping("removeFromCart/user/{userId}/beat/{beatId}")
+    public void removeFromCart(@PathVariable Long userId, @PathVariable Long beatId) {
+        beatService.removeFromCart(userId, beatId);
     }
 
     @Operation(summary = "Добавление в историю")
@@ -158,13 +161,13 @@ public class BeatController {
 
     @Operation(summary = "Избранные биты пользователя по его id")
     @GetMapping("/favorite/{userId}")
-    public ResponseEntity<Page<BeatDto>> getFavorite(@PathVariable Long userId, Pageable pageable)  {
+    public ResponseEntity<Page<BeatDto>> getFavorite(@PathVariable Long userId, Pageable pageable) {
         return ResponseEntity.ok(beatService.getFavoriteBeats(userId, pageable));
     }
 
     @Operation(summary = "История битов пользователя по его id")
     @GetMapping("/history/{userId}")
-    public ResponseEntity<Page<BeatDto>> getHistory(@PathVariable Long userId, Pageable pageable)  {
+    public ResponseEntity<Page<BeatDto>> getHistory(@PathVariable Long userId, Pageable pageable) {
         return ResponseEntity.ok(beatService.getHistoryBeats(userId, pageable));
     }
 
@@ -172,7 +175,7 @@ public class BeatController {
     @GetMapping("/user/{userId}")
     public ResponseEntity<Page<BeatDto>> getBeats(@PathVariable Long userId,
                                                   @RequestParam(required = false) Long authUserId,
-                                                  Pageable pageable)  {
+                                                  Pageable pageable) {
         return ResponseEntity.ok(beatService.getBeats(userId, authUserId, pageable));
     }
 }

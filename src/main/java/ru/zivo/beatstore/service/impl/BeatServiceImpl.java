@@ -23,7 +23,6 @@ import ru.zivo.beatstore.web.dto.BeatDto;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,80 +48,70 @@ public class BeatServiceImpl implements BeatService {
     }
 
     @Override
-    public Beat create(Long userId, Beat beat) {
-        User user = Users.getUser(userId);
+    public Beat findById(Long id) {
+        return beatRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Бит с id = %d не найден".formatted(id)));
+    }
 
-        beat.setUser(user);
+    @Override
+    public Beat create(Long userId, Beat beat) {
+        beat.setUser(Users.getUser(userId));
 
         Beat savedBeat = beatRepository.save(beat);
 
         Audio audio = new Audio();
         audio.setBeat(savedBeat);
         audioRepository.save(audio);
-        beat.setAudio(audio);
 
-        return beatRepository.save(beat);
+        return savedBeat;
+    }
+
+    @Override
+    public void update(Beat beat) {
+        beatRepository.save(beat);
+    }
+
+    @Override
+    public void delete(Long id) {
+        Beat beat = findById(id);
+        String pathname = uploadPath + "/user-" + beat.getUser().getId() + "/beats/beat-" + id;
+
+        DeleteAudioFiles.delete(beat, pathname);
+        System.out.println(new File(pathname).delete());
+        beatRepository.delete(beat);
     }
 
     @Override
     public void uploadImage(Long beatId, MultipartFile image) throws IOException {
         Beat beat = findById(beatId);
-
-        String pathname = uploadPath + "/user-" + beat.getUser().getId() + "/beats" + "/beat-" + beatId;
+        String pathname = uploadPath + "/user-" + beat.getUser().getId() + "/beats/beat-" + beatId;
 
         makeDirectory(beat, pathname);
 
         String imageName = beat.getImageName();
-
         if (imageName != null) {
-            File file = new File(pathname + "/" + imageName);
-            file.delete();
+            System.out.println(new File(pathname + "/" + imageName).delete());
         }
 
-        String savedImageName = saveFile(image, pathname);
-
-        beat.setImageName(savedImageName);
-
+        beat.setImageName(saveFile(image, pathname));
         beatRepository.save(beat);
-    }
-
-    private void makeDirectory(Beat beat, String pathname) {
-        List<File> files = List.of(
-                new File(uploadPath),
-                new File(uploadPath + "/user-" + beat.getUser().getId()),
-                new File(uploadPath + "/user-" + beat.getUser().getId() + "/beats"),
-                new File(pathname)
-        );
-
-        for (File file : files) {
-            if (!file.exists()) {
-                file.mkdir();
-            }
-        }
     }
 
     @Override
     public void uploadAudio(Long beatId, MultipartFile mp3, MultipartFile wav, MultipartFile zip) throws IOException {
         Beat beat = findById(beatId);
-
-        String pathname = uploadPath + "/user-" + beat.getUser().getId() + "/beats" + "/beat-" + beatId;
+        String pathname = uploadPath + "/user-" + beat.getUser().getId() + "/beats/beat-" + beatId;
+        Audio audio = beat.getAudio();
 
         makeDirectory(beat, pathname);
 
-        Audio audio = beat.getAudio();
-
         DeleteAudioFiles.delete(beat, pathname);
 
-        String mp3Name = saveFile(mp3, pathname);
-        String wavName = saveFile(wav, pathname);
-        String zipName = saveFile(zip, pathname);
-
-        audio.setMp3Name(mp3Name);
-        audio.setWavName(wavName);
-        audio.setTrackStemsName(zipName);
+        audio.setMp3Name(saveFile(mp3, pathname));
+        audio.setWavName(saveFile(wav, pathname));
+        audio.setTrackStemsName(saveFile(zip, pathname));
 
         audioRepository.save(audio);
-
         beatRepository.save(beat);
     }
 
@@ -142,17 +131,6 @@ public class BeatServiceImpl implements BeatService {
     }
 
     @Override
-    public Beat update(Beat beat) {
-        return null;
-    }
-
-    @Override
-    public Beat findById(Long id) {
-        return beatRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Бит с id = %d не найден".formatted(id)));
-    }
-
-    @Override
     public void addPlay(Long id) {
         Beat beat = findById(id);
         beat.setPlays(beat.getPlays() + 1);
@@ -160,65 +138,17 @@ public class BeatServiceImpl implements BeatService {
     }
 
     @Override
-    public void delete(Long id) {
-        Beat beat = findById(id);
-
-        String pathname = uploadPath + "/user-" + beat.getUser().getId() + "/beats" + "/beat-" + id;
-
-        DeleteAudioFiles.delete(beat, pathname);
-
-        File file = new File(pathname);
-        file.delete();
-
-        beatRepository.delete(beat);
-    }
-
-    @Override
-    public List<Beat> getTrendBeats(Integer limit) {
-        List<Beat> beats = beatRepository.findAll();
-
-        List<Beat> publishedBeats = new ArrayList<>();
-
-        for (Beat beat : beats) {
-            if (beat.getStatus() == BeatStatus.PUBLISHED) {
-                publishedBeats.add(beat);
-            }
-        }
-
-        return publishedBeats.stream()
-                .sorted((o1, o2) -> Integer.compare(o2.getPlays(), o1.getPlays()))
-                .limit(limit)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public void addAndDeleteFavorite(Long beatId, Long userId) {
+    public void addToFavorite(Long beatId, Long userId) {
         User user = Users.getUser(userId);
-        Beat byId = findById(beatId);
-
-        for (Beat beat : user.getFavoriteBeats()) {
-            if (beat == byId) {
-                user.getFavoriteBeats().remove(beat);
-                userRepository.save(user);
-                return;
-            }
-        }
-
-        user.getFavoriteBeats().add(byId);
-
+        user.getFavoriteBeats().add(findById(beatId));
         userRepository.save(user);
     }
 
-    private String saveFile(MultipartFile file, String pathname) throws IOException {
-        if (file == null) {
-            return null;
-        }
-
-        String resultFilename = UUID.randomUUID().toString();
-
-        file.transferTo(new File(pathname + "/" + resultFilename));
-
-        return resultFilename;
+    @Override
+    public void removeFromFavorite(Long beatId, Long userId) {
+        User user = Users.getUser(userId);
+        user.getFavoriteBeats().remove(findById(beatId));
+        userRepository.save(user);
     }
 
     @Override
@@ -227,7 +157,6 @@ public class BeatServiceImpl implements BeatService {
         Beat beat = findById(beatId);
 
         if (!cartRepository.existsByBeatAndUserAndLicensing(beat, user, Licensing.valueOf(license))) {
-
             Optional<Cart> cartRepositoryByBeatAndUser = cartRepository.findByBeatAndUser(beat, user);
             if (cartRepositoryByBeatAndUser.isEmpty()) {
                 Cart cart = Cart.builder()
@@ -244,9 +173,11 @@ public class BeatServiceImpl implements BeatService {
 
                 return savedCart;
             } else {
-                cartRepositoryByBeatAndUser.get().setLicensing(Licensing.valueOf(license));
+                Cart cart = cartRepositoryByBeatAndUser.get();
 
-                Cart savedCart = cartRepository.save(cartRepositoryByBeatAndUser.get());
+                cart.setLicensing(Licensing.valueOf(license));
+
+                Cart savedCart = cartRepository.save(cart);
 
                 user.getCart().add(savedCart);
 
@@ -254,198 +185,138 @@ public class BeatServiceImpl implements BeatService {
 
                 return savedCart;
             }
-
-
         }
         return null;
+    }
+
+    @Override
+    public void removeFromCart(Long userId, Long beatId) {
+        User user = Users.getUser(userId);
+        Beat beat = findById(beatId);
+        for (Cart cart : user.getCart()) {
+            if (cart.getBeat() == beat) {
+                user.getCart().remove(cart);
+                cartRepository.delete(cart);
+                return;
+            }
+        }
     }
 
     @Override
     public void addToHistory(Long userId, Long beatId) {
         User user = Users.getUser(userId);
         Beat beat = findById(beatId);
-
         List<Beat> history = user.getHistory();
 
-        for (Beat historyBeat : history) {
-            if (historyBeat == beat) {
-                return;
-            }
-        }
+        if (history.stream().anyMatch(b -> b == beat)) return;
 
         history.add(beat);
-
         userRepository.save(user);
     }
 
     @Override
-    public Page<BeatDto> getTopChart(
-            String nameFilter,
-            Long tag,
-            String genre,
-            Integer priceMin,
-            Integer priceMax,
-            String key,
-            String mood,
-            Integer bpmMin,
-            Integer bpmMax,
-            Long userId,
-            Pageable pageable
-    ) {
-
-        List<Beat> beats = beatRepository.findAll();
-        User user = null;
-        if (userId != null) {
-            user = Users.getUser(userId);
-        }
-
-        List<Beat> publishedBeats = sortedPublishedBeats(beats);
-
-        List<Beat> sortedBeats = publishedBeats.stream()
+    public List<Beat> getTrendBeats(Integer limit) {
+        return sortedPublishedBeats(beatRepository.findAll())
+                .stream()
                 .sorted((o1, o2) -> Integer.compare(o2.getPlays(), o1.getPlays()))
-                .toList();
-
-        if (nameFilter == null
-            && tag == null
-            && genre == null
-            && priceMin == null
-            && priceMax == null
-            && key == null
-            && mood == null
-            && bpmMin == null
-            && bpmMax == null
-        ) {
-            List<BeatDto> beatDtoList = getDtoList(user, sortedBeats);
-
-            return listToPage(pageable, beatDtoList);
-        }
-
-        List<Beat> filteredBeats = new ArrayList<>();
-
-        if (nameFilter != null) {
-            filteredBeats = beatRepository.findAllByTitleContainsIgnoreCase(nameFilter);
-        }
-
-        for (Beat sortedBeat : sortedBeats) {
-
-            boolean add = true;
-
-            if (tag != null) {
-                boolean addTag = false;
-                List<Tag> beatTags = sortedBeat.getTags();
-                for (Tag beatTag : beatTags) {
-                    if (Objects.equals(beatTag.getId(), tag)) {
-                        addTag = true;
-                        break;
-                    }
-                }
-                if (!addTag) {
-                    add = false;
-                }
-            }
-
-            if (add) {
-                if (genre != null) {
-                    if (!sortedBeat.getGenre().name().equals(genre)) {
-                        add = false;
-                    }
-                }
-            }
-
-            if (add) {
-                if (priceMin != null && priceMax != null) {
-                    if (sortedBeat.getLicense().getPrice_mp3() < priceMin
-                        || sortedBeat.getLicense().getPrice_mp3() > priceMax
-                    ) {
-                        add = false;
-                    }
-                }
-            }
-
-            if (add) {
-                if (key != null) {
-                    if (!sortedBeat.getKey().name().equals(key)) {
-                        add = false;
-                    }
-                }
-            }
-
-            if (add) {
-                if (mood != null) {
-                    if (!sortedBeat.getMood().name().equals(mood)) {
-                        add = false;
-                    }
-                }
-            }
-
-            if (add) {
-                if (bpmMin != null && bpmMax != null) {
-                    if (sortedBeat.getBpm() < bpmMin || sortedBeat.getBpm() > bpmMax) {
-                        add = false;
-                    }
-                }
-            }
-
-            if (add ) {
-                filteredBeats.add(sortedBeat);
-            }
-        }
-
-        List<BeatDto> beatDtoList = getDtoList(user, filteredBeats);
-
-        return listToPage(pageable, beatDtoList);
+                .limit(limit)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Page<BeatDto> getHistoryBeats(Long userId, Pageable pageable) {
-        User user = Users.getUser(userId);
+    public Page<BeatDto> getTopChart(String nameFilter, Long tag, String genre, Integer priceMin,
+                                     Integer priceMax, String key, String mood, Integer bpmMin,
+                                     Integer bpmMax, Long userId, Pageable pageable
+    ) {
+        User user = userId != null ? Users.getUser(userId) : null;
 
-        List<Beat> history = user.getHistory();
+        List<Beat> sortedBeats = sortedPublishedBeats(beatRepository.findAll())
+                .stream()
+                .sorted((o1, o2) -> Integer.compare(o2.getPlays(), o1.getPlays()))
+                .toList();
 
-        List<Beat> publishedBeats = sortedPublishedBeats(history);
+        if (nameFilter == null && tag == null && genre == null
+            && priceMin == null && priceMax == null && key == null
+            && mood == null && bpmMin == null && bpmMax == null
+        ) return listToPage(pageable, mapToDtoList(user, sortedBeats));
 
-        List<BeatDto> dtoList = getDtoList(user, publishedBeats);
+        List<Beat> filteredBeats = nameFilter != null
+                ? beatRepository.findAllByTitleContainsIgnoreCase(nameFilter)
+                : new ArrayList<>();
 
-        return listToPage(pageable, dtoList);
+        for (Beat sortedBeat : sortedBeats) {
+            boolean add = tag == null || sortedBeat.getTags()
+                    .stream()
+                    .anyMatch(tag1 -> Objects.equals(tag1.getId(), tag));
+
+            if (add && genre != null && !sortedBeat.getGenre().name().equals(genre)) add = false;
+
+            if (add && priceMin != null && priceMax != null
+                && (sortedBeat.getLicense().getPrice_mp3() < priceMin
+                    || sortedBeat.getLicense().getPrice_mp3() > priceMax)) add = false;
+
+            if (add && key != null && !sortedBeat.getKey().name().equals(key)) add = false;
+
+            if (add && mood != null && !sortedBeat.getMood().name().equals(mood)) add = false;
+
+            if (add && bpmMin != null && bpmMax != null
+                && (sortedBeat.getBpm() < bpmMin || sortedBeat.getBpm() > bpmMax)) add = false;
+
+            if (add) filteredBeats.add(sortedBeat);
+        }
+
+        return listToPage(pageable, mapToDtoList(user, filteredBeats));
     }
 
     @Override
     public Page<BeatDto> getFavoriteBeats(Long userId, Pageable pageable) {
         User user = Users.getUser(userId);
 
-        List<Beat> history = user.getFavoriteBeats();
+        return listToPage(pageable, mapToDtoList(user, sortedPublishedBeats(user.getFavoriteBeats())));
+    }
 
-        List<Beat> publishedBeats = sortedPublishedBeats(history);
+    @Override
+    public Page<BeatDto> getHistoryBeats(Long userId, Pageable pageable) {
+        User user = Users.getUser(userId);
 
-        List<BeatDto> dtoList = getDtoList(user, publishedBeats);
-
-        return listToPage(pageable, dtoList);
+        return listToPage(pageable, mapToDtoList(user, sortedPublishedBeats(user.getHistory())));
     }
 
     @Override
     public Page<BeatDto> getBeats(Long userId, Long authUserId, Pageable pageable) {
-        List<Beat> history = Users.getUser(userId).getBeats();
+        User authUser = authUserId != null ? Users.getUser(authUserId) : null;
 
-        List<Beat> publishedBeats = sortedPublishedBeats(history);
+        return listToPage(pageable, mapToDtoList(authUser, sortedPublishedBeats(Users.getUser(userId).getBeats())));
+    }
 
-        User authUser = null;
+    /* not Override */
 
-        if (authUserId != null) {
-            authUser = Users.getUser(authUserId);
+    private void makeDirectory(Beat beat, String pathname) {
+        List<File> files = List.of(
+                new File(uploadPath),
+                new File(uploadPath + "/user-" + beat.getUser().getId()),
+                new File(uploadPath + "/user-" + beat.getUser().getId() + "/beats"),
+                new File(pathname)
+        );
+
+        for (File file : files) {
+            if (!file.exists()) System.out.println(file.mkdir());
         }
+    }
 
-        List<BeatDto> dtoList = getDtoList(authUser, publishedBeats);
+    private String saveFile(MultipartFile file, String pathname) throws IOException {
+        if (file == null) return null;
 
-        return listToPage(pageable, dtoList);
+        String resultFilename = UUID.randomUUID().toString();
+        file.transferTo(new File(pathname + "/" + resultFilename));
+        return resultFilename;
     }
 
     public List<Beat> sortedPublishedBeats(List<Beat> beats) {
         List<Beat> publishedBeats = new ArrayList<>();
 
         for (Beat beat : beats) {
-            if (beat.getStatus() == BeatStatus.PUBLISHED) {
-                publishedBeats.add(beat);
-            }
+            if (beat.getStatus() == BeatStatus.PUBLISHED) publishedBeats.add(beat);
         }
 
         return publishedBeats;
@@ -457,22 +328,18 @@ public class BeatServiceImpl implements BeatService {
         return new PageImpl<>(beatDtoList.subList(start, end), pageable, beatDtoList.size());
     }
 
-    private List<BeatDto> getDtoList(User user, List<Beat> sortedBeats) {
+    private List<BeatDto> mapToDtoList(User user, List<Beat> sortedBeats) {
         List<BeatDto> beatDtoList = new ArrayList<>();
 
         for (Beat sortedBeat : sortedBeats) {
-
             BeatDto beatDto = BeatDto.builder()
                     .beat(sortedBeat)
                     .addedToCart(false)
                     .build();
 
             if (user != null) {
-                for (Cart cart : user.getCart()) {
-                    if (cart.getBeat() == sortedBeat) {
-                        beatDto.setAddedToCart(true);
-                    }
-                }
+                if (user.getCart().stream()
+                        .anyMatch(c -> c.getBeat() == sortedBeat)) beatDto.setAddedToCart(true);
             }
 
             beatDtoList.add(beatDto);

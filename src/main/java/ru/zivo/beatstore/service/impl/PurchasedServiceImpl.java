@@ -5,7 +5,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.zivo.beatstore.model.Purchased;
-import ru.zivo.beatstore.model.User;
 import ru.zivo.beatstore.service.PurchasedService;
 import ru.zivo.beatstore.service.impl.common.Users;
 
@@ -16,9 +15,7 @@ public class PurchasedServiceImpl implements PurchasedService {
 
     @Override
     public Page<Purchased> getPurchasedBeats(Long userId, Pageable pageable) {
-        User user = Users.getUser(userId);
-
-        List<Purchased> purchased = user.getPurchased();
+        List<Purchased> purchased = Users.getUser(userId).getPurchased();
 
         final int start = (int) pageable.getOffset();
         final int end = Math.min((start + pageable.getPageSize()), purchased.size());

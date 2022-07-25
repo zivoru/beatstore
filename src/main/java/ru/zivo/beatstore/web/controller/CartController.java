@@ -27,8 +27,7 @@ public class CartController {
 
     @Operation(summary = "Корзина по id пользователя")
     @GetMapping("/{userId}")
-    public ResponseEntity<List<CartDto>> findByUserId(@PathVariable Long userId)  {
-
+    public ResponseEntity<List<CartDto>> findByUserId(@PathVariable Long userId) {
         return ResponseEntity.ok(cartService.findByUserId(userId));
     }
 }

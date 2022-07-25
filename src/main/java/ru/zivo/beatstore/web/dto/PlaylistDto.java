@@ -5,6 +5,7 @@ import lombok.Data;
 import ru.zivo.beatstore.model.Beat;
 import ru.zivo.beatstore.model.User;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -16,7 +17,7 @@ public class PlaylistDto {
     private String description;
     private Boolean visibility;
     private User user;
-    private Set<Beat> beats;
+    private List<Beat> beats;
     private Set<User> likes;
     private String beatCount;
     private String likesCount;

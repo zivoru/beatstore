@@ -33,18 +33,15 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<Comment> findByBeatId(Long beatId) {
-        Beat beat = getBeat(beatId);
-        List<Comment> comments = beat.getComments();
+        List<Comment> comments = getBeat(beatId).getComments();
         Collections.reverse(comments);
         return comments;
     }
 
     @Override
     public Comment addComment(Long beatId, Long userId, Comment comment) {
-        Beat beat = getBeat(beatId);
-
         comment.setUser(Users.getUser(userId));
-        comment.setBeat(beat);
+        comment.setBeat(getBeat(beatId));
 
         return commentRepository.save(comment);
     }

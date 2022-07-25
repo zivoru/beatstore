@@ -1,10 +1,7 @@
 package ru.zivo.beatstore.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import ru.zivo.beatstore.model.common.AbstractLongPersistable;
 
 import javax.persistence.*;
@@ -16,6 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @Entity
 @Table(name = "tag")
 public class Tag extends AbstractLongPersistable {
@@ -28,8 +26,8 @@ public class Tag extends AbstractLongPersistable {
     @ManyToMany
     @JoinTable(
             name = "beat_tags",
-            joinColumns = { @JoinColumn(name= "tag_id") },
-            inverseJoinColumns = { @JoinColumn(name = "beat_id")}
+            joinColumns = {@JoinColumn(name = "tag_id")},
+            inverseJoinColumns = {@JoinColumn(name = "beat_id")}
     )
     private Set<Beat> beats = new LinkedHashSet<>();
 }

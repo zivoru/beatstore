@@ -24,17 +24,14 @@ public class TagServiceImpl implements TagService {
     @Override
     public Tag create(Tag tag) {
         Tag tagByRepository = tagRepository.findByNameIgnoreCase(tag.getName());
-        if (tagByRepository != null) {
-            return tagByRepository;
-        }
-        return tagRepository.save(tag);
+
+        return tagByRepository != null ? tagByRepository : tagRepository.save(tag);
     }
 
     @Override
     public List<Tag> getTrendTags(Integer limit) {
-        List<Tag> tags = tagRepository.findAll();
-
-        return tags.stream()
+        return tagRepository.findAll()
+                .stream()
                 .sorted((o1, o2) -> Integer.compare(o2.getBeats().size(), o1.getBeats().size()))
                 .limit(limit)
                 .collect(Collectors.toList());

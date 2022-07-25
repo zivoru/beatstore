@@ -28,16 +28,12 @@ public class TagController {
     @Operation(summary = "Получение трендовых тегов")
     @GetMapping("/trend-tags")
     public ResponseEntity<List<Tag>> getTrendTags(@RequestParam Integer limit) {
-        List<Tag> tags = tagService.getTrendTags(limit);
-
-        return ResponseEntity.ok(tags);
+        return ResponseEntity.ok(tagService.getTrendTags(limit));
     }
 
     @Operation(summary = "Получение тегов")
     @GetMapping
     public ResponseEntity<Page<Tag>> getTrendTags(@RequestParam(required = false) String nameFilter, Pageable pageable) {
-        Page<Tag> tags = tagService.getPageTags(nameFilter, pageable);
-
-        return ResponseEntity.ok(tags);
+        return ResponseEntity.ok(tagService.getPageTags(nameFilter, pageable));
     }
 }

@@ -2,9 +2,8 @@ package ru.zivo.beatstore.service.impl;
 
 import org.springframework.stereotype.Service;
 import ru.zivo.beatstore.model.Cart;
-import ru.zivo.beatstore.model.User;
+import ru.zivo.beatstore.model.License;
 import ru.zivo.beatstore.model.enums.BeatStatus;
-import ru.zivo.beatstore.model.enums.Licensing;
 import ru.zivo.beatstore.service.CartService;
 import ru.zivo.beatstore.service.impl.common.Users;
 import ru.zivo.beatstore.web.dto.CartDto;
@@ -17,16 +16,10 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public List<CartDto> findByUserId(Long userId) {
-        User user = Users.getUser(userId);
-
-        List<Cart> carts = user.getCart();
-
         List<Cart> publishedBeats = new ArrayList<>();
 
-        for (Cart cart : carts) {
-            if (cart.getBeat().getStatus() == BeatStatus.PUBLISHED) {
-                publishedBeats.add(cart);
-            }
+        for (Cart cart : Users.getUser(userId).getCart()) {
+            if (cart.getBeat().getStatus() == BeatStatus.PUBLISHED) publishedBeats.add(cart);
         }
 
         List<CartDto> cartDtoList = new ArrayList<>();
@@ -37,21 +30,15 @@ public class CartServiceImpl implements CartService {
                     .beat(cart.getBeat())
                     .build();
 
-            if (cart.getLicensing() == Licensing.MP3) {
-                cartDto.setPrice(cart.getBeat().getLicense().getPrice_mp3());
-            }
+            final License license = cart.getBeat().getLicense();
+            int price = switch (cart.getLicensing()) {
+                case MP3 -> license.getPrice_mp3();
+                case WAV -> license.getPrice_wav();
+                case UNLIMITED -> license.getPrice_unlimited();
+                case EXCLUSIVE -> license.getPrice_exclusive();
+            };
 
-            if (cart.getLicensing() == Licensing.WAV) {
-                cartDto.setPrice(cart.getBeat().getLicense().getPrice_wav());
-            }
-
-            if (cart.getLicensing() == Licensing.UNLIMITED) {
-                cartDto.setPrice(cart.getBeat().getLicense().getPrice_unlimited());
-            }
-
-            if (cart.getLicensing() == Licensing.EXCLUSIVE) {
-                cartDto.setPrice(cart.getBeat().getLicense().getPrice_exclusive());
-            }
+            cartDto.setPrice(price);
 
             cartDtoList.add(cartDto);
         }

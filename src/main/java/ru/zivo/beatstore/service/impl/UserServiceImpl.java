@@ -47,7 +47,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(Long id) {
-
         User user = findById(id);
 
         List<Beat> beats = user.getBeats();
@@ -58,24 +57,20 @@ public class UserServiceImpl implements UserService {
 
                 DeleteAudioFiles.delete(beat, pathname);
 
-                File file = new File(pathname);
-                file.delete();
+                System.out.println(new File(pathname).delete());
             }
         }
-        File file = new File(uploadPath + "/user-" + id + "/beats");
-        file.delete();
 
-        File file1 = new File(uploadPath + "/user-" + id);
-        file1.delete();
+        System.out.println(new File(uploadPath + "/user-" + id + "/beats").delete());
+        System.out.println(new File(uploadPath + "/user-" + id).delete());
 
         userRepository.delete(user);
     }
 
     @Override
     public List<User> getRecommended(Integer limit) {
-        List<User> users = userRepository.findAll();
-
-        return users.stream()
+        return userRepository.findAll()
+                .stream()
                 .sorted((o1, o2) -> Integer.compare(o2.getSubscribers().size(), o1.getSubscribers().size()))
                 .limit(limit)
                 .collect(Collectors.toList());
@@ -87,12 +82,6 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("Пользователь с username = %s не найден".formatted(username)));
 
-        int amountPlays = 0;
-
-        for (Beat beat : user.getBeats()) {
-            amountPlays = amountPlays + beat.getPlays();
-        }
-
         DisplayUserDto displayUserDto = DisplayUserDto.builder()
                 .id(user.getId())
                 .username(user.getUsername())
@@ -101,22 +90,16 @@ public class UserServiceImpl implements UserService {
                 .social(user.getSocial())
                 .amountSubscribers(user.getSubscribers().size())
                 .amountBeats(user.getBeats().size())
-                .amountPlays(amountPlays)
+                .amountPlays(user.getBeats().stream()
+                        .mapToInt(Beat::getPlays)
+                        .sum())
                 .subscriptionStatus(false)
                 .build();
 
-        if (authUserId == null) {
-            return displayUserDto;
-        }
+        if (authUserId == null) return displayUserDto;
 
-        User authUser = findById(authUserId);
-
-        for (User u : authUser.getSubscriptions()) {
-            if (u == user) {
-                displayUserDto.setSubscriptionStatus(true);
-                break;
-            }
-        }
+        if (findById(authUserId).getSubscriptions().stream()
+                .anyMatch(u -> u == user)) displayUserDto.setSubscriptionStatus(true);
 
         return displayUserDto;
     }

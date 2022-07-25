@@ -32,39 +32,30 @@ public class AudioController {
 
     @GetMapping(value = "/downloadMp3/{beatId}", produces = "audio/mpeg")
     public byte[] downloadMp3(@PathVariable Long beatId, HttpServletResponse response) throws IOException {
-        return returnBytes(beatId, response, "mp3");
+        return returnBytes(beatId, response, "mp3", "audio/mpeg");
     }
 
     @GetMapping(value = "/downloadWav/{beatId}", produces = "audio/wav")
     public byte[] downloadWav(@PathVariable Long beatId, HttpServletResponse response) throws IOException {
-        return returnBytes(beatId, response, "wav");
+        return returnBytes(beatId, response, "wav", "audio/wav");
     }
 
     @GetMapping(value = "/downloadZip/{beatId}", produces = "application/zip")
     public byte[] downloadZip(@PathVariable Long beatId, HttpServletResponse response) throws IOException {
-        return returnBytes(beatId, response, "zip");
+        return returnBytes(beatId, response, "zip", "application/zip");
     }
 
-    public byte[] returnBytes(Long beatId, HttpServletResponse response, String type) throws IOException {
+    public byte[] returnBytes(Long beatId, HttpServletResponse response, String type, String contentType) throws IOException {
         Beat beat = beatService.findById(beatId);
+        String path = uploadPath + "/user-" + beat.getUser().getId() + "/beats/beat-" + beat.getId() + "/";
+        File file = switch (type) {
+            case "mp3" -> new File(path + beat.getAudio().getMp3Name());
+            case "wav" -> new File(path + beat.getAudio().getWavName());
+            case "zip" -> new File(path + beat.getAudio().getTrackStemsName());
+            default -> null;
+        };
 
-        File file = null;
-
-        if (type.equals("mp3")) {
-            file = new File(uploadPath + "/user-" + beat.getUser().getId() + "/beats/beat-" + beat.getId() + "/" + beat.getAudio().getMp3Name());
-            response.setContentType("audio/mpeg");
-        }
-
-        if (type.equals("wav")) {
-            file = new File(uploadPath + "/user-" + beat.getUser().getId() + "/beats/beat-" + beat.getId() + "/" + beat.getAudio().getWavName());
-            response.setContentType("audio/wav");
-        }
-
-        if (type.equals("zip")) {
-            file = new File(uploadPath + "/user-" + beat.getUser().getId() + "/beats/beat-" + beat.getId() + "/" + beat.getAudio().getTrackStemsName());
-            response.setContentType("application/zip");
-        }
-
+        response.setContentType(contentType);
         response.setStatus(HttpServletResponse.SC_OK);
         response.addHeader("Content-Disposition", "attachment");
 

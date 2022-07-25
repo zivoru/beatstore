@@ -25,7 +25,6 @@ public class Cart extends AbstractLongPersistable {
     @JoinColumn(name = "user_id")
     private User user;
 
-//    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "beat_id")
     private Beat beat;

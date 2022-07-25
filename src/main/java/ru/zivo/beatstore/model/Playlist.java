@@ -1,12 +1,17 @@
 package ru.zivo.beatstore.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.zivo.beatstore.model.common.AbstractLongPersistable;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -36,16 +41,16 @@ public class Playlist extends AbstractLongPersistable {
     @ManyToMany
     @JoinTable(
             name = "playlist_beat",
-            joinColumns = { @JoinColumn(name = "playlists_id") },
-            inverseJoinColumns = { @JoinColumn(name = "beat_id")}
+            joinColumns = {@JoinColumn(name = "playlists_id")},
+            inverseJoinColumns = {@JoinColumn(name = "beat_id")}
     )
-    private Set<Beat> beats = new LinkedHashSet<>();
+    private List<Beat> beats = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
             name = "favorite_playlists",
-            joinColumns = { @JoinColumn(name = "playlist_id") },
-            inverseJoinColumns = { @JoinColumn(name = "user_id")}
+            joinColumns = {@JoinColumn(name = "playlist_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
     private Set<User> likes = new HashSet<>();
 }

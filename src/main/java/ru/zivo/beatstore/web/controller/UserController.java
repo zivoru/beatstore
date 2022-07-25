@@ -25,7 +25,7 @@ public class UserController {
 
     @Operation(summary = "Пользователь по id")
     @GetMapping("{id}")
-    public ResponseEntity<User> findById(@PathVariable Long id)  {
+    public ResponseEntity<User> findById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.findById(id));
     }
 
@@ -44,7 +44,7 @@ public class UserController {
     @Operation(summary = "Пользователь по username с дополнительными данными для отображения на странице профиля")
     @GetMapping("username/{username}")
     public ResponseEntity<DisplayUserDto> getDisplayUserDto(@PathVariable String username,
-                                                            @RequestParam(required = false) Long authUserId)  {
+                                                            @RequestParam(required = false) Long authUserId) {
         return ResponseEntity.ok(userService.getDisplayUserDto(username, authUserId));
     }
 
