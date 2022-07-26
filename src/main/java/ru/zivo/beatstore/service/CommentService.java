@@ -10,7 +10,7 @@ public interface CommentService {
 
     List<Comment> findByBeatId(Long beatId);
 
-    Comment addComment(Long beatId, Long userId, Comment comment);
+    Comment addComment(Long beatId, String userId, Comment comment);
 
     void delete(Long id);
 }

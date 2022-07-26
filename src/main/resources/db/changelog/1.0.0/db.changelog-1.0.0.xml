@@ -14,14 +14,11 @@
         </preConditions>
 
         <createTable tableName="users">
-            <column name="id" type="bigserial">
+            <column name="id" type="varchar(500)">
                 <constraints primaryKey="true" nullable="false" unique="true"/>
             </column>
-            <column name="username" type="varchar(25)">
+            <column name="username" type="varchar(255)">
                 <constraints nullable="false" unique="true"/>
-            </column>
-            <column name="password" type="varchar(255)">
-                <constraints nullable="false"/>
             </column>
             <column name="email" type="varchar(255)">
                 <constraints nullable="false" unique="true"/>
@@ -46,11 +43,11 @@
             <column name="id" type="bigserial">
                 <constraints primaryKey="true" nullable="false" unique="true"/>
             </column>
-            <column name="user_id" type="bigserial">
+            <column name="user_id" type="varchar(500)">
                 <constraints nullable="false" unique="true" referencedTableName="users" referencedColumnNames="id"
                              foreignKeyName="user_id"/>
             </column>
-            <column name="image_name" type="varchar(500)" defaultValue="profileImage">
+            <column name="image_name" type="varchar(500)">
                 <constraints nullable="false"/>
             </column>
             <column name="first_name" type="varchar(25)">
@@ -82,7 +79,7 @@
             <column name="id" type="bigserial">
                 <constraints primaryKey="true" nullable="false" unique="true"/>
             </column>
-            <column name="user_id" type="bigserial">
+            <column name="user_id" type="varchar(500)">
                 <constraints nullable="false" unique="true" referencedTableName="users" referencedColumnNames="id"
                              foreignKeyName="user_id"/>
             </column>
@@ -112,7 +109,7 @@
             <column name="id" type="bigserial">
                 <constraints primaryKey="true" nullable="false" unique="true"/>
             </column>
-            <column name="user_id" type="bigint">
+            <column name="user_id" type="varchar(500)">
                 <constraints nullable="false" referencedTableName="users" referencedColumnNames="id"
                              foreignKeyName="user_id"/>
             </column>
@@ -146,9 +143,6 @@
             <column name="plays" type="int" defaultValue="0">
                 <constraints nullable="false"/>
             </column>
-            <column name="release_date" type="TIMESTAMP">
-                <constraints nullable="false"/>
-            </column>
             <column name="status" type="varchar(25)">
                 <constraints nullable="false"/>
             </column>
@@ -169,7 +163,7 @@
     <!--user_roles-->
     <changeSet id="1.0.5" author="zivo">
         <createTable tableName="user_roles">
-            <column name="user_id" type="bigint">
+            <column name="user_id" type="varchar(500)">
             </column>
 
             <column name="role_id" type="bigint">
@@ -215,11 +209,11 @@
         </preConditions>
 
         <createTable tableName="user_subscriptions">
-            <column name="channel_id" type="bigint">
+            <column name="channel_id" type="varchar(500)">
                 <constraints primaryKey="true" nullable="false" referencedTableName="users" referencedColumnNames="id"
                              foreignKeyName="channel_id"/>
             </column>
-            <column name="subscriber_id" type="bigint">
+            <column name="subscriber_id" type="varchar(500)">
                 <constraints primaryKey="true" nullable="false" referencedTableName="users" referencedColumnNames="id"
                              foreignKeyName="subscriber_id"/>
             </column>
@@ -270,7 +264,7 @@
             <column name="name" type="varchar(60)">
                 <constraints nullable="false"/>
             </column>
-            <column name="image_name" type="varchar(500)" defaultValue="playlistImage">
+            <column name="image_name" type="varchar(500)">
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="varchar(500)">
@@ -279,7 +273,7 @@
             <column name="visibility" type="boolean">
                 <constraints nullable="false"/>
             </column>
-            <column name="user_id" type="bigint">
+            <column name="user_id" type="varchar(500)">
                 <constraints nullable="false" referencedTableName="users" referencedColumnNames="id"
                              foreignKeyName="user_id"/>
             </column>
@@ -319,7 +313,7 @@
             <column name="license" type="varchar(128)">
                 <constraints nullable="false"/>
             </column>
-            <column name="user_id" type="bigint">
+            <column name="user_id" type="varchar(500)">
                 <constraints nullable="false" referencedTableName="users" referencedColumnNames="id"
                              foreignKeyName="user_id"/>
             </column>
@@ -344,7 +338,7 @@
             <column name="license" type="varchar(128)">
                 <constraints nullable="false"/>
             </column>
-            <column name="user_id" type="bigint">
+            <column name="user_id" type="varchar(500)">
                 <constraints primaryKey="true" nullable="false" referencedTableName="users" referencedColumnNames="id"
                              foreignKeyName="user_id"/>
             </column>
@@ -363,7 +357,7 @@
         </preConditions>
 
         <createTable tableName="favorite_beats">
-            <column name="user_id" type="bigint">
+            <column name="user_id" type="varchar(500)">
                 <constraints primaryKey="true" nullable="false" referencedTableName="users" referencedColumnNames="id"
                              foreignKeyName="user_id"/>
             </column>
@@ -382,7 +376,7 @@
         </preConditions>
 
         <createTable tableName="history">
-            <column name="user_id" type="bigint">
+            <column name="user_id" type="varchar(500)">
                 <constraints primaryKey="true" nullable="false" referencedTableName="users" referencedColumnNames="id"
                              foreignKeyName="user_id"/>
             </column>
@@ -411,7 +405,7 @@
                 <constraints nullable="false" referencedTableName="beat" referencedColumnNames="id"
                              foreignKeyName="beat_id"/>
             </column>
-            <column name="user_id" type="bigint">
+            <column name="user_id" type="varchar(500)">
                 <constraints nullable="false" referencedTableName="users" referencedColumnNames="id"
                              foreignKeyName="user_id"/>
             </column>
@@ -524,7 +518,7 @@
         </preConditions>
 
         <createTable tableName="favorite_playlists">
-            <column name="user_id" type="bigint">
+            <column name="user_id" type="varchar(500)">
                 <constraints primaryKey="true" nullable="false" referencedTableName="users" referencedColumnNames="id"
                              foreignKeyName="user_id"/>
             </column>

@@ -34,7 +34,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public Profile updateProfile(Long userId, Profile profile) {
+    public Profile updateProfile(String userId, Profile profile) {
         User user = Users.getUser(userId);
 
         profile.setUser(user);
@@ -53,7 +53,7 @@ public class ProfileServiceImpl implements ProfileService {
         Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new NotFoundException("Профиль с id = %d не найден".formatted(profileId)));
 
-        Long userId = profile.getUser().getId();
+        String userId = profile.getUser().getId();
 
         if (photo != null) {
             String pathname = uploadPath + "/user-" + userId + "/profile";

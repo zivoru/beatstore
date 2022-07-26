@@ -27,7 +27,7 @@ public class PurchasedController {
 
     @Operation(summary = "Купленные пользователя по его id")
     @GetMapping("/{userId}")
-    public ResponseEntity<Page<Purchased>> getPurchased(@PathVariable Long userId, Pageable pageable) {
+    public ResponseEntity<Page<Purchased>> getPurchased(@PathVariable String userId, Pageable pageable) {
         return ResponseEntity.ok(purchasedService.getPurchasedBeats(userId, pageable));
     }
 }

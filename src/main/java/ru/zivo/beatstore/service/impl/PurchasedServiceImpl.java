@@ -14,7 +14,7 @@ import java.util.List;
 public class PurchasedServiceImpl implements PurchasedService {
 
     @Override
-    public Page<Purchased> getPurchasedBeats(Long userId, Pageable pageable) {
+    public Page<Purchased> getPurchasedBeats(String userId, Pageable pageable) {
         List<Purchased> purchased = Users.getUser(userId).getPurchased();
 
         final int start = (int) pageable.getOffset();

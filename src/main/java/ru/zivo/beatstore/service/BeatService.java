@@ -16,7 +16,7 @@ public interface BeatService {
 
     Beat findById(Long id);
 
-    Beat create(Long userId, Beat beat);
+    Beat create(String userId, Beat beat);
 
     void update(Beat beat);
 
@@ -32,15 +32,15 @@ public interface BeatService {
 
     void addPlay(Long id);
 
-    void addToFavorite(Long beatId, Long userId);
+    void addToFavorite(Long beatId, String userId);
 
-    void removeFromFavorite(Long beatId, Long userId);
+    void removeFromFavorite(Long beatId, String userId);
 
-    Cart addToCart(Long userId, Long beatId, String license);
+    Cart addToCart(String userId, Long beatId, String license);
 
-    void removeFromCart(Long userId, Long beatId);
+    void removeFromCart(String userId, Long beatId);
 
-    void addToHistory(Long userId, Long beatId);
+    void addToHistory(String userId, Long beatId);
 
     List<Beat> getTrendBeats(Integer limit);
 
@@ -53,12 +53,12 @@ public interface BeatService {
                               String mood,
                               Integer bpmMin,
                               Integer bpmMax,
-                              Long userId,
+                              String userId,
                               Pageable pageable);
 
-    Page<BeatDto> getFavoriteBeats(Long userId, Pageable pageable);
+    Page<BeatDto> getFavoriteBeats(String userId, Pageable pageable);
 
-    Page<BeatDto> getHistoryBeats(Long userId, Pageable pageable);
+    Page<BeatDto> getHistoryBeats(String userId, Pageable pageable);
 
-    Page<BeatDto> getBeats(Long userId, Long authUserId, Pageable pageable);
+    Page<BeatDto> getBeats(String userId, String authUserId, Pageable pageable);
 }

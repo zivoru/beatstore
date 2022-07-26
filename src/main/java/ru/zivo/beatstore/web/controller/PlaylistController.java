@@ -33,13 +33,13 @@ public class PlaylistController {
 
     @Operation(summary = "Получение списка плейлистов по id пользователя")
     @GetMapping("user/{userId}")
-    public ResponseEntity<List<Playlist>> findAllByUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<Playlist>> findAllByUserId(@PathVariable String userId) {
         return ResponseEntity.ok(playlistService.findAllByUserId(userId));
     }
 
     @Operation(summary = "Создание плейлиста")
     @PostMapping("{userId}")
-    public ResponseEntity<Long> create(@PathVariable Long userId, @RequestBody Playlist playlist) {
+    public ResponseEntity<Long> create(@PathVariable String userId, @RequestBody Playlist playlist) {
         Playlist savedPlaylist = playlistService.create(userId, playlist);
         return ResponseEntity.ok(savedPlaylist.getId());
     }
@@ -72,13 +72,13 @@ public class PlaylistController {
 
     @Operation(summary = "Добавление в избранное")
     @PostMapping("addFavorite/{playlistId}/{userId}")
-    public void addFavorite(@PathVariable Long playlistId, @PathVariable Long userId) {
+    public void addFavorite(@PathVariable Long playlistId, @PathVariable String userId) {
         playlistService.addFavorite(playlistId, userId);
     }
 
     @Operation(summary = "Удаление из избранного")
     @PostMapping("removeFavorite/{playlistId}/{userId}")
-    public void removeFavorite(@PathVariable Long playlistId, @PathVariable Long userId) {
+    public void removeFavorite(@PathVariable Long playlistId, @PathVariable String userId) {
         playlistService.removeFavorite(playlistId, userId);
     }
 

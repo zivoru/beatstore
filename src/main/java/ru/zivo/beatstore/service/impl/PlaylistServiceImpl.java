@@ -50,12 +50,12 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     @Override
-    public List<Playlist> findAllByUserId(Long userId) {
+    public List<Playlist> findAllByUserId(String userId) {
         return Users.getUser(userId).getPlaylists();
     }
 
     @Override
-    public Playlist create(Long userId, Playlist playlist) {
+    public Playlist create(String userId, Playlist playlist) {
         playlist.setUser(Users.getUser(userId));
         return playlistRepository.save(playlist);
     }
@@ -107,14 +107,14 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     @Override
-    public void addFavorite(Long playlistId, Long userId) {
+    public void addFavorite(Long playlistId, String userId) {
         User user = Users.getUser(userId);
         user.getFavoritePlaylists().add(findById(playlistId));
         userRepository.save(user);
     }
 
     @Override
-    public void removeFavorite(Long playlistId, Long userId) {
+    public void removeFavorite(Long playlistId, String userId) {
         User user = Users.getUser(userId);
         user.getFavoritePlaylists().remove(findById(playlistId));
         userRepository.save(user);

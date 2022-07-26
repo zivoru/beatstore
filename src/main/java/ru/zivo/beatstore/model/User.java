@@ -1,41 +1,36 @@
 package ru.zivo.beatstore.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import ru.zivo.beatstore.model.common.AbstractLongPersistable;
 import ru.zivo.beatstore.model.enums.Status;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @Entity
 @Table(name = "users")
-public class User extends AbstractLongPersistable {
+public class User {
+
+    @Id
+    @Column(name = "id")
+    private String id;
 
     @NotBlank
     @Column(name = "username")
     private String username;
 
     @NotBlank
-    @Column(name = "password")
-    private String password;
-
-    @NotBlank
     @Column(name = "email")
     private String email;
 
-    @NotBlank
     @Column(name = "verified")
     private Boolean verified;
 
@@ -50,27 +45,27 @@ public class User extends AbstractLongPersistable {
     private Status status;
 
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_roles",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
     private List<Role> roles;
 
     @JsonIgnore
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_subscriptions",
-            joinColumns = {@JoinColumn(name = "channel_id")},
-            inverseJoinColumns = {@JoinColumn(name = "subscriber_id")}
+            joinColumns = { @JoinColumn(name = "channel_id") },
+            inverseJoinColumns = { @JoinColumn(name = "subscriber_id")}
     )
     private Set<User> subscribers = new HashSet<>();
 
     @JsonIgnore
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_subscriptions",
-            joinColumns = {@JoinColumn(name = "subscriber_id")},
-            inverseJoinColumns = {@JoinColumn(name = "channel_id")}
+            joinColumns = { @JoinColumn(name = "subscriber_id") },
+            inverseJoinColumns = { @JoinColumn(name = "channel_id")}
     )
     private Set<User> subscriptions = new HashSet<>();
 
@@ -91,29 +86,29 @@ public class User extends AbstractLongPersistable {
     private List<Purchased> purchased = new ArrayList<>();
 
     @JsonIgnore
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "favorite_beats",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "beat_id")}
+            joinColumns = { @JoinColumn(name = "user_id") },
+            inverseJoinColumns = { @JoinColumn(name = "beat_id")}
     )
     private List<Beat> favoriteBeats = new ArrayList<>();
 
     @JsonIgnore
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "history",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "beat_id")}
+            joinColumns = { @JoinColumn(name= "user_id") },
+            inverseJoinColumns = { @JoinColumn(name = "beat_id")}
     )
     private List<Beat> history = new ArrayList<>();
 
     @JsonIgnore
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "favorite_playlists",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "playlist_id")}
+            joinColumns = { @JoinColumn(name = "user_id") },
+            inverseJoinColumns = { @JoinColumn(name = "playlist_id")}
     )
     private List<Playlist> favoritePlaylists = new ArrayList<>();
 }

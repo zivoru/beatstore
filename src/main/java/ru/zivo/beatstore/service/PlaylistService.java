@@ -13,9 +13,9 @@ public interface PlaylistService {
 
     PlaylistDto findDtoById(Long id);
 
-    List<Playlist> findAllByUserId(Long id);
+    List<Playlist> findAllByUserId(String userId);
 
-    Playlist create(Long userId, Playlist playlist);
+    Playlist create(String userId, Playlist playlist);
 
     void update(Playlist playlist);
 
@@ -25,9 +25,9 @@ public interface PlaylistService {
 
     void removeBeat(Long playlistId, Long beatId);
 
-    void addFavorite(Long playlistId, Long userId);
+    void addFavorite(Long playlistId, String userId);
 
-    void removeFavorite(Long playlistId, Long userId);
+    void removeFavorite(Long playlistId, String userId);
 
     List<PlaylistDto> getRecommended(Integer limit);
 }

@@ -39,8 +39,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment addComment(Long beatId, Long userId, Comment comment) {
-        comment.setUser(Users.getUser(userId));
+    public Comment addComment(Long beatId, String userId, Comment comment) {
+        comment.setAuthor(Users.getUser(userId));
         comment.setBeat(getBeat(beatId));
 
         return commentRepository.save(comment);

@@ -29,14 +29,14 @@ public class ProfileController {
 
     @Operation(summary = "Получение профиля по id пользователя")
     @GetMapping("{userId}")
-    public ResponseEntity<Profile> getProfileByIdUser(@PathVariable Long userId) {
+    public ResponseEntity<Profile> getProfileByIdUser(@PathVariable String userId) {
         User user = userService.findById(userId);
         return ResponseEntity.ok(user.getProfile());
     }
 
     @Operation(summary = "Изменение профиля")
     @PutMapping("{userId}")
-    public ResponseEntity<Long> updateProfile(@PathVariable Long userId, @RequestBody Profile profile) {
+    public ResponseEntity<Long> updateProfile(@PathVariable String userId, @RequestBody Profile profile) {
         Profile updatedProfile = profileService.updateProfile(userId, profile);
         return ResponseEntity.ok(updatedProfile.getId());
     }

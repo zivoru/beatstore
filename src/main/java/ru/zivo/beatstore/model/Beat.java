@@ -64,9 +64,6 @@ public class Beat extends AbstractLongPersistable {
     @Column(name = "plays")
     private Integer plays;
 
-    @Column(name = "release_date")
-    private Date releaseDate;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private BeatStatus status;
@@ -96,4 +93,22 @@ public class Beat extends AbstractLongPersistable {
     @JsonIgnore
     @OneToMany(mappedBy = "beat", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Cart> cart = new LinkedHashSet<>();
+
+    @JsonIgnore
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "favorite_beats",
+            joinColumns = { @JoinColumn(name = "beat_id") },
+            inverseJoinColumns = { @JoinColumn(name = "user_id")}
+    )
+    private List<Beat> favoriteBeats = new ArrayList<>();
+
+    @JsonIgnore
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "history",
+            joinColumns = { @JoinColumn(name= "beat_id") },
+            inverseJoinColumns = { @JoinColumn(name = "user_id")}
+    )
+    private List<Beat> history = new ArrayList<>();
 }

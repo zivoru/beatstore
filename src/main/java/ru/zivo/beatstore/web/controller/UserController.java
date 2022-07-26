@@ -25,13 +25,13 @@ public class UserController {
 
     @Operation(summary = "Пользователь по id")
     @GetMapping("{id}")
-    public ResponseEntity<User> findById(@PathVariable Long id) {
+    public ResponseEntity<User> findById(@PathVariable String id) {
         return ResponseEntity.ok(userService.findById(id));
     }
 
     @Operation(summary = "Удаление пользователя")
     @DeleteMapping("{id}")
-    public void deleteUser(@PathVariable Long id) {
+    public void deleteUser(@PathVariable String id) {
         userService.delete(id);
     }
 
@@ -44,13 +44,13 @@ public class UserController {
     @Operation(summary = "Пользователь по username с дополнительными данными для отображения на странице профиля")
     @GetMapping("username/{username}")
     public ResponseEntity<DisplayUserDto> getDisplayUserDto(@PathVariable String username,
-                                                            @RequestParam(required = false) Long authUserId) {
+                                                            @RequestParam(required = false) String authUserId) {
         return ResponseEntity.ok(userService.getDisplayUserDto(username, authUserId));
     }
 
     @Operation(summary = "Подписка и отписка")
     @PostMapping("/subscribe/user/{userId}/channel/{channelId}")
-    public boolean subscribeAndUnsubscribe(@PathVariable Long userId, @PathVariable Long channelId) {
+    public boolean subscribeAndUnsubscribe(@PathVariable String userId, @PathVariable String channelId) {
         return userService.subscribeAndUnsubscribe(userId, channelId);
     }
 }

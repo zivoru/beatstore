@@ -39,7 +39,7 @@ public class BeatController {
 
     @Operation(summary = "Создание бита")
     @PostMapping("{userId}")
-    public ResponseEntity<Long> create(@PathVariable Long userId, @RequestBody Beat beat) {
+    public ResponseEntity<Long> create(@PathVariable String userId, @RequestBody Beat beat) {
         Beat savedBeat = beatService.create(userId, beat);
         return ResponseEntity.ok(savedBeat.getId());
     }
@@ -109,7 +109,7 @@ public class BeatController {
                                                      @RequestParam(required = false) String mood,
                                                      @RequestParam(required = false) Integer bpmMin,
                                                      @RequestParam(required = false) Integer bpmMax,
-                                                     @RequestParam(required = false) Long userId,
+                                                     @RequestParam(required = false) String userId,
                                                      Pageable pageable
     ) {
         return ResponseEntity.ok(beatService.getTopChart(nameFilter, tag, genre, priceMin, priceMax, key, mood, bpmMin, bpmMax, userId, pageable));
@@ -123,19 +123,19 @@ public class BeatController {
 
     @Operation(summary = "Добавление в избранное")
     @PostMapping("addToFavorite/{beatId}/{userId}")
-    public void addToFavorite(@PathVariable Long beatId, @PathVariable Long userId) {
+    public void addToFavorite(@PathVariable Long beatId, @PathVariable String userId) {
         beatService.addToFavorite(beatId, userId);
     }
 
     @Operation(summary = "Удаление из избранного")
     @PostMapping("removeFromFavorite/{beatId}/{userId}")
-    public void removeFromFavorite(@PathVariable Long beatId, @PathVariable Long userId) {
+    public void removeFromFavorite(@PathVariable Long beatId, @PathVariable String userId) {
         beatService.removeFromFavorite(beatId, userId);
     }
 
     @Operation(summary = "Добавление в корзину")
     @PostMapping("/user/{userId}/beat/{beatId}/license/{license}")
-    public ResponseEntity<Cart> addToCart(@PathVariable Long userId,
+    public ResponseEntity<Cart> addToCart(@PathVariable String userId,
                                           @PathVariable Long beatId,
                                           @PathVariable String license) {
         return ResponseEntity.ok(beatService.addToCart(userId, beatId, license));
@@ -143,13 +143,13 @@ public class BeatController {
 
     @Operation(summary = "Удаление из корзины")
     @PostMapping("removeFromCart/user/{userId}/beat/{beatId}")
-    public void removeFromCart(@PathVariable Long userId, @PathVariable Long beatId) {
+    public void removeFromCart(@PathVariable String userId, @PathVariable Long beatId) {
         beatService.removeFromCart(userId, beatId);
     }
 
     @Operation(summary = "Добавление в историю")
     @PostMapping("/user/{userId}/beat/{beatId}")
-    public void getRecommendedUsers(@PathVariable Long userId, @PathVariable Long beatId) {
+    public void getRecommendedUsers(@PathVariable String userId, @PathVariable Long beatId) {
         beatService.addToHistory(userId, beatId);
     }
 
@@ -161,20 +161,20 @@ public class BeatController {
 
     @Operation(summary = "Избранные биты пользователя по его id")
     @GetMapping("/favorite/{userId}")
-    public ResponseEntity<Page<BeatDto>> getFavorite(@PathVariable Long userId, Pageable pageable) {
+    public ResponseEntity<Page<BeatDto>> getFavorite(@PathVariable String userId, Pageable pageable) {
         return ResponseEntity.ok(beatService.getFavoriteBeats(userId, pageable));
     }
 
     @Operation(summary = "История битов пользователя по его id")
     @GetMapping("/history/{userId}")
-    public ResponseEntity<Page<BeatDto>> getHistory(@PathVariable Long userId, Pageable pageable) {
+    public ResponseEntity<Page<BeatDto>> getHistory(@PathVariable String userId, Pageable pageable) {
         return ResponseEntity.ok(beatService.getHistoryBeats(userId, pageable));
     }
 
     @Operation(summary = "Биты пользователя по его id")
     @GetMapping("/user/{userId}")
-    public ResponseEntity<Page<BeatDto>> getBeats(@PathVariable Long userId,
-                                                  @RequestParam(required = false) Long authUserId,
+    public ResponseEntity<Page<BeatDto>> getBeats(@PathVariable String userId,
+                                                  @RequestParam(required = false) String authUserId,
                                                   Pageable pageable) {
         return ResponseEntity.ok(beatService.getBeats(userId, authUserId, pageable));
     }

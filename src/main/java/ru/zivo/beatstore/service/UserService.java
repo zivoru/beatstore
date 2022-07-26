@@ -11,13 +11,13 @@ public interface UserService {
 
     User update(User user);
 
-    User findById(Long id);
+    User findById(String id);
 
-    void delete(Long id);
+    void delete(String id);
 
     List<User> getRecommended(Integer limit);
 
-    DisplayUserDto getDisplayUserDto(String username, Long authUserId);
+    DisplayUserDto getDisplayUserDto(String username, String authUserId);
 
-    boolean subscribeAndUnsubscribe(Long userId, Long channelId);
+    boolean subscribeAndUnsubscribe(String userId, String channelId);
 }

@@ -40,13 +40,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(Long id) {
+    public User findById(String id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Пользователь с id = %d не найден".formatted(id)));
+                .orElseThrow(() -> new NotFoundException("Пользователь с id = %s не найден".formatted(id)));
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(String id) {
         User user = findById(id);
 
         List<Beat> beats = user.getBeats();
@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public DisplayUserDto getDisplayUserDto(String username, Long authUserId) {
+    public DisplayUserDto getDisplayUserDto(String username, String authUserId) {
 
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("Пользователь с username = %s не найден".formatted(username)));
@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean subscribeAndUnsubscribe(Long userId, Long channelId) {
+    public boolean subscribeAndUnsubscribe(String userId, String channelId) {
         User user = findById(userId);
         User channel = findById(channelId);
 

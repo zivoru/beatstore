@@ -54,7 +54,7 @@ public class BeatServiceImpl implements BeatService {
     }
 
     @Override
-    public Beat create(Long userId, Beat beat) {
+    public Beat create(String userId, Beat beat) {
         beat.setUser(Users.getUser(userId));
 
         Beat savedBeat = beatRepository.save(beat);
@@ -138,21 +138,21 @@ public class BeatServiceImpl implements BeatService {
     }
 
     @Override
-    public void addToFavorite(Long beatId, Long userId) {
+    public void addToFavorite(Long beatId, String userId) {
         User user = Users.getUser(userId);
         user.getFavoriteBeats().add(findById(beatId));
         userRepository.save(user);
     }
 
     @Override
-    public void removeFromFavorite(Long beatId, Long userId) {
+    public void removeFromFavorite(Long beatId, String userId) {
         User user = Users.getUser(userId);
         user.getFavoriteBeats().remove(findById(beatId));
         userRepository.save(user);
     }
 
     @Override
-    public Cart addToCart(Long userId, Long beatId, String license) {
+    public Cart addToCart(String userId, Long beatId, String license) {
         User user = Users.getUser(userId);
         Beat beat = findById(beatId);
 
@@ -190,7 +190,7 @@ public class BeatServiceImpl implements BeatService {
     }
 
     @Override
-    public void removeFromCart(Long userId, Long beatId) {
+    public void removeFromCart(String userId, Long beatId) {
         User user = Users.getUser(userId);
         Beat beat = findById(beatId);
         for (Cart cart : user.getCart()) {
@@ -203,7 +203,7 @@ public class BeatServiceImpl implements BeatService {
     }
 
     @Override
-    public void addToHistory(Long userId, Long beatId) {
+    public void addToHistory(String userId, Long beatId) {
         User user = Users.getUser(userId);
         Beat beat = findById(beatId);
         List<Beat> history = user.getHistory();
@@ -226,7 +226,7 @@ public class BeatServiceImpl implements BeatService {
     @Override
     public Page<BeatDto> getTopChart(String nameFilter, Long tag, String genre, Integer priceMin,
                                      Integer priceMax, String key, String mood, Integer bpmMin,
-                                     Integer bpmMax, Long userId, Pageable pageable
+                                     Integer bpmMax, String userId, Pageable pageable
     ) {
         User user = userId != null ? Users.getUser(userId) : null;
 
@@ -269,21 +269,21 @@ public class BeatServiceImpl implements BeatService {
     }
 
     @Override
-    public Page<BeatDto> getFavoriteBeats(Long userId, Pageable pageable) {
+    public Page<BeatDto> getFavoriteBeats(String userId, Pageable pageable) {
         User user = Users.getUser(userId);
 
         return listToPage(pageable, mapToDtoList(user, sortedPublishedBeats(user.getFavoriteBeats())));
     }
 
     @Override
-    public Page<BeatDto> getHistoryBeats(Long userId, Pageable pageable) {
+    public Page<BeatDto> getHistoryBeats(String userId, Pageable pageable) {
         User user = Users.getUser(userId);
 
         return listToPage(pageable, mapToDtoList(user, sortedPublishedBeats(user.getHistory())));
     }
 
     @Override
-    public Page<BeatDto> getBeats(Long userId, Long authUserId, Pageable pageable) {
+    public Page<BeatDto> getBeats(String userId, String authUserId, Pageable pageable) {
         User authUser = authUserId != null ? Users.getUser(authUserId) : null;
 
         return listToPage(pageable, mapToDtoList(authUser, sortedPublishedBeats(Users.getUser(userId).getBeats())));
@@ -312,7 +312,7 @@ public class BeatServiceImpl implements BeatService {
         return resultFilename;
     }
 
-    public List<Beat> sortedPublishedBeats(List<Beat> beats) {
+    private List<Beat> sortedPublishedBeats(List<Beat> beats) {
         List<Beat> publishedBeats = new ArrayList<>();
 
         for (Beat beat : beats) {

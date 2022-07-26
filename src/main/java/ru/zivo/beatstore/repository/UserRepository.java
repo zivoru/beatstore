@@ -7,6 +7,6 @@ import ru.zivo.beatstore.model.User;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, String> {
     Optional<User> findByUsername(String username);
 }

@@ -6,5 +6,5 @@ import ru.zivo.beatstore.model.Purchased;
 
 public interface PurchasedService {
 
-    Page<Purchased> getPurchasedBeats(Long userId, Pageable pageable);
+    Page<Purchased> getPurchasedBeats(String userId, Pageable pageable);
 }

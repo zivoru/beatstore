@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface CartService {
 
-    List<CartDto> findByUserId(Long userId);
+    List<CartDto> findByUserId(String userId);
 }

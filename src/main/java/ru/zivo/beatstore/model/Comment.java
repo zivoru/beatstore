@@ -28,6 +28,6 @@ public class Comment extends AbstractLongPersistable {
     private Beat beat;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "user_id", updatable = false)
+    private User author;
 }
