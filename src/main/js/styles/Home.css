@@ -107,7 +107,7 @@
 
 .slide-img, .card-img, .slide-img-genre {
     object-fit: cover;
-    border: 1px solid rgba(15, 15, 15, 1);
+    /*border: 1px solid rgba(15, 15, 15, 1);*/
 }
 
 .slide-img {

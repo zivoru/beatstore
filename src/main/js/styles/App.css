@@ -87,9 +87,9 @@ a {
     transition: .2s
 }
 
-* {
-    transition: .1s
-}
+/** {*/
+/*    transition: .1s*/
+/*}*/
 
 .hu:hover { text-decoration: underline 0.8px }
 

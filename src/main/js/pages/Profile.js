@@ -9,7 +9,7 @@ class Profile extends Component {
         super(props);
         this.state = {
             userProfile: null,
-            user: "null",
+            user: null,
             beats: null,
             page: 0,
             totalPages: null,
@@ -19,14 +19,54 @@ class Profile extends Component {
     }
 
     componentDidMount() {
-        this.setState({user: this.props.user})
+        this.setState({user: this.props.user});
+        this.getUser();
+    }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.user !== this.props.user) {
+            this.setState({user: this.props.user})
+
+            if (this.props.user !== null && this.props.user !== undefined && this.state.userProfile !== null && this.state.userProfile !== "null") {
+                console.log('jopa')
+
+                if (this.state.userProfile.id === this.props.user.id) {
+                    this.setState({
+                        btnFollow:
+                            <div className="item-stats flex-c-c">
+                                <Link to="/settings" className="btn-primary w50" style={{backgroundColor: "#262626"}}>
+                                    Редактировать
+                                </Link>
+                            </div>
+                    })
+                }
+            }
+        }
+
+        if (prevProps.username !== this.props.username) {
+            this.setState({
+                userProfile: null,
+                user: null,
+                beats: null,
+                page: 0,
+                totalPages: null,
+                pagination: [],
+                btnFollow: null
+            })
+
+            this.setState({user: this.props.user})
+
+            this.getUser();
+        }
+    }
+
+    getUser() {
         axios.get("/api/v1/users/username/" + this.props.username).then(res => {
             this.setState({userProfile: res.data})
 
             let usr = res.data
-            if (usr.subscriptionStatus === true) {
 
+            if (usr.subscriptionStatus === true) {
                 this.setState({
                     btnFollow:
                         <div className="item-stats flex-c-c">
@@ -50,6 +90,8 @@ class Profile extends Component {
             }
 
             if (this.props.user !== null && this.props.user !== undefined) {
+                console.log('jopa')
+
                 if (usr.id === this.props.user.id) {
                     this.setState({
                         btnFollow:
@@ -71,25 +113,6 @@ class Profile extends Component {
         }).catch(() => {
             this.setState({userProfile: "null"})
         })
-
-        // this.addBeatsToState(this.state.page)
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.user !== this.props.user) {
-            this.setState({user: this.props.user})
-        }
-        if (prevProps.username !== this.props.username) {
-            this.setState({
-                userProfile: null,
-                user: "null",
-                beats: null,
-                page: 0,
-                totalPages: null,
-                pagination: [],
-                btnFollow: null
-            })
-        }
     }
 
     addBeatsToState = (page) => {
@@ -236,13 +259,16 @@ class Profile extends Component {
                                                  alt="verified" width="17px" className="ml5"/> : null}
                                     </div>
 
-                                    <span className="color-g1 mw100 wnohte fs14 fw300 mb16">
+                                    {usr.profile.location === null ? null :
+                                        <span className="color-g1 mw100 wnohte fs14 fw300">
                                         {usr.profile.location}</span>
+                                    }
                                 </div>
 
                                 {this.state.btnFollow}
 
                                 <div className="item-stats">
+                                    <div className="stats-line"></div>
                                     <span className="stats-title">СТАТИСТИКА</span>
                                     <div className="stats">
                                         <span>Подписчики</span><span>{usr.amountSubscribers}</span>
@@ -253,9 +279,9 @@ class Profile extends Component {
                                     <div className="stats">
                                         <span>Биты</span><span>{usr.amountBeats}</span>
                                     </div>
-                                    <div className="stats-line"></div>
                                 </div>
                                 <div className="item-stats" style={{borderRadius: "0 0 10px 10px"}}>
+                                    <div className="stats-line"></div>
                                     <span className="stats-title">Соц сети</span>
                                     {usr.social.instagram !== null
                                         ?
