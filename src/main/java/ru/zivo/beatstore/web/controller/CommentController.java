@@ -3,6 +3,8 @@ package ru.zivo.beatstore.web.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import ru.zivo.beatstore.model.Comment;
 import ru.zivo.beatstore.service.CommentService;
@@ -26,9 +28,12 @@ public class CommentController {
         return ResponseEntity.ok(commentService.findByBeatId(beatId));
     }
 
-    @PostMapping("{beatId}/user/{userId}")
-    public ResponseEntity<Comment> addComment(@PathVariable Long beatId, @PathVariable String userId, @RequestBody Comment comment) {
-        return ResponseEntity.ok(commentService.addComment(beatId, userId, comment));
+    @PostMapping("{beatId}")
+    public ResponseEntity<Comment> addComment(@PathVariable Long beatId,
+                                              @AuthenticationPrincipal OAuth2User principal,
+                                              @RequestBody Comment comment) {
+        return principal == null ? null :
+                ResponseEntity.ok(commentService.addComment(beatId, principal.getAttribute("sub"), comment));
     }
 
     @DeleteMapping("{id}")

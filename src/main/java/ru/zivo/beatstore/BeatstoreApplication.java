@@ -23,21 +23,23 @@ public class BeatstoreApplication {
 
     @GetMapping("/user")
     public Map<String, Object> user(@AuthenticationPrincipal OAuth2User principal) {
+        if (principal != null) {
+            String id = principal.getAttribute("sub");
 
-        String id = principal.getAttribute("sub");
+            assert id != null;
+            User user = userRepository.findById(id).orElseGet(() -> User.builder()
+                    .id(id)
+                    .username(principal.getAttribute("name"))
+                    .email(principal.getAttribute("email"))
+                    .verified(false)
+                    .status(Status.ACTIVE)
+                    .build());
 
-        assert id != null;
-        User user = userRepository.findById(id).orElseGet(() -> User.builder()
-                .id(id)
-                .username(principal.getAttribute("name"))
-                .email(principal.getAttribute("email"))
-                .verified(false)
-                .status(Status.ACTIVE)
-                .build());
+            userRepository.save(user);
 
-        userRepository.save(user);
-
-        return Collections.singletonMap("name", user.getUsername());
+            return Collections.singletonMap("user", user);
+        }
+        return null;
     }
 
     public static void main(String[] args) {

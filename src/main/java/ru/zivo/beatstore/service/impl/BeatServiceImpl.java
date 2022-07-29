@@ -19,6 +19,7 @@ import ru.zivo.beatstore.service.BeatService;
 import ru.zivo.beatstore.service.impl.common.DeleteAudioFiles;
 import ru.zivo.beatstore.service.impl.common.Users;
 import ru.zivo.beatstore.web.dto.BeatDto;
+import ru.zivo.beatstore.web.dto.CartDto;
 
 import java.io.File;
 import java.io.IOException;

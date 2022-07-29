@@ -15,7 +15,7 @@ import java.util.List;
 public class CartServiceImpl implements CartService {
 
     @Override
-    public List<CartDto> findByUserId(String userId) {
+    public List<CartDto> findCartByUserId(String userId) {
         List<Cart> publishedBeats = new ArrayList<>();
 
         for (Cart cart : Users.getUser(userId).getCart()) {

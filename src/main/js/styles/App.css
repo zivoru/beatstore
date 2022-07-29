@@ -1,0 +1,170 @@
+body {
+    background-color: black;
+    color:  rgba(255,255,255,0.93);
+}
+
+a {
+    color: rgba(255,255,255,0.93);
+}
+
+.wrapper {
+    width: 100%;
+    padding: 44px 32px;
+}
+
+.container {
+    max-width: 1080px;
+    margin: auto;
+}
+
+.inl-blk {
+    display: inline-block;
+}
+
+.flex-c {
+    display: flex;
+    align-items: center;
+}
+
+.flex-jc {
+    display: flex;
+    justify-content: center;
+}
+
+.flex-c-c {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-c-sb {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.btn-primary {
+    display: flex;
+    background-color: #005ff8;
+    color: white;
+    padding: 7px 12px;
+    border-radius: 999px;
+    border: 0 solid transparent;
+    transition: .15s;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: initial;
+}
+
+.btn-primary:hover {
+    background-color: #0b8aff;
+}
+
+.btn-free {
+    background-color: #2f1a07;
+    color: #ff8831;
+}
+.btn-free:hover {
+    background-color: #4F340D;
+}
+
+.btn-login {
+    font-size: 24px;
+    font-weight: 400;
+    background-color: white;
+    color: rgba(0,0,0,0.8);
+}
+
+.btn-login:hover {
+    background-color: white;
+}
+
+.trs {
+    transition: .2s
+}
+
+* {
+    transition: .1s
+}
+
+.hu:hover { text-decoration: underline 0.8px }
+
+.ho:hover { opacity: 0.6 }
+
+.color-g1 { color: rgb(156 156 156) }
+.color-g2 { color: #707070 }
+.color-bl { color: #005ff8 }
+.color-or { color: #f56300 }
+
+.fs8 { font-size: 8px }
+.fs12 { font-size: 12px }
+.fs14 { font-size: 14px }
+.fs20 { font-size: 20px }
+.fs24 { font-size: 24px }
+.fs32 { font-size: 32px }
+.fs40 { font-size: 40px }
+.fs64 { font-size: 64px }
+.fs96 { font-size: 96px }
+.fs120 { font-size: 120px }
+
+.fw100 { font-weight: 100 }
+.fw200 { font-weight: 200 }
+.fw300 { font-weight: 300 }
+.fw400 { font-weight: 400 }
+.fw500 { font-weight: 500 }
+.fw600 { font-weight: 600 }
+.fw700 { font-weight: 700 }
+.fw800 { font-weight: 800 }
+.fw900 { font-weight: 900 }
+
+.mt5 { margin-top: 5px }
+.mr5 { margin-right: 5px }
+.mb5 { margin-bottom: 5px }
+.ml5 { margin-left: 5px }
+
+.mt16 { margin-top: 16px }
+.mr16 { margin-right: 16px }
+.mb16 { margin-bottom: 16px }
+.ml16 { margin-left: 16px }
+
+.mt32 { margin-top: 32px }
+.mr32 { margin-right: 32px }
+.mb32 { margin-bottom: 32px }
+.ml32 { margin-left: 32px }
+
+.p16 { padding: 16px }
+.pt16 { padding-top: 16px }
+.pr16 { padding-right: 16px }
+.pb16 { padding-bottom: 16px }
+.pl16 { padding-left: 16px }
+.p0_16 { padding: 0 16px }
+.p16_0 { padding: 16px 0 }
+
+.mw100 { max-width: 100% }
+.w100 { width: 100% }
+.w50 { width: 50% }
+
+.wnohte {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.b-r5 { border-radius: 5px }
+.b-r999 { border-radius: 999px }
+
+.cp { pointer-events: initial; cursor: pointer }
+
+@media (max-width: 1025px) {
+
+}
+
+@media (max-width: 767px) {
+    .wrapper {
+        padding: 44px 16px;
+    }
+}

@@ -1,0 +1,112 @@
+.my-beats-header {
+    font-size: 36px;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 32px;
+    padding-bottom: 32px;
+}
+.add-beat {
+    display: flex;
+    border-radius: 999px;
+    width: 46px;
+    height: 46px;
+    justify-content: center;
+    align-items: center;
+    background-color: #005ff8;
+}
+.add-beat:hover {
+    background-color: #0b8aff;
+}
+.my-beats-menu {
+    width: 100%;
+    border-bottom: 2px solid #4a4a4a;
+}
+.my-beats-menu-btn {
+    background-color: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: .8px;
+    padding-bottom: 16px;
+    color: #9f9f9f;
+    margin-right: 32px;
+    text-transform: uppercase;
+    transform: translateY(2px);
+}
+.menu-active {
+    color: white;
+    border-bottom: 2px solid white;
+}
+
+.my-beats-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 40px;
+    width: 40px;
+    padding: 12px;
+    background-color: black;
+    border-radius: 50%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    border: 3px solid white;
+}
+.my-beats-play::after {
+    content: '';
+    position: absolute;
+    left: 50%; top: 50%;
+    border: 10px solid transparent;
+    border-left: 17px solid white;
+    transform: translate(-25%, -50%);
+}
+.qwe:hover > .qwe-left .qwe-id .my-beats-play {
+    display: initial;
+}
+.qwe-img {
+    width: 44px;
+    height: 44px;
+}
+.qwe-img img {
+    width: 44px;
+    height: 44px;
+}
+.my-beats-format {
+    /*padding: 5px 10px;*/
+    width: 48px;
+    height: 32px;
+    border-radius: 5px;
+    border: 1px solid #005ff8;
+}
+.my-beats-setting-btn {
+    /*padding: 12px;*/
+    width: 29px;
+    height: 29px;
+    border: 1px solid #4a4a4a;
+    background-color: inherit;
+    border-radius: 999px;
+}
+.my-beats-setting-btn:hover {
+    background-color: rgba(0,0,0,0.8);
+}
+
+@media (max-width: 1025px) {
+
+}
+
+@media (max-width: 767px) {
+    .add-beat {
+        position: fixed;
+        right: 32px;
+        bottom: 32px;
+    }
+    .my-beats-menu-btn {
+        font-size: 12px;
+        margin-right: 16px;
+    }
+    .qwe-img:hover .play {
+        display: initial;
+    }
+}

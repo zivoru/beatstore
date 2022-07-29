@@ -1,0 +1,248 @@
+
+.qwe-container {
+    min-height: 740px;
+}
+.qwe1-title {
+    margin-top: 46px;
+    font-size: 30px;
+    margin-bottom: 32px;
+    width: 100%;
+    text-align: center;
+}
+.qwe-null span {
+    color: #9f9f9f;
+    font-weight: 400;
+}
+.qwe1 {
+    display: grid;
+    width: 100%;
+}
+.qwe {
+    padding: 12px 20px 12px 16px;
+    width: 100%;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: inherit;
+    position: relative;
+    cursor: pointer;
+}
+.qwe:hover {
+    background-color: rgb(10,10,10);
+}
+.qwe:hover > .qwe-left .qwe-id .play {
+    display: initial;
+}
+.qwe-left {
+    display: grid;
+    column-gap: 16px;
+    grid-auto-flow: column;
+    align-items: center;
+}
+.qwe-id {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #9f9f9f;
+    position: relative;
+}
+.qwe-img {
+    width: 50px;
+    height: 50px;
+}
+.qwe-img img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+.qwe-title {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    max-width: 500px;
+}
+.qwe-name {
+    max-width: 100%;
+    text-align: left;
+    font-size: 16px;
+    letter-spacing: 0;
+    line-height: 24px;
+    font-weight: 500;
+    text-transform: none;
+    color: white;
+}
+.qwe-name:hover, .qwe-user:hover {
+    text-decoration: underline 1px;
+}
+.qwe-user {
+    text-align: left;
+    font-size: 14px;
+    letter-spacing: 0.1px;
+    line-height: 20px;
+    font-weight: 400;
+    text-transform: none;
+    color: #9f9f9f;
+    margin-right: 5px;
+}
+.qwe-bpm {
+    display: flex;
+    max-width: 100%;
+}
+.qwe-bpm img {
+    width: 14px;
+    height: 18px;
+    object-fit: none;
+    margin-top: 1px;
+    margin-right: 5px;
+}
+.qwe-bpm button {
+    background-color: inherit;
+    font-size: 14px;
+    color: rgba(52,141,255,0.91);
+    margin-right: 5px;
+    display: none;
+}
+.qwe-bpm span {
+    font-size: 14px;
+    letter-spacing: 0.1px;
+    line-height: 20px;
+    font-weight: 400;
+    text-transform: none;
+    color: #9f9f9f;
+}
+
+.qwe-right {
+    display: grid;
+    column-gap: 16px;
+    grid-auto-flow: column;
+    align-items: center;
+    margin-left: 16px;
+}
+.qwe-tag {
+    padding: 5px 16px;
+    background-color: #262626;
+    border-radius: 999px;
+    color: #9f9f9f;
+    font-size: 14px;
+    letter-spacing: 0.1px;
+    line-height: 20px;
+    font-weight: 400;
+    white-space: nowrap;
+}
+.qwe-tag:hover {
+    background-color: #383838;
+    color: white;
+}
+.qwe-btn {
+    position: relative;
+    padding: 5px 16px;
+}
+.qwe-btn img {
+    margin-right: 5px;
+}
+.qwe-pagination-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.qwe-pagination {
+    display: grid;
+    column-gap: 16px;
+    grid-auto-flow: column;
+    justify-content: left;
+    align-items: center;
+    overflow: auto;
+}
+.qwe-pagination button {
+    width: 30px;
+    height: 30px;
+    background-color: #313131;
+    color: white;
+    border-radius: 999px;
+    font-size: 12px;
+}
+.page0 {
+    opacity: 0.5;
+}
+
+@media (max-width: 1025px) {
+
+}
+
+@media (max-width: 767px) {
+    .qwe-container {
+        min-height: 660px;
+    }
+    .qwe {
+        padding: 8px 0;
+    }
+    .qwe:hover {
+        background-color: inherit;
+    }
+    .qwe-id {
+        display: none;
+    }
+    .qwe-name {
+        font-size: 18px;
+    }
+    .qwe-tag {
+        display: none;
+    }
+
+    .qwe-bpm a {
+        font-size: 16px;
+        margin-top: 1px;
+    }
+    .qwe-bpm img {
+         display: initial;
+     }
+    /*.qwe-bpm button {*/
+    /*    display: initial;*/
+    /*    font-size: 16px;*/
+    /*}*/
+    .qwe-bpm span {
+        display: none;
+    }
+    /*.qwe-btn {*/
+    /*    padding: 10px;*/
+    /*    border-radius: 999px;*/
+    /*}*/
+    .qwe-btn img {
+        margin-right: 0;
+        display: none;
+    }
+    /*.qwe-btn span {*/
+    /*    display: none;*/
+    /*}*/
+
+    .qwe-pagination {
+        column-gap: 10px;
+    }
+    .qwe-pagination button {
+        width: 20px;
+        height: 20px;
+        font-size: 10px;
+    }
+    .qwe-img img {
+        /*display: none;*/
+        /*opacity: 0.5;*/
+    }
+    /*.qwe-img .play {*/
+    /*    display: initial;*/
+    /*}*/
+    .qwe-img:hover .play {
+        display: initial;
+    }
+}
+
+@media (max-width: 390px) {
+
+}
+
+@media (max-width: 300px) {
+
+}

@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import ru.zivo.beatstore.model.User;
 import ru.zivo.beatstore.service.UserService;
@@ -44,13 +46,16 @@ public class UserController {
     @Operation(summary = "Пользователь по username с дополнительными данными для отображения на странице профиля")
     @GetMapping("username/{username}")
     public ResponseEntity<DisplayUserDto> getDisplayUserDto(@PathVariable String username,
-                                                            @RequestParam(required = false) String authUserId) {
+                                                            @AuthenticationPrincipal OAuth2User principal) {
+        String authUserId = principal == null ? null : principal.getAttribute("sub");
         return ResponseEntity.ok(userService.getDisplayUserDto(username, authUserId));
     }
 
     @Operation(summary = "Подписка и отписка")
-    @PostMapping("/subscribe/user/{userId}/channel/{channelId}")
-    public boolean subscribeAndUnsubscribe(@PathVariable String userId, @PathVariable String channelId) {
+    @PostMapping("/subscribe/channel/{channelId}")
+    public boolean subscribeAndUnsubscribe(@AuthenticationPrincipal OAuth2User principal,
+                                           @PathVariable String channelId) {
+        String userId = principal == null ? null : principal.getAttribute("sub");
         return userService.subscribeAndUnsubscribe(userId, channelId);
     }
 }

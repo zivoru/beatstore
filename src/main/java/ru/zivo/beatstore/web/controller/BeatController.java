@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.zivo.beatstore.model.Beat;
@@ -38,10 +40,13 @@ public class BeatController {
     }
 
     @Operation(summary = "Создание бита")
-    @PostMapping("{userId}")
-    public ResponseEntity<Long> create(@PathVariable String userId, @RequestBody Beat beat) {
-        Beat savedBeat = beatService.create(userId, beat);
-        return ResponseEntity.ok(savedBeat.getId());
+    @PostMapping()
+    public ResponseEntity<Long> create(@AuthenticationPrincipal OAuth2User principal, @RequestBody Beat beat) {
+        if (principal != null) {
+            Beat savedBeat = beatService.create(principal.getAttribute("sub"), beat);
+            return ResponseEntity.ok(savedBeat.getId());
+        }
+        return null;
     }
 
     @Operation(summary = "Изменение бита")
@@ -93,13 +98,13 @@ public class BeatController {
     }
 
     @Operation(summary = "Получение трендовых битов")
-    @GetMapping("/trend-beats")
+    @GetMapping("trend-beats")
     public ResponseEntity<List<Beat>> getTrendBeats(@RequestParam Integer limit) {
         return ResponseEntity.ok(beatService.getTrendBeats(limit));
     }
 
     @Operation(summary = "Получение топ чарт")
-    @GetMapping("/top-charts")
+    @GetMapping("top-charts")
     public ResponseEntity<Page<BeatDto>> getTopChart(@RequestParam(required = false) String nameFilter,
                                                      @RequestParam(required = false) Long tag,
                                                      @RequestParam(required = false) String genre,
@@ -109,10 +114,11 @@ public class BeatController {
                                                      @RequestParam(required = false) String mood,
                                                      @RequestParam(required = false) Integer bpmMin,
                                                      @RequestParam(required = false) Integer bpmMax,
-                                                     @RequestParam(required = false) String userId,
+                                                     @AuthenticationPrincipal OAuth2User principal,
                                                      Pageable pageable
     ) {
-        return ResponseEntity.ok(beatService.getTopChart(nameFilter, tag, genre, priceMin, priceMax, key, mood, bpmMin, bpmMax, userId, pageable));
+        return ResponseEntity.ok(beatService.getTopChart(nameFilter, tag, genre, priceMin, priceMax, key,
+                mood, bpmMin, bpmMax, principal != null ? principal.getAttribute("sub") : null, pageable));
     }
 
     @Operation(summary = "Добавление прослушивания бита")
@@ -122,35 +128,36 @@ public class BeatController {
     }
 
     @Operation(summary = "Добавление в избранное")
-    @PostMapping("addToFavorite/{beatId}/{userId}")
-    public void addToFavorite(@PathVariable Long beatId, @PathVariable String userId) {
-        beatService.addToFavorite(beatId, userId);
+    @PostMapping("addToFavorite/{beatId}")
+    public void addToFavorite(@PathVariable Long beatId, @AuthenticationPrincipal OAuth2User principal) {
+        if (principal != null) beatService.addToFavorite(beatId, principal.getAttribute("sub"));
     }
 
     @Operation(summary = "Удаление из избранного")
-    @PostMapping("removeFromFavorite/{beatId}/{userId}")
-    public void removeFromFavorite(@PathVariable Long beatId, @PathVariable String userId) {
-        beatService.removeFromFavorite(beatId, userId);
+    @PostMapping("removeFromFavorite/{beatId}")
+    public void removeFromFavorite(@PathVariable Long beatId, @AuthenticationPrincipal OAuth2User principal) {
+        if (principal != null) beatService.removeFromFavorite(beatId, principal.getAttribute("sub"));
     }
 
     @Operation(summary = "Добавление в корзину")
-    @PostMapping("/user/{userId}/beat/{beatId}/license/{license}")
-    public ResponseEntity<Cart> addToCart(@PathVariable String userId,
+    @PostMapping("beat/{beatId}/license/{license}")
+    public ResponseEntity<Cart> addToCart(@AuthenticationPrincipal OAuth2User principal,
                                           @PathVariable Long beatId,
                                           @PathVariable String license) {
-        return ResponseEntity.ok(beatService.addToCart(userId, beatId, license));
+        return principal == null ? null :
+                ResponseEntity.ok(beatService.addToCart(principal.getAttribute("sub"), beatId, license));
     }
 
     @Operation(summary = "Удаление из корзины")
-    @PostMapping("removeFromCart/user/{userId}/beat/{beatId}")
-    public void removeFromCart(@PathVariable String userId, @PathVariable Long beatId) {
-        beatService.removeFromCart(userId, beatId);
+    @PostMapping("removeFromCart/beat/{beatId}")
+    public void removeFromCart(@AuthenticationPrincipal OAuth2User principal, @PathVariable Long beatId) {
+        if (principal != null) beatService.removeFromCart(principal.getAttribute("sub"), beatId);
     }
 
     @Operation(summary = "Добавление в историю")
-    @PostMapping("/user/{userId}/beat/{beatId}")
-    public void getRecommendedUsers(@PathVariable String userId, @PathVariable Long beatId) {
-        beatService.addToHistory(userId, beatId);
+    @PostMapping("beat/{beatId}")
+    public void getRecommendedUsers(@AuthenticationPrincipal OAuth2User principal, @PathVariable Long beatId) {
+        if (principal != null) beatService.addToHistory(principal.getAttribute("sub"), beatId);
     }
 
     @Operation(summary = "Удаление бита")
@@ -160,22 +167,27 @@ public class BeatController {
     }
 
     @Operation(summary = "Избранные биты пользователя по его id")
-    @GetMapping("/favorite/{userId}")
-    public ResponseEntity<Page<BeatDto>> getFavorite(@PathVariable String userId, Pageable pageable) {
-        return ResponseEntity.ok(beatService.getFavoriteBeats(userId, pageable));
+    @GetMapping("favorite")
+    public ResponseEntity<Page<BeatDto>> getFavorite(@AuthenticationPrincipal OAuth2User principal,
+                                                     Pageable pageable) {
+        return principal == null ? null :
+                ResponseEntity.ok(beatService.getFavoriteBeats(principal.getAttribute("sub"), pageable));
     }
 
     @Operation(summary = "История битов пользователя по его id")
-    @GetMapping("/history/{userId}")
-    public ResponseEntity<Page<BeatDto>> getHistory(@PathVariable String userId, Pageable pageable) {
-        return ResponseEntity.ok(beatService.getHistoryBeats(userId, pageable));
+    @GetMapping("history")
+    public ResponseEntity<Page<BeatDto>> getHistory(@AuthenticationPrincipal OAuth2User principal,
+                                                    Pageable pageable) {
+        return principal == null ? null :
+                ResponseEntity.ok(beatService.getHistoryBeats(principal.getAttribute("sub"), pageable));
     }
 
     @Operation(summary = "Биты пользователя по его id")
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<Page<BeatDto>> getBeats(@PathVariable String userId,
-                                                  @RequestParam(required = false) String authUserId,
+    @GetMapping("user/{userId}")
+    public ResponseEntity<Page<BeatDto>> getBeats(@AuthenticationPrincipal OAuth2User principal,
+                                                  @PathVariable String userId,
                                                   Pageable pageable) {
-        return ResponseEntity.ok(beatService.getBeats(userId, authUserId, pageable));
+        return ResponseEntity.ok(beatService.getBeats(userId, principal == null ? null :
+                principal.getAttribute("sub"), pageable));
     }
 }
