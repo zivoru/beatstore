@@ -17,11 +17,19 @@ class Header extends Component {
     }
 
     componentDidMount() {
-        this.setState({cart: this.props.cart})
+        this.setState({
+            user: this.props.user,
+            cart: this.props.cart
+        })
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps !== this.props) this.setState({cart: this.props.cart})
+        if (prevProps !== this.props) {
+            this.setState({
+                user: this.props.user,
+                cart: this.props.cart
+            })
+        }
     }
 
     burgerOpen = () => {
@@ -56,7 +64,7 @@ class Header extends Component {
     render() {
 
         let cart = this.state.cart
-        let user = this.props.user
+        let user = this.state.user
 
         let amountCart;
         let dropCart;

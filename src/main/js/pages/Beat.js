@@ -29,6 +29,8 @@ class Beat extends Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.user !== this.props.user) {
             this.setState({user: this.props.user})
+            this.setBeat();
+            this.setComments();
         }
         if (prevProps.beatId !== this.props.beatId) {
             this.setBeat();
@@ -39,6 +41,21 @@ class Beat extends Component {
     setBeat = () => {
         axios.get("/api/v1/beats/" + this.props.beatId).then(res => {
             this.setState({beat: res.data})
+
+            this.setState({
+                like: '/img/heart.png'
+            })
+
+            if (this.props.user !== null && this.props.user !== undefined) {
+                for (const like of res.data.likes) {
+                    if (like.id === this.props.user.id) {
+                        this.setState({
+                            like: '/img/heart-fill.png'
+                        })
+                        console.log('jopa')
+                    }
+                }
+            }
 
             this.setState({
                 licenseCode:
@@ -91,92 +108,72 @@ class Beat extends Component {
                     </div>
             })
 
-            // if (document.querySelector(".licenses--check") !== null) {
-                if (this.props.user !== null && this.props.user !== undefined) {
-                    axios.get("/api/v1/carts/").then(response => {
+            if (this.props.user !== null && this.props.user !== undefined) {
+                axios.get("/api/v1/carts/").then(response => {
 
-                        console.log(response.data)
+                    console.log(response.data)
 
-                        let mp3 = document.querySelector(".mp3");
-                        mp3.classList.remove("select")
-                        let wav = document.querySelector(".wav");
-                        wav.classList.remove("select")
-                        let unlimited = document.querySelector(".unlimited");
-                        unlimited.classList.remove("select")
-                        let exclusive = document.querySelector(".exclusive");
-                        exclusive.classList.remove("select")
+                    let mp3 = document.querySelector(".mp3");
+                    mp3.classList.remove("select")
+                    let wav = document.querySelector(".wav");
+                    wav.classList.remove("select")
+                    let unlimited = document.querySelector(".unlimited");
+                    unlimited.classList.remove("select")
+                    let exclusive = document.querySelector(".exclusive");
+                    exclusive.classList.remove("select")
 
-                        let exc = document.querySelector(".btn-exclusive");
-                        exc.style.display = "none"
-                        let mp = document.querySelector(".btn-mp3");
-                        mp.style.display = "none"
-                        let wa = document.querySelector(".btn-wav");
-                        wa.style.display = "none"
-                        let unl = document.querySelector(".btn-unlimited");
-                        unl.style.display = "none"
+                    let exc = document.querySelector(".btn-exclusive");
+                    exc.style.display = "none"
+                    let mp = document.querySelector(".btn-mp3");
+                    mp.style.display = "none"
+                    let wa = document.querySelector(".btn-wav");
+                    wa.style.display = "none"
+                    let unl = document.querySelector(".btn-unlimited");
+                    unl.style.display = "none"
 
-                        for (const mapBeat of response.data) {
-                            if (mapBeat.beat.id === res.data.id) {
+                    for (const mapBeat of response.data) {
+                        if (mapBeat.beat.id === res.data.id) {
 
-                                if (mapBeat.licensing === "MP3") {
+                            if (mapBeat.licensing === "MP3") {
 
-                                    let license = document.querySelector(".mp3");
-                                    license.classList.add("select")
+                                let license = document.querySelector(".mp3");
+                                license.classList.add("select")
 
-                                    let btn = document.querySelector(".btn-mp3");
-                                    btn.style.display = "initial"
-                                }
+                                let btn = document.querySelector(".btn-mp3");
+                                btn.style.display = "initial"
+                            }
 
-                                if (mapBeat.licensing === "WAV") {
+                            if (mapBeat.licensing === "WAV") {
 
-                                    let license = document.querySelector(".wav");
-                                    license.classList.add("select")
+                                let license = document.querySelector(".wav");
+                                license.classList.add("select")
 
-                                    let btn = document.querySelector(".btn-wav");
-                                    btn.style.display = "initial"
-                                }
+                                let btn = document.querySelector(".btn-wav");
+                                btn.style.display = "initial"
+                            }
 
-                                if (mapBeat.licensing === "UNLIMITED") {
+                            if (mapBeat.licensing === "UNLIMITED") {
 
-                                    let license = document.querySelector(".unlimited");
-                                    license.classList.add("select")
+                                let license = document.querySelector(".unlimited");
+                                license.classList.add("select")
 
-                                    let btn = document.querySelector(".btn-unlimited");
-                                    btn.style.display = "initial"
-                                }
+                                let btn = document.querySelector(".btn-unlimited");
+                                btn.style.display = "initial"
+                            }
 
-                                if (mapBeat.licensing === "EXCLUSIVE") {
+                            if (mapBeat.licensing === "EXCLUSIVE") {
 
-                                    let license = document.querySelector(".exclusive");
-                                    license.classList.add("select")
+                                let license = document.querySelector(".exclusive");
+                                license.classList.add("select")
 
-                                    let btn = document.querySelector(".btn-exclusive");
-                                    btn.style.display = "initial"
-                                }
+                                let btn = document.querySelector(".btn-exclusive");
+                                btn.style.display = "initial"
                             }
                         }
-
-                    });
-                }
-            //
-            // }
-
-            this.setState({
-                like: '/img/heart.png'
-            })
-
-            if (this.props.user !== null && this.props.user !== undefined) {
-                for (const like of res.data.likes) {
-                    if (like.id === this.props.user.id) {
-                        this.setState({
-                            like: '/img/heart-fill.png'
-                        })
-                        console.log('jopa')
                     }
-                }
+
+                });
             }
-
-
         }).catch(() => {
             this.setState({beat: "null"})
         })
@@ -340,7 +337,9 @@ class Beat extends Component {
         axios.post("/api/v1/beats/beat/" + this.state.beat.id + "/license/" + this.state.license).then(() => {
             this.props.nullToCart()
 
-            if (window.screen.width > 767) setTimeout(() => {this.props.cartPopUpOpen()}, 10)
+            if (window.screen.width > 767) setTimeout(() => {
+                this.props.cartPopUpOpen()
+            }, 10)
         })
 
     }

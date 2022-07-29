@@ -27,9 +27,9 @@ header {
     padding-left: 8px;
 }
 
-.header-logo:hover > img {
-    transform: rotate(-45deg);
-}
+/*.header-logo:hover > img {*/
+/*    transform: rotate(-45deg);*/
+/*}*/
 
 .hdr-input {
     height: 36px;

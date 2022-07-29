@@ -11,6 +11,7 @@ import './styles/MyBeats.css';
 import './styles/Playeer.css';
 import './styles/Profile.css';
 import './styles/TopCharts.css';
+import './styles/Settings.css';
 import {Header} from "./components/Header";
 
 const React = require('react');
@@ -28,6 +29,7 @@ import {Favorite} from "./pages/Favorite";
 import {TopCharts} from "./pages/TopCharts";
 import {Home} from "./pages/home/Home";
 import Profile1 from "./pages/Profile1";
+import {Settings} from "./pages/Settings";
 
 // const client = require('./client');
 
@@ -682,6 +684,12 @@ class App extends React.Component {
         this.setState({loginPopUp: !this.state.loginPopUp})
     }
 
+    updateUser = () => {
+        axios.get('/user').then(res => {
+            this.setState({user: res.data.user});
+        })
+    }
+
     render() {
 
         $.ajaxSetup({
@@ -769,14 +777,14 @@ class App extends React.Component {
                     />}/>
 
                     <Route path="/edit/:beatId" element={userIsPresent
-                        ? <Edit1 resourceUrl={this.resourceUrl}/> : <Navigate to="/login" replace/>}/>
+                        ? <Edit1 resourceUrl={this.resourceUrl}/> : null}/>
 
                     <Route path="/beats" element={userIsPresent
                         ? <MyBeats user={this.state.user}
                                    setAudio={this.setAudio}
                                    openPlaylists={this.openPlaylists}
                                    openDownload={this.openDownload}/>
-                        : <Navigate to="/login" replace/>}/>
+                        : null}/>
 
                     <Route path="/history" element={userIsPresent
                         ? <History user={this.state.user}
@@ -784,14 +792,14 @@ class App extends React.Component {
                                    setAudio={this.setAudio}
                                    openLicenses={this.openLicenses}
                                    openDownload={this.openDownload}/>
-                        : <Navigate to="/login" replace/>}/>
+                        : null}/>
 
                     <Route path="/favorites" element={userIsPresent
                         ? <Favorite user={this.state.user} resourceUrl={this.resourceUrl}
                                     setAudio={this.setAudio}
                                     openLicenses={this.openLicenses}
                                     openDownload={this.openDownload}/>
-                        : <Navigate to="/login" replace/>}/>
+                        : null}/>
 
                     <Route path="/top-charts" element={<TopCharts user={this.state.user} setAudio={this.setAudio}
                                                                   openLicenses={this.openLicenses}
@@ -805,6 +813,9 @@ class App extends React.Component {
                                                                 openDownload={this.openDownload}
                                                                 setLoginPopUp={this.setLoginPopUp}
                     />}/>
+
+                    <Route path="/settings" element={userIsPresent
+                        ? <Settings user={this.state.user} updateUser={this.updateUser}/> : null}/>
                 </Routes>
 
                 {player}

@@ -31,6 +31,14 @@ public class UserController {
         return ResponseEntity.ok(userService.findById(id));
     }
 
+    @Operation(summary = "Изменение username и email")
+    @PutMapping()
+    public ResponseEntity<User> findById(@AuthenticationPrincipal OAuth2User principal,
+                                         @RequestParam String username, @RequestParam String email) {
+        String id = principal != null ? principal.getAttribute("sub") : null;
+        return ResponseEntity.ok(userService.update(id, username, email));
+    }
+
     @Operation(summary = "Удаление пользователя")
     @DeleteMapping("{id}")
     public void deleteUser(@PathVariable String id) {

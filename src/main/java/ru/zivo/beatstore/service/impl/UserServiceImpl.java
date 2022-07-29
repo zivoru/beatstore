@@ -6,7 +6,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.webjars.NotFoundException;
 import ru.zivo.beatstore.model.Beat;
+import ru.zivo.beatstore.model.Profile;
+import ru.zivo.beatstore.model.Social;
 import ru.zivo.beatstore.model.User;
+import ru.zivo.beatstore.model.enums.Status;
+import ru.zivo.beatstore.repository.ProfileRepository;
+import ru.zivo.beatstore.repository.SocialRepository;
 import ru.zivo.beatstore.repository.UserRepository;
 import ru.zivo.beatstore.service.UserService;
 import ru.zivo.beatstore.service.impl.common.DeleteAudioFiles;
@@ -23,20 +28,56 @@ public class UserServiceImpl implements UserService {
     private String uploadPath;
 
     private final UserRepository userRepository;
+    private final ProfileRepository profileRepository;
+    private final SocialRepository socialRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, ProfileRepository profileRepository, SocialRepository socialRepository) {
         this.userRepository = userRepository;
+        this.profileRepository = profileRepository;
+        this.socialRepository = socialRepository;
     }
 
     @Override
-    public User register() {
-        return null;
+    public User register(String id, String username, String email) {
+
+        StringBuilder newUsername = new StringBuilder();
+
+        for (int i = 0; i < username.length(); i++) {
+            if (username.charAt(i) != ' ') {
+                newUsername.append(username.charAt(i));
+            }
+        }
+
+        User user = User.builder()
+                .id(id)
+                .username(String.valueOf(newUsername).toLowerCase())
+                .email(email)
+                .verified(false)
+                .status(Status.ACTIVE)
+                .build();
+
+        User savedUser = userRepository.save(user);
+
+        Profile profile = new Profile();
+        profile.setDisplayName(username);
+        profile.setImageName("");
+        profile.setUser(savedUser);
+        profileRepository.save(profile);
+
+        Social social = new Social();
+        social.setUser(savedUser);
+        socialRepository.save(social);
+
+        return userRepository.save(savedUser);
     }
 
     @Override
-    public User update(User user) {
-        return null;
+    public User update(String id, String username, String email) {
+        User user = findById(id);
+        user.setUsername(username);
+        user.setEmail(email);
+        return userRepository.save(user);
     }
 
     @Override

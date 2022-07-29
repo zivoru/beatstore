@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface UserService {
 
-    User register();
+    User register(String id, String username, String email);
 
-    User update(User user);
+    User update(String id, String username, String email);
 
     User findById(String id);
 
