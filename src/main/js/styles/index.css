@@ -65,7 +65,7 @@ nav, footer, header, aside {
 html, body {
     height: 100%;
     width: 100%;
-    line-height: 1;
+    line-height: initial;
     font-size: 14px;
     -ms-text-size-adjust: 100%
 }
@@ -124,7 +124,7 @@ body {
     min-height: 100vh;
     scroll-behavior: smooth;
     text-rendering: optimizeSpeed;
-    line-height: 1.5;
+    line-height: initial;
 }
 
 ul[class], ol[class] {

@@ -90,11 +90,11 @@ public class BeatServiceImpl implements BeatService {
         makeDirectory(beat, pathname);
 
         String imageName = beat.getImageName();
-        if (imageName != null) {
+        if (imageName != null && !imageName.equals("")) {
             System.out.println(new File(pathname + "/" + imageName).delete());
         }
 
-        beat.setImageName(saveFile(image, pathname));
+        beat.setImageName(saveFile(image, pathname, ".jpg"));
         beatRepository.save(beat);
     }
 
@@ -108,9 +108,9 @@ public class BeatServiceImpl implements BeatService {
 
         DeleteAudioFiles.delete(beat, pathname);
 
-        audio.setMp3Name(saveFile(mp3, pathname));
-        audio.setWavName(saveFile(wav, pathname));
-        audio.setTrackStemsName(saveFile(zip, pathname));
+        audio.setMp3Name(saveFile(mp3, pathname, ".mp3"));
+        audio.setWavName(saveFile(wav, pathname, ".wav"));
+        audio.setTrackStemsName(saveFile(zip, pathname, ".zip"));
 
         audioRepository.save(audio);
         beatRepository.save(beat);
@@ -301,14 +301,17 @@ public class BeatServiceImpl implements BeatService {
         );
 
         for (File file : files) {
-            if (!file.exists()) System.out.println(file.mkdir());
+            if (!file.exists()) {
+                boolean mkdir = file.mkdir();
+                System.out.println(mkdir);
+            }
         }
     }
 
-    private String saveFile(MultipartFile file, String pathname) throws IOException {
+    private String saveFile(MultipartFile file, String pathname, String type) throws IOException {
         if (file == null) return null;
 
-        String resultFilename = UUID.randomUUID().toString();
+        String resultFilename = UUID.randomUUID() + type;
         file.transferTo(new File(pathname + "/" + resultFilename));
         return resultFilename;
     }

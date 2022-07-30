@@ -280,58 +280,60 @@ class Profile extends Component {
                                         <span>Биты</span><span>{usr.amountBeats}</span>
                                     </div>
                                 </div>
-                                <div className="item-stats" style={{borderRadius: "0 0 10px 10px"}}>
-                                    <div className="stats-line"></div>
-                                    <span className="stats-title">Соц сети</span>
-                                    {usr.social.instagram !== null
-                                        ?
-                                        <div className="stats">
-                                            <a href={"https://instagram.com/" + usr.social.instagram}
-                                               target="_blank" className="item-social">
+                                {usr.social.instagram !== null || usr.social.youtube !== null || usr.social.tiktok !== null || usr.social.vkontakte !== null ?
+                                    <div className="item-stats" style={{borderRadius: "0 0 10px 10px"}}>
+                                        <div className="stats-line"></div>
+                                        <span className="stats-title">Соц сети</span>
+                                        {usr.social.instagram !== null && usr.social.instagram !== ""
+                                            ?
+                                            <div className="stats">
+                                                <a href={"https://instagram.com/" + usr.social.instagram}
+                                                   target="_blank" className="item-social">
 
-                                                <img src={'/img/profile/instagram.png'} alt="youtube" width="20px"/>
-                                                Instagram
-                                            </a>
-                                        </div>
-                                        : null
-                                    }
-                                    {usr.social.youtube !== null
-                                        ?
-                                        <div className="stats">
-                                            <a href={"https://youtube.com/" + usr.social.youtube}
-                                               target="_blank" className="item-social">
+                                                    <img src={'/img/profile/instagram.png'} alt="youtube" width="20px"/>
+                                                    Instagram
+                                                </a>
+                                            </div>
+                                            : null
+                                        }
+                                        {usr.social.youtube !== null && usr.social.youtube !== ""
+                                            ?
+                                            <div className="stats">
+                                                <a href={"https://youtube.com/" + usr.social.youtube}
+                                                   target="_blank" className="item-social">
 
-                                                <img src={'/img/profile/youtube.png'} alt="youtube" width="20px"/>
-                                                YouTube
-                                            </a>
-                                        </div>
-                                        : null
-                                    }
-                                    {usr.social.tiktok !== null
-                                        ?
-                                        <div className="stats">
-                                            <a href={"https://www.tiktok.com/@" + usr.social.tiktok}
-                                               target="_blank" className="item-social">
+                                                    <img src={'/img/profile/youtube.png'} alt="youtube" width="20px"/>
+                                                    YouTube
+                                                </a>
+                                            </div>
+                                            : null
+                                        }
+                                        {usr.social.tiktok !== null && usr.social.tiktok !== ""
+                                            ?
+                                            <div className="stats">
+                                                <a href={"https://www.tiktok.com/@" + usr.social.tiktok}
+                                                   target="_blank" className="item-social">
 
-                                                <img src={'/img/profile/tiktok.png'} alt="youtube" width="20px"/>
-                                                Tik-Tok
-                                            </a>
-                                        </div>
-                                        : null
-                                    }
-                                    {usr.social.vkontakte !== null
-                                        ?
-                                        <div className="stats">
-                                            <a href={"https://vk.com/" + usr.social.vkontakte}
-                                               target="_blank" className="item-social">
+                                                    <img src={'/img/profile/tiktok.png'} alt="youtube" width="20px"/>
+                                                    Tik-Tok
+                                                </a>
+                                            </div>
+                                            : null
+                                        }
+                                        {usr.social.vkontakte !== null && usr.social.vkontakte !== ""
+                                            ?
+                                            <div className="stats">
+                                                <a href={"https://vk.com/" + usr.social.vkontakte}
+                                                   target="_blank" className="item-social">
 
-                                                <img src={'/img/profile/vk.png'} alt="youtube" width="20px"/>
-                                                VK
-                                            </a>
-                                        </div>
-                                        : null
-                                    }
-                                </div>
+                                                    <img src={'/img/profile/vk.png'} alt="youtube" width="20px"/>
+                                                    VK
+                                                </a>
+                                            </div>
+                                            : null
+                                        }
+                                    </div>
+                                    : null}
                             </div>
 
                             <div className="right-panel ml16">

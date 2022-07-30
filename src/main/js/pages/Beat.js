@@ -507,7 +507,7 @@ class Beat extends Component {
                                         `/img/user-${beat.user.id}/beats/beat-${beat.id}/${beat.imageName}` :
                                         '/img/track-placeholder.svg'} alt="" className="item-image"/>
 
-                                    <div className="mw100 flex-c-c">
+                                    <div className="mw100 flex-c-c mb5">
                                         <h1 className="mw100 wnohte fs20">{beat.title}</h1>
                                     </div>
 

@@ -77,15 +77,20 @@ public class PlaylistServiceImpl implements PlaylistService {
         );
 
         for (File file : files) {
-            if (!file.exists()) System.out.println(file.mkdir());
+            if (!file.exists()) {
+                boolean mkdir = file.mkdir();
+                System.out.println(mkdir);
+            }
         }
 
         String imageName = playlist.getImageName();
-        if (imageName != null) System.out.println(new File(pathname + "/" + imageName).delete());
+        if (imageName != null && !imageName.equals("")) {
+            System.out.println(new File(pathname + "/" + imageName).delete());
+        }
 
         if (image == null) return;
 
-        String resultFilename = UUID.randomUUID().toString();
+        String resultFilename = UUID.randomUUID() + ".jpg";
         image.transferTo(new File(pathname + "/" + resultFilename));
         playlist.setImageName(resultFilename);
 
