@@ -52,7 +52,6 @@ class Beat extends Component {
                         this.setState({
                             like: '/img/heart-fill.png'
                         })
-                        console.log('jopa')
                     }
                 }
             }
@@ -110,8 +109,6 @@ class Beat extends Component {
 
             if (this.props.user !== null && this.props.user !== undefined) {
                 axios.get("/api/v1/carts/").then(response => {
-
-                    console.log(response.data)
 
                     let mp3 = document.querySelector(".mp3");
                     mp3.classList.remove("select")
@@ -347,9 +344,6 @@ class Beat extends Component {
     commentChange = (event) => {
 
         this.setState({comment: event.target.value})
-
-        console.log(event.target.value)
-        console.log(this.state.comment)
 
         if (event.target.value.length > 0) {
             document.querySelector(".comment-input").style.borderBottom = "1px solid #005ff8"
@@ -660,7 +654,7 @@ class Beat extends Component {
 
                                                     <div className="comment-text wnohte">
                                                         <div>
-                                                            <Link to={comment.author.username}
+                                                            <Link to={"/" + comment.author.username}
                                                                   className="fs12 fw400 hu wnohte mw100 inl-blk"
                                                                   title={profile.displayName}>
                                                                 {profile.displayName}

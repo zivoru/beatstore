@@ -11,10 +11,7 @@ import org.webjars.NotFoundException;
 import ru.zivo.beatstore.model.*;
 import ru.zivo.beatstore.model.enums.BeatStatus;
 import ru.zivo.beatstore.model.enums.Licensing;
-import ru.zivo.beatstore.repository.AudioRepository;
-import ru.zivo.beatstore.repository.BeatRepository;
-import ru.zivo.beatstore.repository.CartRepository;
-import ru.zivo.beatstore.repository.UserRepository;
+import ru.zivo.beatstore.repository.*;
 import ru.zivo.beatstore.service.BeatService;
 import ru.zivo.beatstore.service.impl.common.DeleteAudioFiles;
 import ru.zivo.beatstore.service.impl.common.Users;
@@ -40,12 +37,15 @@ public class BeatServiceImpl implements BeatService {
 
     private final CartRepository cartRepository;
 
+    private final LicenseRepository licenseRepository;
+
     @Autowired
-    public BeatServiceImpl(BeatRepository beatRepository, UserRepository userRepository, AudioRepository audioRepository, CartRepository cartRepository) {
+    public BeatServiceImpl(BeatRepository beatRepository, UserRepository userRepository, AudioRepository audioRepository, CartRepository cartRepository, LicenseRepository licenseRepository) {
         this.beatRepository = beatRepository;
         this.userRepository = userRepository;
         this.audioRepository = audioRepository;
         this.cartRepository = cartRepository;
+        this.licenseRepository = licenseRepository;
     }
 
     @Override
@@ -69,6 +69,19 @@ public class BeatServiceImpl implements BeatService {
 
     @Override
     public void update(Beat beat) {
+        Beat beatById = findById(beat.getId());
+        beat.setUser(beatById.getUser());
+        beat.setAudio(beatById.getAudio());
+        beat.setImageName(beatById.getImageName());
+        beat.setPlays(beatById.getPlays());
+        beat.setStatus(beatById.getStatus());
+        beat.setLicense(beatById.getLicense());
+        beat.setTags(beatById.getTags());
+        beat.setComments(beatById.getComments());
+        beat.setLikes(beatById.getLikes());
+        beat.setCart(beatById.getCart());
+        beat.setFavoriteBeats(beatById.getFavoriteBeats());
+        beat.setHistory(beatById.getHistory());
         beatRepository.save(beat);
     }
 
@@ -106,11 +119,27 @@ public class BeatServiceImpl implements BeatService {
 
         makeDirectory(beat, pathname);
 
-        DeleteAudioFiles.delete(beat, pathname);
-
-        audio.setMp3Name(saveFile(mp3, pathname, ".mp3"));
-        audio.setWavName(saveFile(wav, pathname, ".wav"));
-        audio.setTrackStemsName(saveFile(zip, pathname, ".zip"));
+        if (mp3 != null) {
+            String name = beat.getAudio().getMp3Name();
+            if (name != null && !name.equals("")) {
+                System.out.println(new File(pathname + "/" + name).delete());
+            }
+            audio.setMp3Name(saveFile(mp3, pathname, ".mp3"));
+        }
+        if (wav != null) {
+            String name = beat.getAudio().getWavName();
+            if (name != null && !name.equals("")) {
+                System.out.println(new File(pathname + "/" + name).delete());
+            }
+            audio.setWavName(saveFile(wav, pathname, ".wav"));
+        }
+        if (zip != null) {
+            String name = beat.getAudio().getTrackStemsName();
+            if (name != null && !name.equals("")) {
+                System.out.println(new File(pathname + "/" + name).delete());
+            }
+            audio.setTrackStemsName(saveFile(zip, pathname, ".zip"));
+        }
 
         audioRepository.save(audio);
         beatRepository.save(beat);
@@ -126,9 +155,11 @@ public class BeatServiceImpl implements BeatService {
     @Override
     public void addLicense(Long beatId, License license) {
         Beat beat = findById(beatId);
+        if (beat.getLicense() != null) license.setId(beat.getLicense().getId());
         license.setBeat(beat);
-        beat.setLicense(license);
-        beatRepository.save(beat);
+        licenseRepository.save(license);
+//        beat.setLicense(license);
+//        beatRepository.save(beat);
     }
 
     @Override

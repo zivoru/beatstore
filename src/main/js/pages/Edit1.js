@@ -6,5 +6,5 @@ export default function Edit1(props) {
 
     let params = useParams();
 
-    return <EditBeat resourceUrl={props.resourceUrl} beatId={params.beatId}/>;
+    return <EditBeat user={props.user} beatId={params.beatId}/>;
 }

@@ -9,7 +9,7 @@ header {
     position: fixed;
     z-index: 50;
     transition: .3s;
-    /*border-bottom: 1px solid rgba(15, 15, 15, 1);*/
+    border-bottom: 1px solid rgba(15, 15, 15, 1);
 }
 
 .header__container {

@@ -21,4 +21,9 @@ public class MainController {
     public String beat() {
         return "index";
     }
+
+    @GetMapping("/edit/*")
+    public String edit() {
+        return "index";
+    }
 }

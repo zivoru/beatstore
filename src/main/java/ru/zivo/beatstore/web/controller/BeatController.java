@@ -18,6 +18,7 @@ import ru.zivo.beatstore.service.TagService;
 import ru.zivo.beatstore.web.dto.BeatDto;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequestMapping("api/v1/beats")
@@ -51,9 +52,10 @@ public class BeatController {
 
     @Operation(summary = "Изменение бита")
     @PutMapping("{id}")
-    public void update(@PathVariable Long id, @RequestBody Beat beat) {
+    public ResponseEntity<Long> update(@PathVariable Long id, @RequestBody Beat beat) {
         beat.setId(id);
         beatService.update(beat);
+        return ResponseEntity.ok(id);
     }
 
     @Operation(summary = "Загрузка фото бита")
@@ -67,9 +69,9 @@ public class BeatController {
     @PostMapping("uploadAudio/{beatId}")
     public ResponseEntity<Long> uploadAudio(
             @PathVariable Long beatId,
-            @RequestParam(name = "mp3") MultipartFile mp3,
-            @RequestParam(name = "wav") MultipartFile wav,
-            @RequestParam(name = "zip") MultipartFile zip
+            @RequestParam(name = "mp3", required = false) MultipartFile mp3,
+            @RequestParam(name = "wav", required = false) MultipartFile wav,
+            @RequestParam(name = "zip", required = false) MultipartFile zip
     ) throws IOException {
         beatService.uploadAudio(beatId, mp3, wav, zip);
         return ResponseEntity.ok(beatId);
@@ -82,11 +84,11 @@ public class BeatController {
                           @RequestParam String nameTag2,
                           @RequestParam String nameTag3
     ) {
-        List<Tag> tags = List.of(
-                tagService.create(Tag.builder().name(nameTag1).build()),
-                tagService.create(Tag.builder().name(nameTag2).build()),
-                tagService.create(Tag.builder().name(nameTag3).build())
-        );
+        List<Tag> tags = new ArrayList<>();
+
+        tags.add(tagService.create(Tag.builder().name(nameTag1).build()));
+        tags.add(tagService.create(Tag.builder().name(nameTag2).build()));
+        tags.add(tagService.create(Tag.builder().name(nameTag3).build()));
 
         beatService.addTags(beatId, tags);
     }

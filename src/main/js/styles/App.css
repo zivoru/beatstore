@@ -58,6 +58,7 @@ a {
     font-size: 12px;
     font-weight: 500;
     letter-spacing: initial;
+    line-height: 1.5;
 }
 
 .btn-primary:hover {
@@ -125,6 +126,11 @@ a {
 .mr5 { margin-right: 5px }
 .mb5 { margin-bottom: 5px }
 .ml5 { margin-left: 5px }
+
+.mt10 { margin-top: 10px }
+.mr10 { margin-right: 10px }
+.mb10 { margin-bottom: 10px }
+.ml10 { margin-left: 10px }
 
 .mt16 { margin-top: 16px }
 .mr16 { margin-right: 16px }

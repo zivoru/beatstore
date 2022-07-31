@@ -1,4 +1,4 @@
-import {BrowserRouter, Link, Route, Routes, Navigate} from "react-router-dom";
+import {BrowserRouter, Link, Route, Routes} from "react-router-dom";
 import axios from 'axios';
 import './styles/App.css';
 import './styles/Beat.css';
@@ -30,10 +30,18 @@ import {TopCharts} from "./pages/TopCharts";
 import {Home} from "./pages/home/Home";
 import Profile1 from "./pages/Profile1";
 import {Settings} from "./pages/Settings";
+import {CreateBeat} from "./pages/CreateBeat";
 
 // const client = require('./client');
 
 class App extends React.Component {
+
+    likes;
+    price_mp3;
+    licensing;
+    price_unlimited;
+    price_wav;
+    price_exclusive;
 
     constructor(props) {
         super(props);
@@ -51,15 +59,19 @@ class App extends React.Component {
             profilePopUp: false,
             play: null,
             loginPopUp: false,
+            loading: false
         };
     }
 
     resourceUrl = '/img/'
 
-
     componentDidMount() {
+        this.setState({loading: true})
+
         axios.get('/user').then(res => {
             this.setState({user: res.data.user});
+
+            this.setState({loading: false})
 
             if (res.data.user !== undefined && res.data.user !== null) {
                 axios.get('/api/v1/carts/').then(response => {
@@ -68,7 +80,6 @@ class App extends React.Component {
             }
         })
     }
-
 
     logout = () => {
         this.setState({
@@ -94,7 +105,6 @@ class App extends React.Component {
         return true;
     }
 
-
     cartPopUpOpen = () => {
         this.setState({cartPopUp: !this.state.cartPopUp})
         this.setState({profilePopUp: false})
@@ -108,7 +118,6 @@ class App extends React.Component {
         this.setState({cartPopUp: false})
     }
 
-
     setAudio = (id, path, event) => {
 
         document.getElementById("root").style.paddingBottom = "70px"
@@ -118,11 +127,11 @@ class App extends React.Component {
         }
 
         // добавление прослушивания
-        axios.post("/api/v1/beats/plays/" + id)
+        axios.post("/api/v1/beats/plays/" + id).then()
 
         if (this.state.user !== null && this.state.user !== undefined) {
             // добавление в историю прослушиваний
-            axios.post("/api/v1/beats/beat/" + id)
+            axios.post("/api/v1/beats/beat/" + id).then()
         }
 
         this.setState({
@@ -690,6 +699,8 @@ class App extends React.Component {
         })
     }
 
+    closePlayer = () => {this.setState({playerView: false})}
+
     render() {
 
         $.ajaxSetup({
@@ -755,6 +766,9 @@ class App extends React.Component {
 
         return (
             <div>
+
+                {this.state.loading ? <div className="loading"><div className="loader"></div></div> : null}
+
                 <Header cart={this.state.cart} user={this.state.user} logout={this.logout}
                         cartPopUp={this.state.cartPopUp} profilePopUp={this.state.profilePopUp}
                         cartPopUpOpen={this.cartPopUpOpen} profilePopUpOpen={this.profilePopUpOpen}
@@ -776,8 +790,9 @@ class App extends React.Component {
                                                                 cartPopUpOpen={this.cartPopUpOpen}
                     />}/>
 
-                    <Route path="/edit/:beatId" element={userIsPresent
-                        ? <Edit1 resourceUrl={this.resourceUrl}/> : null}/>
+                    <Route path="/edit/:beatId" element={userIsPresent ? <Edit1 user={this.state.user}/> : null}/>
+
+                    <Route path="/upload-beat" element={userIsPresent ? <CreateBeat/> : null}/>
 
                     <Route path="/beats" element={userIsPresent
                         ? <MyBeats user={this.state.user}
