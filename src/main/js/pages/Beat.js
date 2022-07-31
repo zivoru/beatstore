@@ -35,6 +35,7 @@ class Beat extends Component {
         if (prevProps.beatId !== this.props.beatId) {
             this.setBeat();
             this.setComments();
+            window.scrollTo({ top: 0, behavior: 'smooth' })
         }
     }
 

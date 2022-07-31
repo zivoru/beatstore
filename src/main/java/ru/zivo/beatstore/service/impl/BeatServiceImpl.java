@@ -328,6 +328,15 @@ public class BeatServiceImpl implements BeatService {
         return drafts;
     }
 
+    @Override
+    public List<Beat> getSold(String userId) {
+        List<Beat> sold = new ArrayList<>();
+        for (Beat beat : Users.getUser(userId).getBeats()) {
+            if (beat.getStatus() == BeatStatus.SOLD) sold.add(beat);
+        }
+        return sold;
+    }
+
     /* not Override */
 
     private void makeDirectory(Beat beat, String pathname) {

@@ -1,6 +1,5 @@
 import React, {Component} from "react";
 import axios from "axios";
-// import '../styles/DisplayBeats.css';
 import Beats from "./components/Beats";
 
 class History extends Component {
@@ -12,12 +11,17 @@ class History extends Component {
         pagination: []
     }
 
+    componentDidMount() {
+        this.setState({user: this.props.user})
+        this.addBeatsToState(this.state.page)
+    }
+
     componentWillReceiveProps(nextProps, nextContext) {
         this.setState({user: this.props.user})
     }
 
     addBeatsToState = (page) => {
-        axios.get("http://localhost:7777/api/v1/beats/history/" + this.state.user.id + "?page=" + page + "&size=10").then(response => {
+        axios.get("/api/v1/beats/history/?page=" + page + "&size=10").then(response => {
             this.setState({totalPages: response.data.totalPages})
 
             this.setState({
@@ -50,16 +54,8 @@ class History extends Component {
 
     render() {
 
-        if (this.state.user === "null") {
-            this.setState({user: this.props.user})
-        }
-
-        if (this.state.user !== "null" && this.state.user !== null) {
+        if (this.state.user !== null && this.state.user !== undefined) {
             document.title = this.state.user.profile.displayName + " | История"
-
-            if (this.state.beats === null) {
-                this.addBeatsToState(this.state.page)
-            }
         }
 
         if (this.state.totalPages > 1 && this.state.pagination.length === 0) {

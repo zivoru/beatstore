@@ -28,7 +28,6 @@ class Profile extends Component {
             this.setState({user: this.props.user})
 
             if (this.props.user !== null && this.props.user !== undefined && this.state.userProfile !== null && this.state.userProfile !== "null") {
-                console.log('jopa')
 
                 if (this.state.userProfile.id === this.props.user.id) {
                     this.setState({
@@ -245,7 +244,7 @@ class Profile extends Component {
                     <div className="wrapper" style={{paddingBottom: 0}}>
                         <div className="container__main-info">
                             <div className="main-info">
-                                <div className="main-info-header">
+                                <div className="main-info-header" style={{paddingTop: 16}}>
 
                                     <img src={usr.profile.imageName !== null && usr.profile.imageName !== "" ?
                                         `/img/user-${usr.id}/profile/${usr.profile.imageName}` :

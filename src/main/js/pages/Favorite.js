@@ -1,6 +1,5 @@
 import React, {Component} from "react";
 import axios from "axios";
-// import '../styles/DisplayBeats.css';
 import Beats from "./components/Beats";
 
 class Favorite extends Component {
@@ -17,7 +16,7 @@ class Favorite extends Component {
     }
 
     addBeatsToState = (page) => {
-        axios.get("http://localhost:7777/api/v1/beats/favorite/" + this.state.user.id + "?page=" + page + "&size=10").then(response => {
+        axios.get("/api/v1/beats/favorite/?page=" + page + "&size=10").then(response => {
             this.setState({totalPages: response.data.totalPages})
 
             this.setState({

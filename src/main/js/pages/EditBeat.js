@@ -79,6 +79,11 @@ class EditBeat extends Component {
     }
 
     title = (event) => {
+        if (event.target.value.length === 0) {
+            document.getElementById('title').style.border = "1px solid rgb(200, 0, 0)"
+        } else {
+            document.getElementById('title').style.border = "none"
+        }
         event.target.value.length > 60
             ? document.getElementById('title').value = this.state.title
             : this.setState({title: event.target.value})
@@ -275,6 +280,11 @@ class EditBeat extends Component {
 
         let s = this.state;
 
+        if (s.title.length === 0) {
+            document.getElementById('title').style.border = "1px solid rgb(200, 0, 0)"
+            window.scrollTo({ top: 0, behavior: 'smooth' })
+        }
+
         if (s.tags.length < 3) {
             document.getElementById('tag').style.border = "1px solid rgb(200, 0, 0)"
             let tagsDOM = document.getElementsByClassName('tag');
@@ -282,10 +292,10 @@ class EditBeat extends Component {
                 if (tagsDOM[0] !== undefined) tagsDOM[0].style.border = "1px solid rgb(200, 0, 0)"
                 if (tagsDOM[1] !== undefined) tagsDOM[1].style.border = "1px solid rgb(200, 0, 0)"
             }
-            window.scrollTo(0, 0)
+            window.scrollTo({ top: 0, behavior: 'smooth' })
         }
 
-        if (s.tags.length === 3 && s.title !== "" && s.title !== null
+        if (s.tags.length === 3 && s.title !== "" && s.title !== null && s.title.length !== 0
             && s.priceMp3 !== "" && s.priceMp3 !== 0 && s.priceMp3 !== null
             && s.priceWav !== "" && s.priceWav !== 0 && s.priceWav !== null
             && s.priceUnlimited !== "" && s.priceUnlimited !== 0 && s.priceUnlimited !== null

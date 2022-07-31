@@ -7,11 +7,19 @@ import {RecommendedPlaylists} from './components/RecommendedPlaylists';
 import {Link} from "react-router-dom";
 
 class Home extends Component {
+    state = {loading: true}
+
     render() {
         document.title = 'BeatStore | Музыкальный маркетплейс для покупки и продажи битов';
 
+        setTimeout(() => this.setState({loading: false}), 300)
+
         return (
             <div>
+
+                {this.state.loading ?
+                    <div className="loading" style={{zIndex: 40}}><div className="loader"></div></div> : null}
+
                 <div>
                     <div className="header flex-c-c home-header">
                         <h1>BEATSTORE</h1>

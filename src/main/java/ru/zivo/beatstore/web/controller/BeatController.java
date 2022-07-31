@@ -195,7 +195,13 @@ public class BeatController {
 
     @Operation(summary = "Черновики пользователя")
     @GetMapping("/drafts")
-    public ResponseEntity<List<Beat>> getBeats(@AuthenticationPrincipal OAuth2User principal) {
+    public ResponseEntity<List<Beat>> getDrafts(@AuthenticationPrincipal OAuth2User principal) {
         return principal == null ? null : ResponseEntity.ok(beatService.getDrafts(principal.getAttribute("sub")));
+    }
+
+    @Operation(summary = "Проданные биты пользователя")
+    @GetMapping("/sold")
+    public ResponseEntity<List<Beat>> getSold(@AuthenticationPrincipal OAuth2User principal) {
+        return principal == null ? null : ResponseEntity.ok(beatService.getSold(principal.getAttribute("sub")));
     }
 }

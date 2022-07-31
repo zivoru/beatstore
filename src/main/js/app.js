@@ -71,14 +71,14 @@ class App extends React.Component {
         axios.get('/user').then(res => {
             this.setState({user: res.data.user});
 
-            setTimeout(() => this.setState({loading: false}), 1000)
+            setTimeout(() => this.setState({loading: false}), 500)
 
             if (res.data.user !== undefined && res.data.user !== null) {
                 axios.get('/api/v1/carts/').then(response => {
                     this.setState({cart: response.data})
                 })
             }
-        })
+        }).catch(() => this.setState({loading: false}))
     }
 
     logout = () => {
@@ -698,8 +698,6 @@ class App extends React.Component {
             this.setState({user: res.data.user});
         })
     }
-
-    closePlayer = () => {this.setState({playerView: false})}
 
     render() {
 

@@ -42,6 +42,11 @@ class CreateBeat extends Component {
     }
 
     title = (event) => {
+        if (event.target.value.length === 0) {
+            document.getElementById('title').style.border = "1px solid rgb(200, 0, 0)"
+        } else {
+            document.getElementById('title').style.border = "none"
+        }
         event.target.value.length > 60
             ? document.getElementById('title').value = this.state.title
             : this.setState({title: event.target.value})
@@ -96,6 +101,7 @@ class CreateBeat extends Component {
             this.setState({mp3: event.target.files[0]})
             this.setState({mp3Name: event.target.files[0].name})
             document.querySelector(".mp3").style.backgroundColor = "#005ff8"
+            document.querySelector('.mp3').style.border = "none"
         }
     }
     changeWav = (event) => {
@@ -103,6 +109,7 @@ class CreateBeat extends Component {
             this.setState({wav: event.target.files[0]})
             this.setState({wavName: event.target.files[0].name})
             document.querySelector(".wav").style.backgroundColor = "#005ff8"
+            document.querySelector('.wav').style.border = "none"
         }
     }
     changeZip = (event) => {
@@ -110,6 +117,7 @@ class CreateBeat extends Component {
             this.setState({zip: event.target.files[0]})
             this.setState({zipName: event.target.files[0].name})
             document.querySelector(".zip").style.backgroundColor = "#005ff8"
+            document.querySelector('.zip').style.border = "none"
         }
     }
 
@@ -233,9 +241,12 @@ class CreateBeat extends Component {
 
     saveBeat = (status) => {
 
-        this.setState({loading: true})
-
         let s = this.state;
+
+        if (s.title.length === 0) {
+            document.getElementById('title').style.border = "1px solid rgb(200, 0, 0)"
+            window.scrollTo({ top: 0, behavior: 'smooth' })
+        }
 
         if (s.tags.length < 3) {
             document.getElementById('tag').style.border = "1px solid rgb(200, 0, 0)"
@@ -245,29 +256,31 @@ class CreateBeat extends Component {
                 if (tagsDOM[0] !== undefined) tagsDOM[0].style.border = "1px solid rgb(200, 0, 0)"
                 if (tagsDOM[1] !== undefined) tagsDOM[1].style.border = "1px solid rgb(200, 0, 0)"
             }
-            window.scrollTo(0, 0)
+            window.scrollTo({ top: 0, behavior: 'smooth' })
         }
 
         if (s.mp3 === null) {
             document.querySelector('.mp3').style.border = "1px solid rgb(200, 0, 0)"
-            window.scrollTo(0, 0)
+            window.scrollTo({ top: 0, behavior: 'smooth' })
         }
         if (s.wav === null) {
             document.querySelector('.wav').style.border = "1px solid rgb(200, 0, 0)"
-            window.scrollTo(0, 0)
+            window.scrollTo({ top: 0, behavior: 'smooth' })
         }
         if (s.zip === null) {
             document.querySelector('.zip').style.border = "1px solid rgb(200, 0, 0)"
-            window.scrollTo(0, 0)
+            window.scrollTo({ top: 0, behavior: 'smooth' })
         }
 
 
-        if (s.tags.length === 3 && s.title !== "" && s.title !== null
+        if (s.tags.length === 3 && s.title !== "" && s.title !== null && s.title.length !== 0
             && s.priceMp3 !== "" && s.priceMp3 !== 0 && s.priceMp3 !== null
             && s.priceWav !== "" && s.priceWav !== 0 && s.priceWav !== null
             && s.priceUnlimited !== "" && s.priceUnlimited !== 0 && s.priceUnlimited !== null
             && s.priceExclusive !== "" && s.priceExclusive !== 0 && s.priceExclusive !== null
             && s.mp3 !== null && s.wav !== null && s.zip !== null) {
+
+            this.setState({loading: true})
 
             let audioFormData = new FormData();
             audioFormData.append("mp3", s.mp3);
@@ -321,7 +334,8 @@ class CreateBeat extends Component {
                 }).then()
 
                 setTimeout(() => location.href = '/beats', 1000);
-            })
+
+            }).catch(() => this.setState({loading: false}))
         }
     }
 
@@ -345,7 +359,9 @@ class CreateBeat extends Component {
             return (
                 <div>
 
-                    {this.state.loading ? <div className="loading"><div className="loader"></div></div> : null}
+                    {this.state.loading ? <div className="loading">
+                        <div className="loader"></div>
+                    </div> : null}
 
                     <div className="wrapper">
                         <div className="container">
@@ -754,8 +770,12 @@ class CreateBeat extends Component {
                             </div>
 
                             <div className="save-button">
-                                <button className="btn-primary" onClick={this.saveBeat.bind(this, "PUBLISHED")}>Сохранить</button>
-                                <button className="btn-primary ml16" onClick={this.saveBeat.bind(this, "DRAFT")} style={{backgroundColor: "rgb(50, 50, 50)"}}>Сохранить как черновик</button>
+                                <button className="btn-primary"
+                                        onClick={this.saveBeat.bind(this, "PUBLISHED")}>Опубликовать
+                                </button>
+                                <button className="btn-primary ml16" onClick={this.saveBeat.bind(this, "DRAFT")}
+                                        style={{backgroundColor: "rgb(50, 50, 50)"}}>Сохранить как черновик
+                                </button>
                             </div>
 
                             <div style={{height: 100, width: "100%"}}></div>

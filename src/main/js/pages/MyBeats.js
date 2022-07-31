@@ -11,6 +11,7 @@ class MyBeats extends Component {
             user: null,
             publishedBeats: null,
             draftBeats: null,
+            soldBeats: null,
             page: 0,
             totalPages: null,
             pagination: [],
@@ -18,19 +19,21 @@ class MyBeats extends Component {
             deleteId: null,
             publishedView: true,
             draftView: false,
-            soldView: false
+            soldView: false,
+            loading: false
         };
     }
 
     componentDidMount() {
         this.setState({user: this.props.user})
 
-        axios.get("/api/v1/beats/user/" + this.props.user.id + "?page=" + this.state.page + "&size=1000").then(res => {
-            this.setState({publishedBeats: res.data.content})
+        this.setState({loading: true})
 
-            if (res.data.totalElements === 0) this.setState({beats: "null"})
+        axios.get("/api/v1/beats/user/" + this.props.user.id + "?page=" + this.state.page + "&size=1000").then(res => {
+            this.setState({publishedBeats: res.data.totalElements === 0 ? null : res.data.content})
+            setTimeout(() => this.setState({loading: false}), 300)
         }).catch(() => {
-            this.setState({publishedBeats: "null"})
+            this.setState({publishedBeats: null, loading: false})
         })
     }
 
@@ -56,10 +59,13 @@ class MyBeats extends Component {
         document.getElementById("sold").classList.remove('menu-active')
     }
     draftView = () => {
+        this.setState({loading: true})
+
         axios.get("/api/v1/beats/drafts").then(res => {
             this.setState({draftBeats: res.data.length === 0 ? null : res.data})
+            setTimeout(() => this.setState({loading: false}), 300)
         }).catch(() => {
-            this.setState({draftBeats: null})
+            this.setState({draftBeats: null, loading: false})
         })
 
         this.setState({publishedView: false, draftView: true, soldView: false})
@@ -68,6 +74,13 @@ class MyBeats extends Component {
         document.getElementById("sold").classList.remove('menu-active')
     }
     soldView = () => {
+        axios.get("/api/v1/beats/sold").then(res => {
+            this.setState({soldBeats: res.data.length === 0 ? null : res.data})
+            setTimeout(() => this.setState({loading: false}), 300)
+        }).catch(() => {
+            this.setState({soldBeats: null, loading: false})
+        })
+
         this.setState({publishedView: false, draftView: false, soldView: true})
         document.getElementById("published").classList.remove('menu-active')
         document.getElementById("draft").classList.remove('menu-active')
@@ -76,7 +89,7 @@ class MyBeats extends Component {
 
     render() {
 
-        if (this.state.user !== "null" && this.state.user !== null) {
+        if (this.state.user !== null && this.state.user !== undefined) {
             document.title = "Мои биты | " + this.state.user.profile.displayName
         }
 
@@ -84,8 +97,9 @@ class MyBeats extends Component {
         let beatId = 0
         let publishedBeats;
         let draftBeats;
+        let soldBeats;
 
-        if (this.state.publishedBeats !== null && this.state.publishedBeats !== "null") {
+        if (this.state.publishedBeats !== null) {
             publishedBeats =
                 <div>
                     <div className="wrapper mt32" style={{paddingTop: 0}}>
@@ -216,12 +230,14 @@ class MyBeats extends Component {
                     </div>
                 </div>
         } else {
-            setTimeout(() => {
-                publishedBeats =
-                    <div className="qwe-null">
-                        <span>Ничего нет</span>
+            publishedBeats =
+                <div className="wrapper">
+                    <div className="container">
+                        <div className="qwe-null">
+                            <span>Ничего нет</span>
+                        </div>
                     </div>
-            }, 500)
+                </div>
         }
 
         if (this.state.draftBeats !== null) {
@@ -354,16 +370,161 @@ class MyBeats extends Component {
                     </div>
                 </div>
         } else {
-            setTimeout(() => {
-                draftBeats =
-                    <div className="qwe-null">
-                        <span>Ничего нет</span>
+            draftBeats =
+                <div className="wrapper">
+                    <div className="container">
+                        <div className="qwe-null">
+                            <span>Ничего нет</span>
+                        </div>
                     </div>
-            }, 500)
+                </div>
+        }
+
+        if (this.state.soldBeats !== null) {
+            soldBeats =
+                <div>
+                    <div className="wrapper mt32" style={{paddingTop: 0}}>
+                        <div className="container">
+
+                            <div className="flex-c mb16">
+                                <span className="color-g1" style={{marginLeft: "13.88%"}}>Бит</span>
+                                <span className="color-g1" style={{marginLeft: "64%"}}>Действия</span>
+                            </div>
+
+                            <div className="qwe1">
+                                {this.state.soldBeats.map((beat, index) => {
+
+                                    beatId = beatId + 1
+
+                                    let click;
+
+                                    let path = `/img/user-${beat.user.id}/beats/beat-${beat.id}/${beat.audio.mp3Name}`;
+                                    if (window.screen.width > 767) {
+                                        click = props.setAudio.bind(this, beat.id, path)
+                                    }
+
+                                    return (
+                                        <div className="qwe" key={index} onClick={click}>
+
+                                            <div className="qwe-left">
+                                                <div className="qwe-id">
+                                                    <span>{beatId}</span>
+
+                                                    <button className="my-beats-play"
+                                                            onClick={props.setAudio.bind(this, beat.id, path)}
+                                                            style={{transform: "translate(-50%, -50%) scale(0.7)"}}
+                                                    >
+                                                    </button>
+                                                </div>
+
+                                                <div className="qwe-img" style={{position: "relative"}}>
+                                                    <img src={beat.imageName !== null && beat.imageName !== "" ?
+                                                        `/img/user-${beat.user.id}/beats/beat-${beat.id}/${beat.imageName}` :
+                                                        '/img/track-placeholder.svg'} alt=""/>
+
+                                                    <button className="my-beats-play"
+                                                            onClick={props.setAudio.bind(this, beat.id, path)}
+                                                            style={{transform: "translate(-50%, -50%) scale(0.7)"}}
+                                                    ></button>
+                                                </div>
+
+                                                <div className="qwe-title wnohte">
+                                                    <p className="qwe-name wnohte"
+                                                       style={{textDecoration: "none"}}>{beat.title}</p>
+                                                </div>
+                                            </div>
+
+                                            <div className="qwe-right">
+
+                                                {/*<div className="my-beats-format flex-c-c">WAV</div>*/}
+                                                {/*<div className="my-beats-format flex-c-c">MP3</div>*/}
+                                                {/*<div className="my-beats-format flex-c-c">ZIP</div>*/}
+
+                                                {/*<div>*/}
+                                                {/*    <button className="my-beats-setting-btn flex-c-c"*/}
+                                                {/*            onClick={this.props.openPlaylists.bind(this, beat)}*/}
+                                                {/*            title="Добавить в плейлист"*/}
+                                                {/*    >*/}
+                                                {/*        <img src={'/img/my-beats/plus.png'} width="12px" alt="plus"/>*/}
+                                                {/*    </button>*/}
+                                                {/*</div>*/}
+                                                <div>
+                                                    <button className="my-beats-setting-btn flex-c-c" title="Скачать"
+                                                            onClick={this.props.openDownload.bind(this, beat)}>
+                                                        <img src={'/img/my-beats/download.png'} width="12px"
+                                                             alt="download"/>
+                                                    </button>
+                                                </div>
+                                                {/*<div>*/}
+                                                {/*    <Link to={`/edit/${beat.id}`} title="Изменить"*/}
+                                                {/*          className="my-beats-setting-btn flex-c-c">*/}
+                                                {/*        <img src={'/img/my-beats/pencil.png'} width="12px"*/}
+                                                {/*             alt="pencil"/>*/}
+                                                {/*    </Link>*/}
+                                                {/*</div>*/}
+                                                {/*<div>*/}
+                                                {/*    <button className="my-beats-setting-btn flex-c-c" title="Удалить"*/}
+                                                {/*            onClick={() => {*/}
+                                                {/*                this.setState({*/}
+                                                {/*                    warningDelete: true,*/}
+                                                {/*                    deleteId: index*/}
+                                                {/*                })*/}
+                                                {/*            }}>*/}
+                                                {/*        <img src={'/img/my-beats/remove.png'} width="14px"*/}
+                                                {/*             alt="remove"/>*/}
+                                                {/*    </button>*/}
+                                                {/*</div>*/}
+                                                <div><button className="btn-primary">Опубликовать</button></div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+
+                                {/*{this.state.warningDelete ?*/}
+                                {/*    <div>*/}
+
+                                {/*        <div className="warning-delete-comment"*/}
+                                {/*             onClick={() => {this.setState({warningDelete: false})}}></div>*/}
+
+                                {/*        <div className="warning-delete-comment-pop-up">*/}
+                                {/*            <span>Вы уверены что хотите удалить этот бит?</span>*/}
+
+                                {/*            <div className="flex-c-c mt32">*/}
+                                {/*                <button className="btn-primary mr16" onClick={this.deleteBeat}>*/}
+                                {/*                    Удалить*/}
+                                {/*                </button>*/}
+
+                                {/*                <button className="btn-primary" style={{backgroundColor: "#262626"}}*/}
+                                {/*                        onClick={() => {*/}
+                                {/*                            this.setState({warningDelete: false})*/}
+                                {/*                        }}>*/}
+                                {/*                    Отмена*/}
+                                {/*                </button>*/}
+                                {/*            </div>*/}
+                                {/*        </div>*/}
+                                {/*    </div>*/}
+                                {/*    : null}*/}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        } else {
+            soldBeats =
+                <div className="wrapper">
+                    <div className="container">
+                        <div className="qwe-null">
+                            <span>Ничего нет</span>
+                        </div>
+                    </div>
+                </div>
         }
 
         return (
             <div>
+
+                {this.state.loading ?
+                    <div className="loading" style={{zIndex: 40}}><div className="loader"></div></div> : null}
+
                 <div className="wrapper" style={{paddingBottom: 0}}>
                     <div className="container">
                         <div className="my-beats-header">
@@ -393,7 +554,7 @@ class MyBeats extends Component {
 
                 {this.state.publishedView ? publishedBeats : null}
                 {this.state.draftView ? draftBeats : null}
-                {this.state.soldView ? "Проданные" : null}
+                {this.state.soldView ? soldBeats : null}
             </div>
         )
     }
