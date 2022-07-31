@@ -44,7 +44,7 @@ class TopCharts extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps !== this.props) this.setState({user: this.props.user})
+        if (prevProps.user !== this.props.user) this.setState({user: this.props.user})
     }
 
     addBeatsToState = (page, filters) => {
@@ -289,8 +289,12 @@ class TopCharts extends Component {
                             </div>
                         </div>
 
-                        <Beats page={this.state.page} beats={this.state.beats} openLicenses={this.props.openLicenses}
-                               setAudio={this.props.setAudio} openDownload={this.props.openDownload}
+                        <Beats page={this.state.page}
+                               beats={this.state.beats}
+                               openLicenses={this.props.openLicenses}
+                               setAudio={this.props.setAudio}
+                               openDownload={this.props.openDownload}
+                               user={this.props.user}
                         />
                     </div>
                 </div>

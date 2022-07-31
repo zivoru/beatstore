@@ -152,6 +152,30 @@ class App extends React.Component {
 
             if (this.state.user !== null && this.state.user !== undefined) {
 
+                this.setState({
+                    btn: <button className="btn-primary btn-cart" style={{padding: "5px 16px"}}
+                                 onClick={this.openLicense}>
+                        <span>{res.data.license.price_mp3} ₽</span>
+                    </button>
+                })
+
+                if (res.data.free === true) {
+                    this.setState({
+                        btn: <button className="btn-primary btn-cart btn-free" style={{padding: "5px 16px"}}
+                                     onClick={this.openDownload.bind(this, this.state.beat)}>
+                            <span>Скачать</span>
+                        </button>
+                    })
+                }
+
+                if (res.data.user.id === this.state.user.id) {
+                    console.log(res.data.user.id)
+                    console.log(this.state.user.id)
+                    this.setState({
+                        btn: null
+                    })
+                }
+
                 for (const like of res.data.likes) {
                     if (like.id === this.state.user.id) {
                         this.setState({
@@ -160,17 +184,7 @@ class App extends React.Component {
                     }
                 }
 
-
                 axios.get("/api/v1/carts/").then(response => {
-
-                    this.setState({
-                        btn: <button className="btn-primary btn-cart" style={{padding: "5px 16px"}}
-                                     onClick={this.openLicense}>
-                            <span>{res.data.license.price_mp3} ₽</span>
-                        </button>
-                    })
-
-
                     let mp3 = document.querySelector(".mp3");
                     mp3.classList.remove("select")
                     let wav = document.querySelector(".wav");
@@ -238,19 +252,11 @@ class App extends React.Component {
                         }
                     }
 
-                    document.getElementsByClassName('pause')[0].style.display = "none"
-                    document.getElementsByClassName('playplay')[0].style.display = "initial"
-
-                    if (res.data.free === true) {
-
-                        this.setState({
-                            btn: <button className="btn-primary btn-cart btn-free" style={{padding: "5px 16px"}}
-                                         onClick={this.openDownload.bind(this, this.state.beat)}>
-                                <span>Скачать</span>
-                            </button>
-                        })
-                    }
                 });
+
+                document.getElementsByClassName('pause')[0].style.display = "none"
+                document.getElementsByClassName('playplay')[0].style.display = "initial"
+
             } else {
                 this.setState({
                     btn: <button className="btn-primary btn-cart" style={{padding: "5px 16px"}}
@@ -683,7 +689,9 @@ class App extends React.Component {
             this.nullToCart();
 
             if (window.screen.width > 767) {
-                setTimeout(() => {this.setState({cartPopUp: true})}, 10)
+                setTimeout(() => {
+                    this.setState({cartPopUp: true})
+                }, 10)
             }
         })
 
@@ -765,7 +773,9 @@ class App extends React.Component {
         return (
             <div>
 
-                {this.state.loading ? <div className="loading"><div className="loader"></div></div> : null}
+                {this.state.loading ? <div className="loading">
+                    <div className="loader"></div>
+                </div> : null}
 
                 <Header cart={this.state.cart} user={this.state.user} logout={this.logout}
                         cartPopUp={this.state.cartPopUp} profilePopUp={this.state.profilePopUp}
@@ -842,7 +852,8 @@ class App extends React.Component {
                         <div className="pop-up trs" style={{display: "initial", opacity: 1, height: 200}}>
                             <div className="pop-up-header">
                                 Авторизация
-                                <img src={'/img/close.png'} alt="close" width="18px" onClick={() => this.setState({loginPopUp: false})}/>
+                                <img src={'/img/close.png'} alt="close" width="18px"
+                                     onClick={() => this.setState({loginPopUp: false})}/>
                             </div>
 
                             <a href="/oauth2/authorization/google" className="btn-primary btn-login" target="_blank">

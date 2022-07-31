@@ -219,6 +219,7 @@ class Profile extends Component {
                                    openLicenses={this.props.openLicenses}
                                    setAudio={this.props.setAudio}
                                    openDownload={this.props.openDownload}
+                                   user={this.props.user}
                             />
                         </div>
 

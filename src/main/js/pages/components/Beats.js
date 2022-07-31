@@ -34,6 +34,14 @@ class Beats extends Component {
                                           onClick={props.openLicenses.bind(this, beat.id)}>
                                     <span>В корзине</span></button>
                         }
+                        if (props.user !== null && props.user !== undefined) {
+                            console.log(props.user)
+                            console.log(props.user.id)
+                            console.log(beat.user.id)
+                            if (beat.user.id === props.user.id) {
+                                btn = null
+                            }
+                        }
 
                         let click;
 

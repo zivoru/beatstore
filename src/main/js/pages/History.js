@@ -97,9 +97,13 @@ class History extends Component {
                             </div>
                         </div>
 
-                        <Beats page={this.state.page} beats={this.state.beats} openLicenses={this.props.openLicenses}
-                               setAudio={this.props.setAudio} resourceUrl={this.props.resourceUrl}
+                        <Beats page={this.state.page}
+                               beats={this.state.beats}
+                               openLicenses={this.props.openLicenses}
+                               setAudio={this.props.setAudio}
+                               resourceUrl={this.props.resourceUrl}
                                openDownload={this.props.openDownload}
+                               user={this.props.user}
                         />
                     </div>
             }
