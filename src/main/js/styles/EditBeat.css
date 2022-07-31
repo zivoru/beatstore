@@ -8,7 +8,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba(0, 0, 0, 0.80);
+    background: rgba(0, 0, 0, 0.90);
     -webkit-backdrop-filter: saturate(180%) blur(6px);
     backdrop-filter: saturate(180%) blur(6px);
 }

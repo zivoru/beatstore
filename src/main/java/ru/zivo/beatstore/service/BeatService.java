@@ -61,4 +61,6 @@ public interface BeatService {
     Page<BeatDto> getHistoryBeats(String userId, Pageable pageable);
 
     Page<BeatDto> getBeats(String userId, String authUserId, Pageable pageable);
+
+    List<Beat> getDrafts(String userId);
 }

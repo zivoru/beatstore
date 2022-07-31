@@ -123,11 +123,17 @@ class Header extends Component {
                 {amountCart}
             </div>
 
-        let btnDropCartMobile =
+        let btnDropCartMobile = user !== null && user !== undefined ?
             <Link className="hdr-drop-btn-mobile flex-c trs bag" to="/cart" title="Корзина">
                 <img src={"/img/bag.png"} width="21px" alt="корзина"/>
                 {amountCart}
             </Link>
+            :
+            <button className="hdr-drop-btn-mobile flex-c trs bag" title="Корзина"
+                    style={{backgroundColor: "inherit"}} onClick={this.props.setLoginPopUp}>
+                <img src={"/img/bag.png"} width="21px" alt="корзина"/>
+                {amountCart}
+            </button>
 
         let burgerFooter;
 

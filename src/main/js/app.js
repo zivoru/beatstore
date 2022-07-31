@@ -71,7 +71,7 @@ class App extends React.Component {
         axios.get('/user').then(res => {
             this.setState({user: res.data.user});
 
-            this.setState({loading: false})
+            setTimeout(() => this.setState({loading: false}), 1000)
 
             if (res.data.user !== undefined && res.data.user !== null) {
                 axios.get('/api/v1/carts/').then(response => {
@@ -245,7 +245,7 @@ class App extends React.Component {
 
                         this.setState({
                             btn: <button className="btn-primary btn-cart btn-free" style={{padding: "5px 16px"}}
-                                         onClick={this.openDownload}>
+                                         onClick={this.openDownload.bind(this, this.state.beat)}>
                                 <span>Скачать</span>
                             </button>
                         })
@@ -772,7 +772,7 @@ class App extends React.Component {
                 <Header cart={this.state.cart} user={this.state.user} logout={this.logout}
                         cartPopUp={this.state.cartPopUp} profilePopUp={this.state.profilePopUp}
                         cartPopUpOpen={this.cartPopUpOpen} profilePopUpOpen={this.profilePopUpOpen}
-                        closeHeaderPopUps={this.closeHeaderPopUps}
+                        closeHeaderPopUps={this.closeHeaderPopUps} setLoginPopUp={this.setLoginPopUp}
                 />
 
                 <Routes>
@@ -841,7 +841,7 @@ class App extends React.Component {
 
                 {this.state.loginPopUp ?
                     <div>
-                        <div className="pop-up trs" style={{display: "initial", opacity: 1}}>
+                        <div className="pop-up trs" style={{display: "initial", opacity: 1, height: 200}}>
                             <div className="pop-up-header">
                                 Авторизация
                                 <img src={'/img/close.png'} alt="close" width="18px" onClick={() => this.setState({loginPopUp: false})}/>

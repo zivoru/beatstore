@@ -184,12 +184,18 @@ public class BeatController {
                 ResponseEntity.ok(beatService.getHistoryBeats(principal.getAttribute("sub"), pageable));
     }
 
-    @Operation(summary = "Биты пользователя по его id")
+    @Operation(summary = "Опубликованные биты пользователя по его id")
     @GetMapping("user/{userId}")
     public ResponseEntity<Page<BeatDto>> getBeats(@AuthenticationPrincipal OAuth2User principal,
                                                   @PathVariable String userId,
                                                   Pageable pageable) {
         return ResponseEntity.ok(beatService.getBeats(userId, principal == null ? null :
                 principal.getAttribute("sub"), pageable));
+    }
+
+    @Operation(summary = "Черновики пользователя")
+    @GetMapping("/drafts")
+    public ResponseEntity<List<Beat>> getBeats(@AuthenticationPrincipal OAuth2User principal) {
+        return principal == null ? null : ResponseEntity.ok(beatService.getDrafts(principal.getAttribute("sub")));
     }
 }

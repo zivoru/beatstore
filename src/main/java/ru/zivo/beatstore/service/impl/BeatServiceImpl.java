@@ -158,8 +158,6 @@ public class BeatServiceImpl implements BeatService {
         if (beat.getLicense() != null) license.setId(beat.getLicense().getId());
         license.setBeat(beat);
         licenseRepository.save(license);
-//        beat.setLicense(license);
-//        beatRepository.save(beat);
     }
 
     @Override
@@ -319,6 +317,15 @@ public class BeatServiceImpl implements BeatService {
         User authUser = authUserId != null ? Users.getUser(authUserId) : null;
 
         return listToPage(pageable, mapToDtoList(authUser, sortedPublishedBeats(Users.getUser(userId).getBeats())));
+    }
+
+    @Override
+    public List<Beat> getDrafts(String userId) {
+        List<Beat> drafts = new ArrayList<>();
+        for (Beat beat : Users.getUser(userId).getBeats()) {
+            if (beat.getStatus() == BeatStatus.DRAFT) drafts.add(beat);
+        }
+        return drafts;
     }
 
     /* not Override */
