@@ -266,9 +266,7 @@
     top: 0;
     left: 0;
     z-index: 100;
-    background: rgba(0, 0, 0, 0.30);
-    -webkit-backdrop-filter: saturate(180%) blur(6px);
-    backdrop-filter: saturate(180%) blur(6px);
+    /*background: rgba(0, 0, 0, 0.30);*/
 }
 
 @media (max-width: 1025px) {

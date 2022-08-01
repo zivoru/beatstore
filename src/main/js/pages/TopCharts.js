@@ -37,7 +37,9 @@ class TopCharts extends Component {
         this.setState({user: this.props.user})
 
         axios.get("/api/v1/tags?page=0&size=28").then(res => {
-            this.setState({tags: res.data.content})
+            this.setState({tags: res.data.totalElements === 0 ? "empty" :  res.data.content})
+        }).catch(() => {
+            this.setState({tags: "empty"})
         })
 
         this.addBeatsToState(this.state.page, "")
@@ -49,61 +51,58 @@ class TopCharts extends Component {
 
     addBeatsToState = (page, filters) => {
         axios.get("/api/v1/beats/top-charts?" + filters + "&page=" + page + "&size=10").then(res => {
-            let data = res.data;
+            this.setState({
+                beats: res.data.totalElements === 0 ? "empty" : res.data.content,
+                totalPages: res.data.totalPages
+            })
 
-            this.setState({totalPages: data.totalPages})
-
-            this.setState({beats: data.content})
-
-            if (data.totalElements === 0) this.setState({beats: "null"})
-
-            if (data.totalPages > 1 && this.state.pagination.length === 0) {
-
-                let newPagination = []
-                for (let i = 0; i < data.totalPages; i++) {
-                    newPagination.push(<button onClick={this.selectPageHistory.bind(this, i)}
-                                               className={"page" + i}>{i + 1}</button>)
-                }
-                this.setState({pagination: newPagination})
-            }
+            // if (data.totalPages > 1 && this.state.pagination.length === 0) {
+            //
+            //     let newPagination = []
+            //     for (let i = 0; i < data.totalPages; i++) {
+            //         newPagination.push(<button onClick={this.selectPageHistory.bind(this, i)}
+            //                                    className={"page" + i}>{i + 1}</button>)
+            //     }
+            //     this.setState({pagination: newPagination})
+            // }
 
         }).catch(() => {
-            this.setState({beats: "null"})
+            this.setState({beats: "empty"})
         })
     }
 
-    selectPageHistory = (id) => {
-        for (let i = 0; i < this.state.totalPages; i++) {
-            let element = document.querySelector(".page" + i);
-            element.style.opacity = "1"
-        }
-
-        let element = document.querySelector(".page" + id);
-        element.style.opacity = "0.5"
-
-        this.setState({
-            page: id
-        })
-
-        this.addBeatsToState(id, "")
-    }
+    // selectPageHistory = (id) => {
+    //     for (let i = 0; i < this.state.totalPages; i++) {
+    //         let element = document.querySelector(".page" + i);
+    //         element.style.opacity = "1"
+    //     }
+    //
+    //     let element = document.querySelector(".page" + id);
+    //     element.style.opacity = "0.5"
+    //
+    //     this.setState({
+    //         page: id
+    //     })
+    //
+    //     this.addBeatsToState(id, "")
+    // }
 
     searchTags = (event) => {
         if (event.target.value !== null) {
-            axios.get("http://localhost:7777/api/v1/tags?nameFilter=" + event.target.value + "&page=0&size=28").then(response => {
+            axios.get("/api/v1/tags?nameFilter=" + event.target.value + "&page=0&size=28").then(response => {
                 this.setState({
-                    tags: response.data.content
+                    tags: response.data.totalElements === 0 ? "empty" : response.data.content
                 })
-                if (response.data.content.length === 0) {
-                    axios.get("http://localhost:7777/api/v1/tags?page=0&size=28").then(response => {
-                        this.setState({
-                            tags: response.data.content
-                        })
-                    })
-                }
+                // if (response.data.content.length === 0) {
+                //     axios.get("/api/v1/tags?page=0&size=28").then(response => {
+                //         this.setState({
+                //             tags: response.data.content
+                //         })
+                //     })
+                // }
             })
         } else {
-            axios.get("http://localhost:7777/api/v1/tags?page=0&size=28").then(response => {
+            axios.get("/api/v1/tags?page=0&size=28").then(response => {
                 this.setState({
                     tags: response.data.content
                 })
@@ -259,38 +258,28 @@ class TopCharts extends Component {
         this.addBeatsToState(0, filters)
     }
 
-    closeFilters = (event) => {
-        console.log(event)
-        if (event.target.className !== "mr16 filter flex-c-c") {
-            this.setState({filterGenres: false})
-            this.setState({filterMoods: false})
-            this.setState({filterKeys: false})
-            this.setState({filterBpm: false})
-            this.setState({filterPrice: false})
-        }
-    }
-
     render() {
+        let state = this.state;
+
         document.title = "Топ чарт | BeatStore"
 
         let beats;
-
-        if (this.state.beats !== null && this.state.beats !== "null") {
+        if (state.beats !== null && state.beats !== "empty") {
             beats =
                 <div className="wrapper" style={{paddingTop: 32}}>
                     <div className="container qwe-container">
 
-                        <div className="qwe-pagination-container">
+                        {/*<div className="qwe-pagination-container">*/}
 
-                            <div className="qwe-pagination">
-                                {this.state.pagination.map((pageBtn, index) => {
-                                    return (<div className="mb32" key={index}>{pageBtn}</div>)
-                                })}
-                            </div>
-                        </div>
+                        {/*    <div className="qwe-pagination">*/}
+                        {/*        {state.pagination.map((pageBtn, index) => {*/}
+                        {/*            return (<div className="mb32" key={index}>{pageBtn}</div>)*/}
+                        {/*        })}*/}
+                        {/*    </div>*/}
+                        {/*</div>*/}
 
-                        <Beats page={this.state.page}
-                               beats={this.state.beats}
+                        <Beats page={state.page}
+                               beats={state.beats}
                                openLicenses={this.props.openLicenses}
                                setAudio={this.props.setAudio}
                                openDownload={this.props.openDownload}
@@ -298,17 +287,17 @@ class TopCharts extends Component {
                         />
                     </div>
                 </div>
-        } else {
+        } else if (state.beats === "empty") {
             beats =
                 <div className="wrapper" style={{paddingTop: 32}}>
-                    <div className="container qwe-container">
+                    <div className="container qwe-container" style={{textAlign: "center"}}>
                         Ничего не найдено
                     </div>
                 </div>
         }
 
         return (
-            <div onClick={this.closeFilters}>
+            <div>
                 <div className="wrapper">
                     <div className="container">
 
@@ -352,9 +341,9 @@ class TopCharts extends Component {
                                 <input type="text" className="__dfdfo-kji_" placeholder="Поиск по тегам"
                                        onChange={this.searchTags}/>
                             </form>
-                            {this.state.tags.map((tag, index) => {
+                            {state.tags !== "empty" ? state.tags.map((tag, index) => {
                                 return (<button className="n3lxs45" key={index}>{tag.name}</button>)
-                            })}
+                            }) : null}
                         </div>
                     </div>
                 </div>
@@ -363,13 +352,13 @@ class TopCharts extends Component {
                     <div className="container flex-c filters">
                         <div className="filter-cont">
                             <button className="mr16 filter flex-c-c"
-                                    onClick={() => this.setState({filterGenres: !this.state.filterGenres})}>
+                                    onClick={() => this.setState({filterGenres: !state.filterGenres})}>
 
-                                {this.state.genreName === null ? "Все жанры" : this.state.genreName}
+                                {state.genreName === null ? "Все жанры" : state.genreName}
                                 <img src={'/img/arrow.png'} width="8px" className="filter-arrow" alt="arrow"/>
                             </button>
 
-                            {this.state.filterGenres ?
+                            {state.filterGenres ?
                                 <div className="pop-up-container">
                                     <div className="pop-up-filter">
                                         <button onClick={this.filterGenre.bind(this, "", "Все жанры")}>Все жанры
@@ -396,12 +385,12 @@ class TopCharts extends Component {
 
                         <div className="filter-cont">
                             <button className="mr16 filter flex-c-c"
-                                    onClick={() => this.setState({filterBpm: !this.state.filterBpm})}>
+                                    onClick={() => this.setState({filterBpm: !state.filterBpm})}>
                                 BPM
                                 <img src={'/img/arrow.png'} width="8px" className="filter-arrow" alt="arrow"/>
                             </button>
 
-                            {this.state.filterBpm ?
+                            {state.filterBpm ?
                                 <div className="pop-up-container">
                                     <div className="pop-up-filter">
 
@@ -420,12 +409,12 @@ class TopCharts extends Component {
 
                         <div className="filter-cont">
                             <button className="mr16 filter flex-c-c"
-                                    onClick={() => this.setState({filterPrice: !this.state.filterPrice})}>
+                                    onClick={() => this.setState({filterPrice: !state.filterPrice})}>
                                 Цена
                                 <img src={'/img/arrow.png'} width="8px" className="filter-arrow" alt="arrow"/>
                             </button>
 
-                            {this.state.filterPrice ?
+                            {state.filterPrice ?
                                 <div className="pop-up-container">
                                     <div className="pop-up-filter">
                                         <button onClick={this.filterKey.bind(this, "", "Все Тональности")}>Все
@@ -452,13 +441,13 @@ class TopCharts extends Component {
 
                         <div className="filter-cont">
                             <button className="mr16 filter flex-c-c"
-                                    onClick={() => this.setState({filterKeys: !this.state.filterKeys})}>
+                                    onClick={() => this.setState({filterKeys: !state.filterKeys})}>
 
-                                {this.state.keyName === null ? "Тональность" : this.state.keyName}
+                                {state.keyName === null ? "Тональность" : state.keyName}
                                 <img src={'/img/arrow.png'} width="8px" className="filter-arrow" alt="arrow"/>
                             </button>
 
-                            {this.state.filterKeys ?
+                            {state.filterKeys ?
                                 <div className="pop-up-container">
                                     <div className="pop-up-filter">
                                         <button onClick={this.filterKey.bind(this, "", "Все Тональности")}>Все
@@ -485,13 +474,13 @@ class TopCharts extends Component {
 
                         <div className="filter-cont">
                             <button className="mr16 filter flex-c-c"
-                                    onClick={() => this.setState({filterMoods: !this.state.filterMoods})}>
+                                    onClick={() => this.setState({filterMoods: !state.filterMoods})}>
 
-                                {this.state.moodName === null ? "Настроение" : this.state.moodName}
+                                {state.moodName === null ? "Настроение" : state.moodName}
                                 <img src={'/img/arrow.png'} width="8px" className="filter-arrow" alt="arrow"/>
                             </button>
 
-                            {this.state.filterMoods ?
+                            {state.filterMoods ?
                                 <div className="pop-up-container">
                                     <div className="pop-up-filter">
                                         <button onClick={this.filterMood.bind(this, "", "Все Настроения")}>Все
@@ -520,6 +509,16 @@ class TopCharts extends Component {
 
                 {beats}
 
+                {state.filterGenres || state.filterBpm || state.filterPrice || state.filterKeys || state.filterMoods
+                    ? <div className="edit-back" style={{zIndex: 5}}
+                           onClick={() => this.setState({
+                               filterGenres: false,
+                               filterBpm: false,
+                               filterPrice: false,
+                               filterKeys: false,
+                               filterMoods: false
+                           })}></div>
+                    : null}
             </div>
         );
     }

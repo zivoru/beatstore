@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import {Link} from "react-router-dom";
 import axios from "axios";
 import {TrendBeats} from "./home/components/TrendBeats";
+import NotFound from "./components/NotFound";
 
 class Beat extends Component {
 
@@ -35,25 +36,20 @@ class Beat extends Component {
         if (prevProps.beatId !== this.props.beatId) {
             this.setBeat();
             this.setComments();
-            window.scrollTo({ top: 0, behavior: 'smooth' })
+            window.scrollTo({top: 0, behavior: 'smooth'})
         }
     }
 
     setBeat = () => {
-        axios.get("/api/v1/beats/" + this.props.beatId).then(res => {
-            this.setState({beat: res.data})
-
+        axios.get(`/api/v1/beats/${this.props.beatId}`).then(res => {
             this.setState({
+                beat: res.data,
                 like: '/img/heart.png'
             })
 
-            if (this.props.user !== null && this.props.user !== undefined) {
+            if (this.props.user !== null && this.props.user !== undefined && this.props.user !== "empty") {
                 for (const like of res.data.likes) {
-                    if (like.id === this.props.user.id) {
-                        this.setState({
-                            like: '/img/heart-fill.png'
-                        })
-                    }
+                    if (like.id === this.props.user.id) this.setState({like: '/img/heart-fill.png'})
                 }
             }
 
@@ -108,7 +104,7 @@ class Beat extends Component {
                     </div>
             })
 
-            if (this.props.user !== null && this.props.user !== undefined) {
+            if (this.props.user !== null && this.props.user !== undefined && this.props.user !== "empty") {
                 axios.get("/api/v1/carts/").then(response => {
 
                     let mp3 = document.querySelector(".mp3");
@@ -170,38 +166,34 @@ class Beat extends Component {
                         }
                     }
 
-                });
+                }).catch();
             }
         }).catch(() => {
-            this.setState({beat: "null"})
+            this.setState({beat: "empty"})
         })
     }
 
     setComments = () => {
         axios.get("/api/v1/comments/" + this.props.beatId).then(res => {
-            this.setState({comments: res.data.length === 0 ? "null" : res.data})
+            this.setState({comments: res.data.length === 0 ? null : res.data})
         }).catch(() => {
-            this.setState({comments: "null"})
+            this.setState({comments: null})
         })
     }
 
     like = () => {
         let s = this.state;
-        if (s.user !== null && s.user !== undefined) {
+        if (s.user !== null && s.user !== undefined && s.user !== "empty") {
             if (s.like === '/img/heart.png') {
                 axios.post("/api/v1/beats/addToFavorite/" + s.beat.id)
                     .then(() => {
-                        this.setState({
-                            like: '/img/heart-fill.png'
-                        })
-                    })
+                        this.setState({like: '/img/heart-fill.png'})
+                    }).catch()
             } else {
                 axios.post("/api/v1/beats/removeFromFavorite/" + s.beat.id)
                     .then(() => {
-                        this.setState({
-                            like: '/img/heart.png'
-                        })
-                    })
+                        this.setState({like: '/img/heart.png'})
+                    }).catch()
             }
         } else {
             this.props.setLoginPopUp()
@@ -338,8 +330,7 @@ class Beat extends Component {
             if (window.screen.width > 767) setTimeout(() => {
                 this.props.cartPopUpOpen()
             }, 10)
-        })
-
+        }).catch()
     }
 
     commentChange = (event) => {
@@ -365,7 +356,7 @@ class Beat extends Component {
             this.setState({comment: null})
 
             let newComments = this.state.comments
-            if (this.state.comments === "null") newComments = []
+            if (this.state.comments === null) newComments = []
             newComments.unshift(res.data)
             this.setState({comments: newComments})
 
@@ -374,7 +365,7 @@ class Beat extends Component {
             document.querySelector(".comment-button").style.backgroundColor = "rgba(38,38,38,0.91)"
             document.querySelector(".comment-button").style.pointerEvents = "none"
             document.querySelector(".comment-button-img").style.opacity = 0.2
-        })
+        }).catch()
     }
 
     deleteComment = () => {
@@ -385,13 +376,13 @@ class Beat extends Component {
                 comments: newComments,
                 warningDeleteComment: false
             })
-        })
+        }).catch()
     }
 
     render() {
-        if (this.state.beat !== null && this.state.beat !== "null") {
+        if (this.state.beat !== null && this.state.beat !== "empty") {
 
-            if (this.props.user !== null && this.props.user !== undefined) {
+            if (this.props.user !== null && this.props.user !== undefined && this.props.user !== "empty") {
                 axios.get("/api/v1/carts/").then(response => {
 
                     let mp3 = document.querySelector(".mp3");
@@ -453,7 +444,7 @@ class Beat extends Component {
                         }
                     }
 
-                });
+                }).catch();
             }
 
             document.title = this.state.beat.title + " | BeatStore";
@@ -461,7 +452,7 @@ class Beat extends Component {
             let user = this.props.user;
             let createComment;
 
-            if (user !== null && user !== undefined) {
+            if (user !== null && user !== undefined && user !== "empty") {
                 createComment =
                     <div className="comment">
                         <img src={user.profile.imageName !== null && user.profile.imageName !== "" ?
@@ -602,7 +593,7 @@ class Beat extends Component {
 
                                         {this.state.licenseCode}
 
-                                        {this.props.user !== null && this.props.user !== undefined ?
+                                        {this.props.user !== null && this.props.user !== undefined && this.props.user !== "empty" ?
                                             <button className="btn-primary w100" onClick={this.addToCart}
                                                     style={{padding: "10px 0"}}>
                                                 Добавить в корзину
@@ -623,14 +614,14 @@ class Beat extends Component {
 
                                     {createComment}
 
-                                    {this.state.comments !== "null" ?
+                                    {this.state.comments !== null ?
                                         this.state.comments.map((comment, index) => {
 
                                             let profile = comment.author.profile;
 
                                             let deleteComment;
 
-                                            if (user !== null && user !== undefined) {
+                                            if (user !== null && user !== undefined && user !== "empty") {
                                                 if (comment.author.id === user.id) {
                                                     deleteComment =
                                                         <button className="comment-delete fs12 fw400"
@@ -712,23 +703,10 @@ class Beat extends Component {
                     </div>
                 </div>
             )
+        } else if (this.state.beat === "empty") {
+            document.title = "404 | Не найдено"
+            return (<NotFound/>);
         }
-
-        setTimeout(() => {
-            if (this.state.beat === null || this.state.beat === "null") {
-                document.title = "404 | Не найдено"
-
-                return (
-                    <div>
-                        <div className="wrapper">
-                            <div className="container">
-                                404
-                            </div>
-                        </div>
-                    </div>
-                );
-            }
-        }, 1000)
     }
 }
 

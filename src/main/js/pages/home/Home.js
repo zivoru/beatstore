@@ -18,7 +18,9 @@ class Home extends Component {
             <div>
 
                 {this.state.loading ?
-                    <div className="loading" style={{zIndex: 40}}><div className="loader"></div></div> : null}
+                    <div className="loading" style={{zIndex: 40}}>
+                        <div className="loader"></div>
+                    </div> : null}
 
                 <div>
                     <div className="header flex-c-c home-header">
