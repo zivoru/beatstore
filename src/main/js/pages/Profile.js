@@ -6,6 +6,9 @@ import NotFound from "./components/NotFound";
 
 class Profile extends Component {
     subscriptionStatus;
+    amountSubscribers;
+    amountPlays;
+    amountBeats;
 
     constructor(props) {
         super(props);

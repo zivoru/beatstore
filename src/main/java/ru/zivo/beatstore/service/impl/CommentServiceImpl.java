@@ -47,8 +47,9 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void delete(Long id) {
-        commentRepository.delete(findById(id));
+    public void delete(String userId, Long id) {
+        Comment comment = findById(id);
+        if (comment.getAuthor().getId().equals(userId)) commentRepository.delete(comment);
     }
 
     private Beat getBeat(Long beatId) {

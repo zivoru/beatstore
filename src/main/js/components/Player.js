@@ -6,14 +6,14 @@ class Player extends Component {
         let props = this.props
         let beat = this.props.beat
 
-        let audio = document.getElementById("audio");    // Берём элемент audio
-        let time = document.querySelector(".time");      // Берём аудио дорожку
-        let playBtn = document.querySelector(".playplay");   // Берём кнопку проигрывания
-        let pauseBtn = document.querySelector(".pause"); // Берём кнопку паузы
-
         let audioPlay;
 
         function btnPlay() {
+            let audio = document.getElementById("audio");    // Берём элемент audio
+            let time = document.querySelector(".time");      // Берём аудио дорожку
+            let playBtn = document.querySelector(".playplay");   // Берём кнопку проигрывания
+            let pauseBtn = document.querySelector(".pause"); // Берём кнопку паузы
+
             audio.play(); // Запуск песни
             // Запуск интервала
             audioPlay = setInterval(function () {
@@ -35,6 +35,10 @@ class Player extends Component {
         }
 
         function btnPause() {
+            let audio = document.getElementById("audio");    // Берём элемент audio
+            let playBtn = document.querySelector(".playplay");   // Берём кнопку проигрывания
+            let pauseBtn = document.querySelector(".pause"); // Берём кнопку паузы
+
             audio.pause(); // Останавливает песню
             clearInterval(audioPlay) // Останавливает интервал
 
@@ -43,6 +47,9 @@ class Player extends Component {
         }
 
         function minus15sec() {
+            let audio = document.getElementById("audio");    // Берём элемент audio
+            let time = document.querySelector(".time");      // Берём аудио дорожку
+
             audio.currentTime = Math.max(audio.currentTime - 15, 0)
             // Получаем значение на какой секунде песня
             let audioTime = Math.round(audio.currentTime);
@@ -53,6 +60,9 @@ class Player extends Component {
         }
 
         function plus15sec() {
+            let audio = document.getElementById("audio");    // Берём элемент audio
+            let time = document.querySelector(".time");      // Берём аудио дорожку
+
             audio.currentTime = Math.min(audio.currentTime + 15, audio.duration)
             // Получаем значение на какой секунде песня
             let audioTime = Math.round(audio.currentTime);

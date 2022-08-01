@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import {Link} from "react-router-dom";
 
 class Beats extends Component {
+    addedToCart;
+
     render() {
 
         let props = this.props;

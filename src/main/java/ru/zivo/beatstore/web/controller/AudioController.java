@@ -51,7 +51,7 @@ public class AudioController {
         File file = switch (type) {
             case "mp3" -> new File(path + beat.getAudio().getMp3Name());
             case "wav" -> new File(path + beat.getAudio().getWavName());
-            case "zip" -> new File(path + beat.getAudio().getTrackStemsName());
+            case "zip" -> new File(path + beat.getAudio().getZipName());
             default -> null;
         };
 

@@ -48,7 +48,7 @@
                              foreignKeyName="user_id"/>
             </column>
             <column name="image_name" type="varchar(500)">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
             <column name="first_name" type="varchar(25)">
                 <constraints nullable="true"/>
@@ -135,9 +135,6 @@
                 <constraints nullable="true"/>
             </column>
             <column name="key" type="varchar(25)">
-                <constraints nullable="true"/>
-            </column>
-            <column name="youtube_link" type="varchar(120)">
                 <constraints nullable="true"/>
             </column>
             <column name="plays" type="int" defaultValue="0">
@@ -231,7 +228,7 @@
             <column name="id" type="bigserial">
                 <constraints primaryKey="true" nullable="false" unique="true"/>
             </column>
-            <column name="beat_id" type="bigserial">
+            <column name="beat_id" type="bigint">
                 <constraints nullable="false" unique="true" referencedTableName="beat" referencedColumnNames="id"
                              foreignKeyName="beat_id"/>
             </column>
@@ -265,7 +262,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="image_name" type="varchar(500)">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
             <column name="description" type="varchar(500)">
                 <constraints nullable="true"/>
@@ -459,17 +456,26 @@
             <column name="id" type="bigserial">
                 <constraints primaryKey="true" nullable="false" unique="true"/>
             </column>
-            <column name="beat_id" type="bigserial">
+            <column name="beat_id" type="bigint">
                 <constraints nullable="false" unique="true" referencedTableName="beat" referencedColumnNames="id"
                              foreignKeyName="beat_id"/>
             </column>
             <column name="mp3_name" type="varchar(500)">
                 <constraints nullable="true"/>
             </column>
+            <column name="mp3_original_name" type="varchar(500)">
+                <constraints nullable="true"/>
+            </column>
             <column name="wav_name" type="varchar(500)">
                 <constraints nullable="true"/>
             </column>
-            <column name="track_stems_name" type="varchar(500)">
+            <column name="wav_original_name" type="varchar(500)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="zip_name" type="varchar(500)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="zip_original_name" type="varchar(500)">
                 <constraints nullable="true"/>
             </column>
         </createTable>

@@ -6,9 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.webjars.NotFoundException;
 import ru.zivo.beatstore.model.Profile;
-import ru.zivo.beatstore.model.User;
 import ru.zivo.beatstore.repository.ProfileRepository;
-import ru.zivo.beatstore.repository.UserRepository;
 import ru.zivo.beatstore.service.ProfileService;
 import ru.zivo.beatstore.service.impl.common.Users;
 
@@ -23,13 +21,10 @@ public class ProfileServiceImpl implements ProfileService {
     @Value("${upload.path}")
     private String uploadPath;
 
-    private final UserRepository userRepository;
-
     private final ProfileRepository profileRepository;
 
     @Autowired
-    public ProfileServiceImpl(UserRepository userRepository, ProfileRepository profileRepository) {
-        this.userRepository = userRepository;
+    public ProfileServiceImpl(ProfileRepository profileRepository) {
         this.profileRepository = profileRepository;
     }
 
@@ -53,33 +48,33 @@ public class ProfileServiceImpl implements ProfileService {
 
         String userId = profile.getUser().getId();
 
-        if (photo != null) {
-            String pathname = uploadPath + "/user-" + userId + "/profile";
+        if (photo == null) return;
 
-            List<File> files = List.of(
-                    new File(uploadPath),
-                    new File(uploadPath + "/user-" + userId),
-                    new File(pathname)
-            );
+        String pathname = uploadPath + "/user-" + userId + "/profile";
 
-            for (File file : files) {
-                if (!file.exists()) {
-                    boolean mkdir = file.mkdir();
-                    System.out.println(mkdir);
-                }
+        List<File> files = List.of(
+                new File(uploadPath),
+                new File(uploadPath + "/user-" + userId),
+                new File(pathname)
+        );
+
+        for (File file : files) {
+            if (!file.exists()) {
+                boolean mkdir = file.mkdir();
+                System.out.println(mkdir);
             }
-
-            String imageName = profile.getImageName();
-
-            if (imageName != null && !imageName.equals("")) {
-                System.out.println(new File(pathname + "/" + imageName).delete());
-            }
-
-            String resultFilename = UUID.randomUUID() + ".jpg";
-            photo.transferTo(new File(pathname + "/" + resultFilename));
-            profile.setImageName(resultFilename);
-
-            profileRepository.save(profile);
         }
+
+        String imageName = profile.getImageName();
+
+        if (imageName != null && !imageName.equals("")) {
+            System.out.println(new File(pathname + "/" + imageName).delete());
+        }
+
+        String resultFilename = UUID.randomUUID() + ".jpg";
+        photo.transferTo(new File(pathname + "/" + resultFilename));
+        profile.setImageName(resultFilename);
+
+        profileRepository.save(profile);
     }
 }

@@ -8,6 +8,7 @@ import lombok.Setter;
 import ru.zivo.beatstore.model.common.AbstractLongPersistable;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,9 +26,18 @@ public class Audio extends AbstractLongPersistable {
     @Column(name = "mp3_name")
     private String mp3Name;
 
+    @Column(name = "mp3_original_name")
+    private String mp3OriginalName;
+
     @Column(name = "wav_name")
     private String wavName;
 
-    @Column(name = "track_stems_name")
-    private String trackStemsName;
+    @Column(name = "wav_original_name")
+    private String wavOriginalName;
+
+    @Column(name = "zip_name")
+    private String zipName;
+
+    @Column(name = "zip_original_name")
+    private String zipOriginalName;
 }

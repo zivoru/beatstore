@@ -258,8 +258,11 @@ class App extends React.Component {
 
                 });
 
-                document.getElementsByClassName('pause')[0].style.display = "none"
-                document.getElementsByClassName('playplay')[0].style.display = "initial"
+                let pause = document.querySelector('.pause');
+                if (pause !== null) pause.style.display = "none"
+
+                let play = document.querySelector('.playplay');
+                if (play !== null) play.style.display = "initial"
 
             } else {
                 this.setState({
@@ -694,7 +697,7 @@ class App extends React.Component {
             if (window.screen.width > 767) {
                 setTimeout(() => {
                     this.setState({cartPopUp: true})
-                }, 10)
+                }, 100)
             }
         })
 

@@ -37,7 +37,7 @@ public class CommentController {
     }
 
     @DeleteMapping("{id}")
-    public void delete(@PathVariable Long id) {
-        commentService.delete(id);
+    public void delete(@AuthenticationPrincipal OAuth2User principal, @PathVariable Long id) {
+        if (principal != null) commentService.delete(principal.getAttribute("sub"), id);
     }
 }

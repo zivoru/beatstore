@@ -4,8 +4,6 @@ import ru.zivo.beatstore.model.Beat;
 
 import java.io.File;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class DeleteAudioFiles {
 
@@ -15,7 +13,7 @@ public class DeleteAudioFiles {
             names.add(beat.getImageName());
             names.add(beat.getAudio().getMp3Name());
             names.add(beat.getAudio().getWavName());
-            names.add(beat.getAudio().getTrackStemsName());
+            names.add(beat.getAudio().getZipName());
 
             for (String name : names) {
                 if (name != null && !name.equals("")) {

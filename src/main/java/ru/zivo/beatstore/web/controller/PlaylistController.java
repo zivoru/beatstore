@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.zivo.beatstore.model.Playlist;
@@ -46,9 +48,16 @@ public class PlaylistController {
 
     @Operation(summary = "Изменение плейлиста")
     @PutMapping("{id}")
-    public void update(@PathVariable Long id, @RequestBody Playlist playlist) {
-        playlist.setId(id);
-        playlistService.update(playlist);
+    public void update(@AuthenticationPrincipal OAuth2User principal,
+                       @PathVariable Long id,
+                       @RequestBody Playlist playlist) {
+        if (principal != null) playlistService.update(principal.getAttribute("sub"), id, playlist);
+    }
+
+    @Operation(summary = "Удаление плейлиста")
+    @DeleteMapping("{id}")
+    public void update(@AuthenticationPrincipal OAuth2User principal, @PathVariable Long id) {
+        if (principal != null) playlistService.delete(principal.getAttribute("sub"), id);
     }
 
     @Operation(summary = "Загрузка фото плейлиста")
@@ -60,14 +69,18 @@ public class PlaylistController {
 
     @Operation(summary = "Добавление бита в плейлист")
     @PostMapping("addBeat/{playlistId}/{beatId}")
-    public void addBeat(@PathVariable Long playlistId, @PathVariable Long beatId) {
-        playlistService.addBeat(playlistId, beatId);
+    public void addBeat(@AuthenticationPrincipal OAuth2User principal,
+                        @PathVariable Long playlistId,
+                        @PathVariable Long beatId) {
+        if (principal != null) playlistService.addBeat(principal.getAttribute("sub"), playlistId, beatId);
     }
 
     @Operation(summary = "Удаление бита из плейлиста")
     @PostMapping("removeBeat/{playlistId}/{beatId}")
-    public void removeBeat(@PathVariable Long playlistId, @PathVariable Long beatId) {
-        playlistService.removeBeat(playlistId, beatId);
+    public void removeBeat(@AuthenticationPrincipal OAuth2User principal,
+                           @PathVariable Long playlistId,
+                           @PathVariable Long beatId) {
+        if (principal != null) playlistService.removeBeat(principal.getAttribute("sub"), playlistId, beatId);
     }
 
     @Operation(summary = "Добавление в избранное")

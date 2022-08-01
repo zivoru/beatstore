@@ -16,7 +16,6 @@ import ru.zivo.beatstore.service.BeatService;
 import ru.zivo.beatstore.service.impl.common.DeleteAudioFiles;
 import ru.zivo.beatstore.service.impl.common.Users;
 import ru.zivo.beatstore.web.dto.BeatDto;
-import ru.zivo.beatstore.web.dto.CartDto;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,30 +67,32 @@ public class BeatServiceImpl implements BeatService {
     }
 
     @Override
-    public void update(Beat beat) {
-        Beat beatById = findById(beat.getId());
-        beat.setUser(beatById.getUser());
-        beat.setAudio(beatById.getAudio());
-        beat.setImageName(beatById.getImageName());
-        beat.setPlays(beatById.getPlays());
-        beat.setStatus(beatById.getStatus());
-        beat.setLicense(beatById.getLicense());
-        beat.setTags(beatById.getTags());
-        beat.setComments(beatById.getComments());
-        beat.setLikes(beatById.getLikes());
-        beat.setCart(beatById.getCart());
-        beat.setFavoriteBeats(beatById.getFavoriteBeats());
-        beat.setHistory(beatById.getHistory());
+    public void update(String userId, Long beatId, Beat newBeat) {
+        Beat beat = findById(beatId);
+
+        if (!beat.getUser().getId().equals(userId)) return;
+
+        if (newBeat.getFree()) cartRepository.deleteAll(cartRepository.findAllByBeat(beat));
+
+        beat.setTitle(newBeat.getTitle());
+        beat.setFree(newBeat.getFree());
+        beat.setGenre(newBeat.getGenre());
+        beat.setMood(newBeat.getMood());
+        beat.setDescription(newBeat.getDescription());
+        beat.setBpm(newBeat.getBpm());
+        beat.setKey(newBeat.getKey());
         beatRepository.save(beat);
     }
 
     @Override
-    public void delete(Long id) {
-        Beat beat = findById(id);
-        String pathname = uploadPath + "/user-" + beat.getUser().getId() + "/beats/beat-" + id;
+    public void delete(String userId, Long beatId) {
+        Beat beat = findById(beatId);
+        if (!beat.getUser().getId().equals(userId)) return;
 
+        String pathname = uploadPath + "/user-" + beat.getUser().getId() + "/beats/beat-" + beatId;
         DeleteAudioFiles.delete(beat, pathname);
         System.out.println(new File(pathname).delete());
+
         beatRepository.delete(beat);
     }
 
@@ -125,6 +126,7 @@ public class BeatServiceImpl implements BeatService {
                 System.out.println(new File(pathname + "/" + name).delete());
             }
             audio.setMp3Name(saveFile(mp3, pathname, ".mp3"));
+            audio.setMp3OriginalName(mp3.getOriginalFilename());
         }
         if (wav != null) {
             String name = beat.getAudio().getWavName();
@@ -132,13 +134,15 @@ public class BeatServiceImpl implements BeatService {
                 System.out.println(new File(pathname + "/" + name).delete());
             }
             audio.setWavName(saveFile(wav, pathname, ".wav"));
+            audio.setWavOriginalName(wav.getOriginalFilename());
         }
         if (zip != null) {
-            String name = beat.getAudio().getTrackStemsName();
+            String name = beat.getAudio().getZipName();
             if (name != null && !name.equals("")) {
                 System.out.println(new File(pathname + "/" + name).delete());
             }
-            audio.setTrackStemsName(saveFile(zip, pathname, ".zip"));
+            audio.setZipName(saveFile(zip, pathname, ".zip"));
+            audio.setZipOriginalName(zip.getOriginalFilename());
         }
 
         audioRepository.save(audio);
@@ -186,37 +190,37 @@ public class BeatServiceImpl implements BeatService {
         User user = Users.getUser(userId);
         Beat beat = findById(beatId);
 
-        if (!cartRepository.existsByBeatAndUserAndLicensing(beat, user, Licensing.valueOf(license))) {
-            Optional<Cart> cartRepositoryByBeatAndUser = cartRepository.findByBeatAndUser(beat, user);
-            if (cartRepositoryByBeatAndUser.isEmpty()) {
-                Cart cart = Cart.builder()
-                        .user(user)
-                        .beat(beat)
-                        .licensing(Licensing.valueOf(license))
-                        .build();
-
-                Cart savedCart = cartRepository.save(cart);
-
-                user.getCart().add(savedCart);
-
-                userRepository.save(user);
-
-                return savedCart;
-            } else {
-                Cart cart = cartRepositoryByBeatAndUser.get();
-
-                cart.setLicensing(Licensing.valueOf(license));
-
-                Cart savedCart = cartRepository.save(cart);
-
-                user.getCart().add(savedCart);
-
-                userRepository.save(user);
-
-                return savedCart;
-            }
+        if (cartRepository.existsByBeatAndUserAndLicensing(beat, user, Licensing.valueOf(license))) {
+            return null;
         }
-        return null;
+        Optional<Cart> cartRepositoryByBeatAndUser = cartRepository.findByBeatAndUser(beat, user);
+        if (cartRepositoryByBeatAndUser.isEmpty()) {
+            Cart cart = Cart.builder()
+                    .user(user)
+                    .beat(beat)
+                    .licensing(Licensing.valueOf(license))
+                    .build();
+
+            Cart savedCart = cartRepository.save(cart);
+
+            user.getCart().add(savedCart);
+
+            userRepository.save(user);
+
+            return savedCart;
+        } else {
+            Cart cart = cartRepositoryByBeatAndUser.get();
+
+            cart.setLicensing(Licensing.valueOf(license));
+
+            Cart savedCart = cartRepository.save(cart);
+
+            user.getCart().add(savedCart);
+
+            userRepository.save(user);
+
+            return savedCart;
+        }
     }
 
     @Override

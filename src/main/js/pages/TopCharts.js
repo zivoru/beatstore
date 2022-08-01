@@ -50,7 +50,7 @@ class TopCharts extends Component {
     }
 
     addBeatsToState = (page, filters) => {
-        axios.get("/api/v1/beats/top-charts?" + filters + "&page=" + page + "&size=10").then(res => {
+        axios.get("/api/v1/beats/top-charts?" + filters + "&page=" + page + "&size=10000").then(res => {
             this.setState({
                 beats: res.data.totalElements === 0 ? "empty" : res.data.content,
                 totalPages: res.data.totalPages

@@ -24,12 +24,8 @@ class Header extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps !== this.props) {
-            this.setState({
-                user: this.props.user,
-                cart: this.props.cart
-            })
-        }
+        if (prevProps.user !== this.props.user) this.setState({user: this.props.user})
+        if (prevProps.cart !== this.props.cart) this.setState({cart: this.props.cart})
     }
 
     burgerOpen = () => {

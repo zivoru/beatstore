@@ -12,16 +12,17 @@ class History extends Component {
     }
 
     componentDidMount() {
+        window.scrollTo({top: 0, behavior: 'smooth'})
         this.setState({user: this.props.user})
         this.addBeatsToState(this.state.page)
     }
 
-    componentWillReceiveProps(nextProps, nextContext) {
-        this.setState({user: this.props.user})
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.user !== this.props.user) this.setState({user: this.props.user})
     }
 
     addBeatsToState = (page) => {
-        axios.get("/api/v1/beats/history/?page=" + page + "&size=10").then(res => {
+        axios.get("/api/v1/beats/history/?page=" + page + "&size=10000").then(res => {
             this.setState({
                 beats: res.data.totalElements === 0 ? "empty" : res.data.content,
                 totalPages: res.data.totalPages

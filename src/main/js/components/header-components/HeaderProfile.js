@@ -18,8 +18,6 @@ const HeaderProfile = (props) => (
     <div className="dropdown dropdown__profile trs">
 
         <Link to={'/' + props.user.username} onClick={props.dropdownClose} className="hu profile-header">
-            {/*<img src={props.image} className="profile-img b-r999" alt="profile"/>*/}
-
             <span className="hu">{props.user.profile.displayName}</span>
         </Link>
 

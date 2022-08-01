@@ -329,7 +329,7 @@ class Beat extends Component {
 
             if (window.screen.width > 767) setTimeout(() => {
                 this.props.cartPopUpOpen()
-            }, 10)
+            }, 100)
         }).catch()
     }
 

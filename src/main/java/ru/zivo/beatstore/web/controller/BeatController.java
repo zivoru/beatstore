@@ -43,19 +43,24 @@ public class BeatController {
     @Operation(summary = "Создание бита")
     @PostMapping()
     public ResponseEntity<Long> create(@AuthenticationPrincipal OAuth2User principal, @RequestBody Beat beat) {
-        if (principal != null) {
-            Beat savedBeat = beatService.create(principal.getAttribute("sub"), beat);
-            return ResponseEntity.ok(savedBeat.getId());
-        }
-        return null;
+        if (principal == null) return null;
+        Beat savedBeat = beatService.create(principal.getAttribute("sub"), beat);
+        return ResponseEntity.ok(savedBeat.getId());
     }
 
     @Operation(summary = "Изменение бита")
     @PutMapping("{id}")
-    public ResponseEntity<Long> update(@PathVariable Long id, @RequestBody Beat beat) {
-        beat.setId(id);
-        beatService.update(beat);
+    public ResponseEntity<Long> update(@AuthenticationPrincipal OAuth2User principal,
+                                       @PathVariable Long id, @RequestBody Beat beat) {
+        if (principal == null) return null;
+        beatService.update(principal.getAttribute("sub"), id, beat);
         return ResponseEntity.ok(id);
+    }
+
+    @Operation(summary = "Удаление бита")
+    @DeleteMapping("{id}")
+    public void delete(@AuthenticationPrincipal OAuth2User principal, @PathVariable Long id) {
+        if (principal != null) beatService.delete(principal.getAttribute("sub"), id);
     }
 
     @Operation(summary = "Загрузка фото бита")
@@ -160,12 +165,6 @@ public class BeatController {
     @PostMapping("beat/{beatId}")
     public void getRecommendedUsers(@AuthenticationPrincipal OAuth2User principal, @PathVariable Long beatId) {
         if (principal != null) beatService.addToHistory(principal.getAttribute("sub"), beatId);
-    }
-
-    @Operation(summary = "Удаление бита")
-    @DeleteMapping("{id}")
-    public void delete(@PathVariable Long id) {
-        beatService.delete(id);
     }
 
     @Operation(summary = "Избранные биты пользователя по его id")

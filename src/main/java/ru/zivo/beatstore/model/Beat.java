@@ -13,7 +13,10 @@ import ru.zivo.beatstore.model.enums.Mood;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,7 +34,7 @@ public class Beat extends AbstractLongPersistable {
     @Column(name = "title")
     private String title;
 
-    @OneToOne(mappedBy = "beat", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "beat")
     private Audio audio;
 
     @Column(name = "image_name")
@@ -57,9 +60,6 @@ public class Beat extends AbstractLongPersistable {
     @Column(name = "key")
     @Enumerated(EnumType.STRING)
     private Key key;
-
-    @Column(name = "youtube_link")
-    private String youtubeLink;
 
     @Column(name = "plays")
     private Integer plays;
@@ -92,23 +92,23 @@ public class Beat extends AbstractLongPersistable {
 
     @JsonIgnore
     @OneToMany(mappedBy = "beat", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Cart> cart = new LinkedHashSet<>();
+    private List<Cart> cart = new ArrayList<>();
 
     @JsonIgnore
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(
             name = "favorite_beats",
-            joinColumns = { @JoinColumn(name = "beat_id") },
-            inverseJoinColumns = { @JoinColumn(name = "user_id")}
+            joinColumns = {@JoinColumn(name = "beat_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
-    private List<Beat> favoriteBeats = new ArrayList<>();
+    private List<User> favoriteBeats = new ArrayList<>();
 
     @JsonIgnore
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(
             name = "history",
-            joinColumns = { @JoinColumn(name= "beat_id") },
-            inverseJoinColumns = { @JoinColumn(name = "user_id")}
+            joinColumns = {@JoinColumn(name = "beat_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
-    private List<Beat> history = new ArrayList<>();
+    private List<User> history = new ArrayList<>();
 }

@@ -18,9 +18,9 @@ public interface BeatService {
 
     Beat create(String userId, Beat beat);
 
-    void update(Beat beat);
+    void update(String userId, Long beatId, Beat beat);
 
-    void delete(Long id);
+    void delete(String userId, Long beatId);
 
     void uploadImage(Long beatId, MultipartFile image) throws IOException;
 

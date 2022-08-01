@@ -61,8 +61,22 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     @Override
-    public void update(Playlist playlist) {
-        playlistRepository.save(playlist);
+    public void update(String userId, Long playlistId, Playlist playlist) {
+        Playlist playlistById = findById(playlistId);
+
+        if (!playlistById.getUser().getId().equals(userId)) return;
+
+        playlistById.setName(playlist.getName());
+        playlistById.setDescription(playlist.getDescription());
+        playlistById.setVisibility(playlist.getVisibility());
+        playlistRepository.save(playlistById);
+    }
+
+    @Override
+    public void delete(String userId, Long playlistId) {
+        Playlist playlist = findById(playlistId);
+
+        if (playlist.getUser().getId().equals(userId)) playlistRepository.delete(playlist);
     }
 
     @Override
@@ -98,15 +112,21 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     @Override
-    public void addBeat(Long playlistId, Long beatId) {
+    public void addBeat(String userId, Long playlistId, Long beatId) {
         Playlist playlist = findById(playlistId);
+
+        if (!playlist.getUser().getId().equals(userId)) return;
+
         playlist.getBeats().add(getBeat(beatId));
         playlistRepository.save(playlist);
     }
 
     @Override
-    public void removeBeat(Long playlistId, Long beatId) {
+    public void removeBeat(String userId, Long playlistId, Long beatId) {
         Playlist playlist = findById(playlistId);
+
+        if (!playlist.getUser().getId().equals(userId)) return;
+
         playlist.getBeats().remove(getBeat(beatId));
         playlistRepository.save(playlist);
     }

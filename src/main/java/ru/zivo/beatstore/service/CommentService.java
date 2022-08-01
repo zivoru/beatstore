@@ -12,5 +12,5 @@ public interface CommentService {
 
     Comment addComment(Long beatId, String userId, Comment comment);
 
-    void delete(Long id);
+    void delete(String userId, Long id);
 }

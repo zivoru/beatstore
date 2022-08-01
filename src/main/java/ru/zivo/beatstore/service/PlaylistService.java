@@ -17,13 +17,15 @@ public interface PlaylistService {
 
     Playlist create(String userId, Playlist playlist);
 
-    void update(Playlist playlist);
+    void update(String userId, Long playlistId, Playlist playlist);
+
+    void delete(String userId, Long playlistId);
 
     void uploadImage(Long id, MultipartFile image) throws IOException;
 
-    void addBeat(Long playlistId, Long beatId);
+    void addBeat(String userId, Long playlistId, Long beatId);
 
-    void removeBeat(Long playlistId, Long beatId);
+    void removeBeat(String userId, Long playlistId, Long beatId);
 
     void addFavorite(Long playlistId, String userId);
 
