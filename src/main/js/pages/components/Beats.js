@@ -22,22 +22,19 @@ class Beats extends Component {
                         if (beat.free === true) {
                             btn = <button className="btn-primary qwe-btn btn-free"
                                           onClick={props.openDownload.bind(this, beat)}>
-                                    <span>Скачать</span></button>
+                                <span>Скачать</span></button>
                         }
-                        if (beat.free === false){
+                        if (beat.free === false) {
                             btn = <button className="btn-primary qwe-btn"
                                           onClick={props.openLicenses.bind(this, beat.id)}>
-                                    <span>{beat.license.price_mp3} ₽</span></button>
+                                <span>{beat.license.price_mp3} ₽</span></button>
                         }
                         if (bt.addedToCart === true) {
                             btn = <button className="btn-primary qwe-btn" style={{backgroundColor: "#262626"}}
                                           onClick={props.openLicenses.bind(this, beat.id)}>
-                                    <span>В корзине</span></button>
+                                <span>В корзине</span></button>
                         }
-                        if (props.user !== null && props.user !== undefined) {
-                            console.log(props.user)
-                            console.log(props.user.id)
-                            console.log(beat.user.id)
+                        if (props.user !== null && props.user !== undefined && props.user !== "empty") {
                             if (beat.user.id === props.user.id) {
                                 btn = null
                             }
@@ -101,7 +98,7 @@ class Beats extends Component {
                                 <div className="qwe-right">
                                     {beat.tags.map((tag, index) => {
                                         return (<Link to={"/top-charts?tag=" + tag.id} key={index}
-                                                  className="qwe-tag">#{tag.name}</Link>)
+                                                      className="qwe-tag">#{tag.name}</Link>)
                                     })}
 
                                     {btn}

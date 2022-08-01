@@ -1,4 +1,4 @@
-import {BrowserRouter, Link, Route, Routes} from "react-router-dom";
+import {BrowserRouter, Link, Route, Routes, Navigate} from "react-router-dom";
 import axios from 'axios';
 import './styles/App.css';
 import './styles/Beat.css';
@@ -69,21 +69,27 @@ class App extends React.Component {
         this.setState({loading: true})
 
         axios.get('/user').then(res => {
-            this.setState({user: res.data.user});
-
-            setTimeout(() => this.setState({loading: false}), 500)
+            this.setState({
+                user: res.data.user === null || res.data.user === undefined ? "empty" : res.data.user,
+                loading: false
+            });
 
             if (res.data.user !== undefined && res.data.user !== null) {
                 axios.get('/api/v1/carts/').then(response => {
                     this.setState({cart: response.data})
                 })
             }
-        }).catch(() => this.setState({loading: false}))
+        }).catch(() => {
+            this.setState({
+                user: "empty",
+                loading: false
+            })
+        })
     }
 
     logout = () => {
         this.setState({
-            user: null,
+            user: "empty",
             audio: '',
             beat: null,
             playerBeat: null,
@@ -129,7 +135,7 @@ class App extends React.Component {
         // добавление прослушивания
         axios.post("/api/v1/beats/plays/" + id).then()
 
-        if (this.state.user !== null && this.state.user !== undefined) {
+        if (this.state.user !== null && this.state.user !== undefined && this.state.user !== "empty") {
             // добавление в историю прослушиваний
             axios.post("/api/v1/beats/beat/" + id).then()
         }
@@ -150,7 +156,7 @@ class App extends React.Component {
                 playerBeat: res.data
             })
 
-            if (this.state.user !== null && this.state.user !== undefined) {
+            if (this.state.user !== null && this.state.user !== undefined && this.state.user !== "empty") {
 
                 this.setState({
                     btn: <button className="btn-primary btn-cart" style={{padding: "5px 16px"}}
@@ -169,8 +175,6 @@ class App extends React.Component {
                 }
 
                 if (res.data.user.id === this.state.user.id) {
-                    console.log(res.data.user.id)
-                    console.log(this.state.user.id)
                     this.setState({
                         btn: null
                     })
@@ -325,7 +329,7 @@ class App extends React.Component {
         this.setState({play: "play"})
     }
     openLicenses = (id) => {
-        if (this.state.user !== null && this.state.user !== undefined) {
+        if (this.state.user !== null && this.state.user !== undefined && this.state.user !== "empty") {
             axios.get("/api/v1/beats/" + id).then(response => {
                 this.setState({
                     beat: response.data
@@ -387,7 +391,7 @@ class App extends React.Component {
                 })
 
 
-                if (this.state.user !== null) {
+                if (this.state.user !== null && this.state.user !== undefined && this.state.user !== "empty") {
 
                     axios.get("/api/v1/carts/").then(response2 => {
 
@@ -461,7 +465,7 @@ class App extends React.Component {
     }
     like = () => {
         let s = this.state;
-        if (s.user !== null && s.user !== undefined) {
+        if (s.user !== null && s.user !== undefined && s.user !== "empty") {
             if (s.like === '/img/heart.png') {
                 axios.post("/api/v1/beats/addToFavorite/" + s.beat.id)
                     .then(() => {
@@ -495,8 +499,7 @@ class App extends React.Component {
         }
     }
     openPlaylists = (beat) => {
-
-        if (this.state.user !== null && this.state.user !== undefined) {
+        if (this.state.user !== null && this.state.user !== undefined && this.state.user !== "empty") {
             if (beat !== null) {
                 this.setState({
                     beat: beat
@@ -768,7 +771,7 @@ class App extends React.Component {
             </div>
         }
 
-        let userIsPresent = this.state.user !== null && this.state.user !== undefined;
+        let userIsPresent = this.state.user === "empty";
 
         return (
             <div>
@@ -798,31 +801,34 @@ class App extends React.Component {
                                                                 cartPopUpOpen={this.cartPopUpOpen}
                     />}/>
 
-                    <Route path="/edit/:beatId" element={userIsPresent ? <Edit1 user={this.state.user}/> : null}/>
+                    <Route path="/edit/:beatId" element={userIsPresent
+                        ? <Navigate to="/" replace={true} />
+                        : <Edit1 user={this.state.user}/>}/>
 
-                    <Route path="/upload-beat" element={userIsPresent ? <CreateBeat/> : null}/>
+                    <Route path="/upload-beat" element={userIsPresent
+                        ? <Navigate to="/" replace={true} />
+                        : <CreateBeat/>}/>
 
                     <Route path="/beats" element={userIsPresent
-                        ? <MyBeats user={this.state.user}
+                        ? <Navigate to="/" replace={true} />
+                        : <MyBeats user={this.state.user}
                                    setAudio={this.setAudio}
                                    openPlaylists={this.openPlaylists}
-                                   openDownload={this.openDownload}/>
-                        : null}/>
+                                   openDownload={this.openDownload}/>}/>
 
                     <Route path="/history" element={userIsPresent
-                        ? <History user={this.state.user}
-                                   resourceUrl={this.resourceUrl}
+                        ? <Navigate to="/" replace={true} />
+                        : <History user={this.state.user}
                                    setAudio={this.setAudio}
                                    openLicenses={this.openLicenses}
-                                   openDownload={this.openDownload}/>
-                        : null}/>
+                                   openDownload={this.openDownload}/>}/>
 
                     <Route path="/favorites" element={userIsPresent
-                        ? <Favorite user={this.state.user} resourceUrl={this.resourceUrl}
+                        ? <Navigate to="/" replace={true} />
+                        : <Favorite user={this.state.user}
                                     setAudio={this.setAudio}
                                     openLicenses={this.openLicenses}
-                                    openDownload={this.openDownload}/>
-                        : null}/>
+                                    openDownload={this.openDownload}/>}/>
 
                     <Route path="/top-charts" element={<TopCharts user={this.state.user} setAudio={this.setAudio}
                                                                   openLicenses={this.openLicenses}
@@ -838,7 +844,8 @@ class App extends React.Component {
                     />}/>
 
                     <Route path="/settings" element={userIsPresent
-                        ? <Settings user={this.state.user} updateUser={this.updateUser}/> : null}/>
+                        ? <Navigate to="/" replace={true} />
+                        : <Settings user={this.state.user} updateUser={this.updateUser}/> }/>
                 </Routes>
 
                 {player}

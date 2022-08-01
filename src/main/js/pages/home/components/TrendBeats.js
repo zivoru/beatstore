@@ -30,8 +30,9 @@ class TrendBeats extends Component {
                             <div className="slide" key={index}>
                                 <div className="slide-img-container">
                                     <Link to={"/beat/" + beat.id} className="inl-blk">
-                                        <img className="slide-img" src={beat.imageName !== null && beat.imageName !== '' ?
-                                            `${path}${beat.imageName}` : '/img/track-placeholder.svg'} alt="beat"/>
+                                        <img className="slide-img"
+                                             src={beat.imageName !== null && beat.imageName !== '' ?
+                                                 `${path}${beat.imageName}` : '/img/track-placeholder.svg'} alt="beat"/>
                                     </Link>
 
                                     <button className="play" title="Воспроизвести"
@@ -49,7 +50,8 @@ class TrendBeats extends Component {
                                     </div>
 
                                     <div className="sl-gr-it">
-                                        <Link to={"/" + beat.user.username} className="fs12 fw400 mr5 color-g1 hu wnohte"
+                                        <Link to={"/" + beat.user.username}
+                                              className="fs12 fw400 mr5 color-g1 hu wnohte"
                                               title={beat.user.profile.displayName}>
                                             {beat.user.profile.displayName}
                                         </Link>

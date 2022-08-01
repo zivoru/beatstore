@@ -12,13 +12,13 @@ class Home extends Component {
     render() {
         document.title = 'BeatStore | Музыкальный маркетплейс для покупки и продажи битов';
 
-        setTimeout(() => this.setState({loading: false}), 300)
-
         return (
             <div>
 
                 {this.state.loading ?
-                    <div className="loading" style={{zIndex: 40}}><div className="loader"></div></div> : null}
+                    <div className="loading" style={{zIndex: 40}}>
+                        <div className="loader"></div>
+                    </div> : null}
 
                 <div>
                     <div className="header flex-c-c home-header">

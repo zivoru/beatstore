@@ -2,8 +2,10 @@ import React, {Component} from "react";
 import axios from "axios";
 import {Link} from "react-router-dom";
 import Beats from "./components/Beats";
+import NotFound from "./components/NotFound";
 
 class Profile extends Component {
+    subscriptionStatus;
 
     constructor(props) {
         super(props);
@@ -27,7 +29,7 @@ class Profile extends Component {
         if (prevProps.user !== this.props.user) {
             this.setState({user: this.props.user})
 
-            if (this.props.user !== null && this.props.user !== undefined && this.state.userProfile !== null && this.state.userProfile !== "null") {
+            if (this.props.user !== null && this.props.user !== undefined && this.props.user !== "empty" && this.state.userProfile !== null && this.state.userProfile !== "null") {
 
                 if (this.state.userProfile.id === this.props.user.id) {
                     this.setState({
@@ -88,9 +90,7 @@ class Profile extends Component {
                 })
             }
 
-            if (this.props.user !== null && this.props.user !== undefined) {
-                console.log('jopa')
-
+            if (this.props.user !== null && this.props.user !== undefined && this.props.user !== "empty") {
                 if (usr.id === this.props.user.id) {
                     this.setState({
                         btnFollow:
@@ -105,22 +105,22 @@ class Profile extends Component {
 
             axios.get(`/api/v1/beats/user/${usr.id}?page=${this.state.page}&size=10`).then(response => {
                 this.setState({totalPages: response.data.totalPages})
-                this.setState({beats: response.data.totalElements === 0 ? "null" : response.data.content})
+                this.setState({beats: response.data.totalElements === 0 ? "empty" : response.data.content})
             }).catch(() => {
-                this.setState({beats: "null"})
+                this.setState({beats: "empty"})
             })
         }).catch(() => {
-            this.setState({userProfile: "null"})
+            this.setState({userProfile: "empty"})
         })
     }
 
     addBeatsToState = (page) => {
-        if (this.state.userProfile !== null && this.state.userProfile !== "null") {
+        if (this.state.userProfile !== null && this.state.userProfile !== "empty") {
             axios.get(`/api/v1/beats/user/${this.state.userProfile.id}page=${page}&size=10`).then(res => {
                 this.setState({totalPages: res.data.totalPages})
-                this.setState({beats: res.data.totalElements === 0 ? "null" : res.data.content})
+                this.setState({beats: res.data.totalElements === 0 ? "empty" : res.data.content})
             }).catch(() => {
-                this.setState({beats: "null"})
+                this.setState({beats: "empty"})
             })
         }
     }
@@ -142,12 +142,11 @@ class Profile extends Component {
     }
 
     subscribeAndUnsubscribe = () => {
-        if (this.props.user === null || this.props.user === undefined) {
+        if (this.props.user === null || this.props.user === undefined || this.props.user === "empty") {
             this.props.setLoginPopUp();
             return;
         }
         axios.post(`/api/v1/users/subscribe/channel/${this.state.userProfile.id}`).then(res => {
-            console.log('jopa')
             if (res.data === true) {
                 this.setState({
                     btnFollow:
@@ -170,28 +169,11 @@ class Profile extends Component {
                         </div>
                 })
             }
-        })
+        }).catch()
     }
 
     render() {
-
-        if (this.state.userProfile === "null") {
-            document.title = "404 | Не найдено"
-
-            return (
-                <div>
-
-                    <div className="wrapper">
-                        <div className="container">
-                            404
-                        </div>
-                    </div>
-
-                </div>
-            );
-        }
-
-        if (this.state.userProfile !== null && this.state.userProfile !== "null") {
+        if (this.state.userProfile !== null && this.state.userProfile !== "empty") {
             document.title = this.props.username + " | BeatStore Профиль"
 
             if (this.state.totalPages > 1 && this.state.pagination.length === 0) {
@@ -201,17 +183,9 @@ class Profile extends Component {
                 }
             }
 
-            let userBeats
+            let userBeats;
 
-            if (this.state.beats === "null") {
-                userBeats =
-                    <div className="qwe-null">
-                        <h1 className="qwe1-title">{this.props.nameBeats}</h1>
-                        <span>Ничего нет</span>
-                    </div>
-            }
-
-            if (this.state.beats !== null && this.state.beats !== "null") {
+            if (this.state.beats !== null && this.state.beats !== "empty") {
                 userBeats =
                     <div>
                         <div className="profile-beats-container">
@@ -226,15 +200,20 @@ class Profile extends Component {
                         <div className="qwe-pagination-container" style={{marginTop: 16}}>
 
                             <div className="qwe-pagination">
-                                {this.state.pagination.map((pageBtn) => {
+                                {this.state.pagination.map((pageBtn, index) => {
                                     return (
-                                        <div className="mb32">
+                                        <div className="mb32" key={index}>
                                             {pageBtn}
                                         </div>
                                     )
                                 })}
                             </div>
                         </div>
+                    </div>
+            } else if (this.state.beats === "empty") {
+                userBeats =
+                    <div className="qwe-null">
+                        <span>Ничего нет</span>
                     </div>
             }
 
@@ -344,6 +323,9 @@ class Profile extends Component {
 
                 </div>
             );
+        } else if (this.state.userProfile === "empty") {
+            document.title = "404 | Не найдено"
+            return (<NotFound/>);
         }
     }
 }

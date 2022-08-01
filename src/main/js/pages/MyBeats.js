@@ -19,26 +19,34 @@ class MyBeats extends Component {
             deleteId: null,
             publishedView: true,
             draftView: false,
-            soldView: false,
-            loading: false
+            soldView: false
         };
     }
 
     componentDidMount() {
         this.setState({user: this.props.user})
 
-        this.setState({loading: true})
-
-        axios.get("/api/v1/beats/user/" + this.props.user.id + "?page=" + this.state.page + "&size=1000").then(res => {
-            this.setState({publishedBeats: res.data.totalElements === 0 ? null : res.data.content})
-            setTimeout(() => this.setState({loading: false}), 300)
-        }).catch(() => {
-            this.setState({publishedBeats: null, loading: false})
-        })
+        if (this.props.user !== null && this.props.user !== undefined  && this.props.user !== "empty") {
+            axios.get("/api/v1/beats/user/" + this.props.user.id + "?page=" + this.state.page + "&size=1000").then(res => {
+                this.setState({publishedBeats: res.data.totalElements === 0 ? "empty" : res.data.content})
+            }).catch(() => {
+                this.setState({publishedBeats: "empty"})
+            })
+        }
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.user !== this.props.user) this.setState({user: this.props.user})
+        if (prevProps.user !== this.props.user) {
+            this.setState({user: this.props.user})
+
+            if (this.props.user !== null && this.props.user !== undefined  && this.props.user !== "empty") {
+                axios.get("/api/v1/beats/user/" + this.props.user.id + "?page=" + this.state.page + "&size=1000").then(res => {
+                    this.setState({publishedBeats: res.data.totalElements === 0 ? "empty" : res.data.content})
+                }).catch(() => {
+                    this.setState({publishedBeats: "empty"})
+                })
+            }
+        }
     }
 
     deleteBeat = () => {
@@ -49,7 +57,7 @@ class MyBeats extends Component {
                 publishedBeats: newBeats,
                 warningDelete: false
             })
-        })
+        }).catch()
     }
 
     publishedView = () => {
@@ -59,13 +67,10 @@ class MyBeats extends Component {
         document.getElementById("sold").classList.remove('menu-active')
     }
     draftView = () => {
-        this.setState({loading: true})
-
         axios.get("/api/v1/beats/drafts").then(res => {
-            this.setState({draftBeats: res.data.length === 0 ? null : res.data})
-            setTimeout(() => this.setState({loading: false}), 300)
+            this.setState({draftBeats: res.data.length === 0 ? "empty" : res.data})
         }).catch(() => {
-            this.setState({draftBeats: null, loading: false})
+            this.setState({draftBeats: "empty"})
         })
 
         this.setState({publishedView: false, draftView: true, soldView: false})
@@ -75,10 +80,9 @@ class MyBeats extends Component {
     }
     soldView = () => {
         axios.get("/api/v1/beats/sold").then(res => {
-            this.setState({soldBeats: res.data.length === 0 ? null : res.data})
-            setTimeout(() => this.setState({loading: false}), 300)
+            this.setState({soldBeats: res.data.length === 0 ? "empty" : res.data})
         }).catch(() => {
-            this.setState({soldBeats: null, loading: false})
+            this.setState({soldBeats: "empty"})
         })
 
         this.setState({publishedView: false, draftView: false, soldView: true})
@@ -89,17 +93,21 @@ class MyBeats extends Component {
 
     render() {
 
-        if (this.state.user !== null && this.state.user !== undefined) {
-            document.title = "Мои биты | " + this.state.user.profile.displayName
+        let state = this.state;
+        let props = this.props
+
+        if (state.user !== null && state.user !== undefined  && state.user !== "empty") {
+            document.title = "Мои биты | " + state.user.profile.displayName
         }
 
-        let props = this.props
-        let beatId = 0
         let publishedBeats;
+        let publishedBeatId = 0;
         let draftBeats;
+        let draftBeatId = 0;
         let soldBeats;
+        let soldBeatId = 0;
 
-        if (this.state.publishedBeats !== null) {
+        if (state.publishedBeats !== null && state.publishedBeats !== "empty") {
             publishedBeats =
                 <div>
                     <div className="wrapper mt32" style={{paddingTop: 0}}>
@@ -112,11 +120,11 @@ class MyBeats extends Component {
                             </div>
 
                             <div className="qwe1">
-                                {this.state.publishedBeats.map((bt, index) => {
+                                {state.publishedBeats.map((bt, index) => {
 
                                     let beat = bt.beat
 
-                                    beatId = beatId + 1
+                                    publishedBeatId = publishedBeatId + 1
 
                                     let click;
 
@@ -130,7 +138,7 @@ class MyBeats extends Component {
 
                                             <div className="qwe-left">
                                                 <div className="qwe-id">
-                                                    <span>{beatId}</span>
+                                                    <span>{publishedBeatId}</span>
 
                                                     <button className="my-beats-play"
                                                             onClick={props.setAudio.bind(this, beat.id, path)}
@@ -201,11 +209,13 @@ class MyBeats extends Component {
                                     );
                                 })}
 
-                                {this.state.warningDelete ?
+                                {state.warningDelete ?
                                     <div>
 
                                         <div className="warning-delete-comment"
-                                             onClick={() => {this.setState({warningDelete: false})}}></div>
+                                             onClick={() => {
+                                                 this.setState({warningDelete: false})
+                                             }}></div>
 
                                         <div className="warning-delete-comment-pop-up">
                                             <span>Вы уверены что хотите удалить этот бит?</span>
@@ -229,7 +239,7 @@ class MyBeats extends Component {
                         </div>
                     </div>
                 </div>
-        } else {
+        } else if (state.publishedBeats === "empty") {
             publishedBeats =
                 <div className="wrapper">
                     <div className="container">
@@ -240,7 +250,7 @@ class MyBeats extends Component {
                 </div>
         }
 
-        if (this.state.draftBeats !== null) {
+        if (state.draftBeats !== null && state.draftBeats !== "empty") {
             draftBeats =
                 <div>
                     <div className="wrapper mt32" style={{paddingTop: 0}}>
@@ -253,9 +263,9 @@ class MyBeats extends Component {
                             </div>
 
                             <div className="qwe1">
-                                {this.state.draftBeats.map((beat, index) => {
+                                {state.draftBeats.map((beat, index) => {
 
-                                    beatId = beatId + 1
+                                    draftBeatId = draftBeatId + 1
 
                                     let click;
 
@@ -269,7 +279,7 @@ class MyBeats extends Component {
 
                                             <div className="qwe-left">
                                                 <div className="qwe-id">
-                                                    <span>{beatId}</span>
+                                                    <span>{draftBeatId}</span>
 
                                                     <button className="my-beats-play"
                                                             onClick={props.setAudio.bind(this, beat.id, path)}
@@ -335,7 +345,9 @@ class MyBeats extends Component {
                                                 {/*             alt="remove"/>*/}
                                                 {/*    </button>*/}
                                                 {/*</div>*/}
-                                                <div><button className="btn-primary">Опубликовать</button></div>
+                                                <div>
+                                                    <button className="btn-primary">Опубликовать</button>
+                                                </div>
                                             </div>
                                         </div>
                                     );
@@ -369,7 +381,7 @@ class MyBeats extends Component {
                         </div>
                     </div>
                 </div>
-        } else {
+        } else if (state.draftBeats === "empty") {
             draftBeats =
                 <div className="wrapper">
                     <div className="container">
@@ -380,7 +392,7 @@ class MyBeats extends Component {
                 </div>
         }
 
-        if (this.state.soldBeats !== null) {
+        if (state.soldBeats !== null && state.soldBeats !== "empty") {
             soldBeats =
                 <div>
                     <div className="wrapper mt32" style={{paddingTop: 0}}>
@@ -392,9 +404,9 @@ class MyBeats extends Component {
                             </div>
 
                             <div className="qwe1">
-                                {this.state.soldBeats.map((beat, index) => {
+                                {state.soldBeats.map((beat, index) => {
 
-                                    beatId = beatId + 1
+                                    soldBeatId = soldBeatId + 1
 
                                     let click;
 
@@ -408,7 +420,7 @@ class MyBeats extends Component {
 
                                             <div className="qwe-left">
                                                 <div className="qwe-id">
-                                                    <span>{beatId}</span>
+                                                    <span>{soldBeatId}</span>
 
                                                     <button className="my-beats-play"
                                                             onClick={props.setAudio.bind(this, beat.id, path)}
@@ -474,7 +486,8 @@ class MyBeats extends Component {
                                                 {/*             alt="remove"/>*/}
                                                 {/*    </button>*/}
                                                 {/*</div>*/}
-                                                <div><button className="btn-primary">Опубликовать</button></div>
+
+                                                {/*<div><button className="btn-primary">Опубликовать</button></div>*/}
                                             </div>
                                         </div>
                                     );
@@ -508,7 +521,7 @@ class MyBeats extends Component {
                         </div>
                     </div>
                 </div>
-        } else {
+        } else if (state.soldBeats === "empty") {
             soldBeats =
                 <div className="wrapper">
                     <div className="container">
@@ -521,10 +534,6 @@ class MyBeats extends Component {
 
         return (
             <div>
-
-                {this.state.loading ?
-                    <div className="loading" style={{zIndex: 40}}><div className="loader"></div></div> : null}
-
                 <div className="wrapper" style={{paddingBottom: 0}}>
                     <div className="container">
                         <div className="my-beats-header">
@@ -539,7 +548,8 @@ class MyBeats extends Component {
                 <div className="my-beats-menu">
                     <div className="wrapper" style={{paddingTop: 0, paddingBottom: 0}}>
                         <div className="container">
-                            <button id="published" className="my-beats-menu-btn menu-active" onClick={this.publishedView}>
+                            <button id="published" className="my-beats-menu-btn menu-active"
+                                    onClick={this.publishedView}>
                                 Опубликованные
                             </button>
                             <button id="draft" className="my-beats-menu-btn" onClick={this.draftView}>
@@ -552,9 +562,9 @@ class MyBeats extends Component {
                     </div>
                 </div>
 
-                {this.state.publishedView ? publishedBeats : null}
-                {this.state.draftView ? draftBeats : null}
-                {this.state.soldView ? soldBeats : null}
+                {state.publishedView ? publishedBeats : null}
+                {state.draftView ? draftBeats : null}
+                {state.soldView ? soldBeats : null}
             </div>
         )
     }

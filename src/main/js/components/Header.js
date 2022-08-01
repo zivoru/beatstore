@@ -68,7 +68,7 @@ class Header extends Component {
 
         let amountCart;
         let dropCart;
-        let dropCartClass = user !== null && user !== undefined ?
+        let dropCartClass = user !== null && user !== undefined  && user !== "empty" ?
             "dropdown dropdown__cart trs" : "dropdown dropdown__cart trs drop-cart-right"
 
         if (cart.length !== 0) {
@@ -85,11 +85,14 @@ class Header extends Component {
                                     <div className="flex-c" style={{width: 175}}>
 
                                         <img src={cart.beat.imageName !== null && cart.beat.imageName !== '' ?
-                                            `/img/user-${cart.beat.user.id}/beats/beat-${cart.beat.id}/${cart.beat.imageName}` : '/img/track-placeholder.svg'} alt=""
+                                            `/img/user-${cart.beat.user.id}/beats/beat-${cart.beat.id}/${cart.beat.imageName}`
+                                            :
+                                            '/img/track-placeholder.svg'} alt=""
                                              className="beat-img"/>
 
                                         <div className="mw100 pl16" style={{lineHeight: "17px"}}>
-                                            <Link to={"/beat/" + cart.beat.id} className="beat-link hu wnohte" onClick={this.props.cartPopUpOpen}>
+                                            <Link to={"/beat/" + cart.beat.id} className="beat-link hu wnohte"
+                                                  onClick={this.props.cartPopUpOpen} title={cart.beat.title}>
                                                 {cart.beat.title}
                                             </Link>
                                             <p className="color-g1 fw400">Бит</p>
@@ -104,7 +107,8 @@ class Header extends Component {
                         })}
                     </div>
 
-                    <Link to="/cart" className="btn-primary mw100 fs12 mt32" onClick={this.props.cartPopUpOpen}>Оформить заказ</Link>
+                    <Link to="/cart" className="btn-primary mw100 fs12 mt32" onClick={this.props.cartPopUpOpen}>Оформить
+                        заказ</Link>
                 </div>;
         } else {
             dropCart =
@@ -123,7 +127,7 @@ class Header extends Component {
                 {amountCart}
             </div>
 
-        let btnDropCartMobile = user !== null && user !== undefined ?
+        let btnDropCartMobile = user !== null && user !== undefined && user !== "empty" ?
             <Link className="hdr-drop-btn-mobile flex-c trs bag" to="/cart" title="Корзина">
                 <img src={"/img/bag.png"} width="21px" alt="корзина"/>
                 {amountCart}
@@ -137,14 +141,15 @@ class Header extends Component {
 
         let burgerFooter;
 
-        if (user !== null && user !== undefined) {
+        if (user !== null && user !== undefined  && user !== "empty") {
 
             let image = user.profile.imageName !== null && user.profile.imageName !== "" ?
                 `/img/user-${user.id}/profile/${user.profile.imageName}` :
                 '/img/default-avatar.svg';
 
             headerRight = <div className="hdr-right flex-c">
-                <Link to="/upload-beat" className="btn-primary NONE" style={{padding: "4px 10px", backgroundColor: "inherit"}}
+                <Link to="/upload-beat" className="btn-primary NONE"
+                      style={{padding: "4px 10px", backgroundColor: "inherit"}}
                       title="Загрузить бит" onClick={this.props.closeHeaderPopUps}>
                     <img src={"/img/upload.png"} width="17px" alt=""/>
                 </Link>
@@ -179,7 +184,7 @@ class Header extends Component {
             </div>
         }
 
-        if (user === null || user === undefined) {
+        if (user === "empty") {
             headerRight = <div className="hdr-right flex-c">
 
                 <a href="/oauth2/authorization/google" className="hdr-btn">

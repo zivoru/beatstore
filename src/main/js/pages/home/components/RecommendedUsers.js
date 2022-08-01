@@ -17,7 +17,7 @@ class RecommendedUsers extends Component {
     }
 
     render() {
-        if (this.state.users !== null) {
+        if (this.state.users !== null && this.state.users.length !== 0) {
             return (
                 <div className="slider">
                     {this.state.users.map((user, index) => {

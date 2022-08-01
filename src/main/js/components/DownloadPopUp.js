@@ -8,7 +8,7 @@ function download(downloadType, id, name, type) {
         .then(response => {
             const blob = new Blob(
                 [response.data],
-                { type: type }
+                {type: type}
             )
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');

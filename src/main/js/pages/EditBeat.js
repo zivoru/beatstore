@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import axios from "axios";
 import {Link} from "react-router-dom";
+import NotFound from "./components/NotFound";
 
 class EditBeat extends Component {
 
@@ -13,10 +14,13 @@ class EditBeat extends Component {
             tags: [],
             mp3: null,
             mp3Name: null,
+            mp3OriginalName: null,
             wav: null,
             wavName: null,
+            wavOriginalName: null,
             zip: null,
             zipName: null,
+            zipOriginalName: null,
             image: null,
             imageName: null,
             imageSrc: null,
@@ -46,10 +50,13 @@ class EditBeat extends Component {
                 tags: data.tags,
                 mp3: null,
                 mp3Name: data.audio.mp3Name,
+                mp3OriginalName: data.audio.mp3OriginalName,
                 wav: null,
                 wavName: data.audio.wavName,
+                wavOriginalName: data.audio.wavOriginalName,
                 zip: null,
                 zipName: data.audio.zipName,
+                zipOriginalName: data.audio.zipOriginalName,
                 image: null,
                 imageName: data.imageName,
                 imageSrc: null,
@@ -69,7 +76,7 @@ class EditBeat extends Component {
             }
         }).catch(() => {
             this.setState({
-                beat: "null"
+                beat: "empty"
             })
         })
     }
@@ -276,13 +283,11 @@ class EditBeat extends Component {
 
     updateBeat = () => {
 
-        this.setState({loading: true})
-
         let s = this.state;
 
         if (s.title.length === 0) {
             document.getElementById('title').style.border = "1px solid rgb(200, 0, 0)"
-            window.scrollTo({ top: 0, behavior: 'smooth' })
+            window.scrollTo({top: 0, behavior: 'smooth'})
         }
 
         if (s.tags.length < 3) {
@@ -292,7 +297,7 @@ class EditBeat extends Component {
                 if (tagsDOM[0] !== undefined) tagsDOM[0].style.border = "1px solid rgb(200, 0, 0)"
                 if (tagsDOM[1] !== undefined) tagsDOM[1].style.border = "1px solid rgb(200, 0, 0)"
             }
-            window.scrollTo({ top: 0, behavior: 'smooth' })
+            window.scrollTo({top: 0, behavior: 'smooth'})
         }
 
         if (s.tags.length === 3 && s.title !== "" && s.title !== null && s.title.length !== 0
@@ -300,6 +305,8 @@ class EditBeat extends Component {
             && s.priceWav !== "" && s.priceWav !== 0 && s.priceWav !== null
             && s.priceUnlimited !== "" && s.priceUnlimited !== 0 && s.priceUnlimited !== null
             && s.priceExclusive !== "" && s.priceExclusive !== 0 && s.priceExclusive !== null) {
+
+            this.setState({loading: true})
 
             let audioFormData = new FormData();
             audioFormData.append("mp3", s.mp3);
@@ -317,8 +324,7 @@ class EditBeat extends Component {
                     "mood": s.mood,
                     "description": s.description,
                     "bpm": s.bpm,
-                    "key": s.key,
-                    "status": s.beat.status
+                    "key": s.key
                 }
             ).then(response => {
 
@@ -327,20 +333,20 @@ class EditBeat extends Component {
                         headers: {
                             'Content-Type': 'multipart/form-data'
                         }
-                    }).then()
+                    }).then().catch()
                 }
 
                 axios.post('/api/v1/beats/createTag/' + response.data
                     + '?nameTag1=' + s.tags[0].name
                     + '&nameTag2=' + s.tags[1].name
-                    + '&nameTag3=' + s.tags[2].name).then()
+                    + '&nameTag3=' + s.tags[2].name).then().catch()
 
                 if (s.image !== null && s.imageName === null) {
                     axios.post(`/api/v1/beats/uploadImage/${response.data}`, imageFormData, {
                         headers: {
                             'Content-Type': 'multipart/form-data'
                         }
-                    }).then()
+                    }).then().catch()
                 }
 
                 axios.post(`/api/v1/beats/createLicense/${response.data}`, {
@@ -348,10 +354,11 @@ class EditBeat extends Component {
                     price_wav: s.priceWav,
                     price_unlimited: s.priceUnlimited,
                     price_exclusive: s.priceExclusive
-                }).then()
+                }).then().catch()
 
-                setTimeout(() => location.href = '/beats', 1000);
-            })
+                setTimeout(() => location.href = '/beats', 100);
+
+            }).catch(() => this.setState({loading: false}))
         }
     }
 
@@ -371,438 +378,447 @@ class EditBeat extends Component {
             oldScrollTopPosition = scrollTopPosition;
         }
 
-        if (this.state.beat !== null && this.state.beat !== "null") {
-            if (this.state.beat.user.id === this.props.user.id) {
-                return (
-                    <div>
+        if (this.props.user !== null && this.props.user !== undefined && this.props.user !== "empty") {
+            if (this.state.beat !== null && this.state.beat !== "empty") {
+                if (this.state.beat.user.id === this.props.user.id) {
+                    return (
+                        <div>
 
-                        {this.state.loading ? <div className="loading"><div className="loader"></div></div> : null}
+                            {this.state.loading ? <div className="loading">
+                                <div className="loader"></div>
+                            </div> : null}
 
 
-                        <div className="wrapper">
-                            <div className="container">
-                                <div className="mt16">
-                                    <Link to="/beats" className="color-g1 hu">Вернуться назад</Link>
-                                </div>
-                                <h1 className="edit-beat-header">Редактирование бита</h1>
+                            <div className="wrapper">
+                                <div className="container">
+                                    <div className="mt16">
+                                        <Link to="/beats" className="color-g1 hu">Вернуться назад</Link>
+                                    </div>
+                                    <h1 className="edit-beat-header">Редактирование бита</h1>
 
-                                <div className="edit-beat-title">
-                                    <span>Основная информация</span>
-                                </div>
+                                    <div className="edit-beat-title">
+                                        <span>Основная информация</span>
+                                    </div>
 
-                                <div className="edit-background">
-                                    <div className="edit-title-tags">
+                                    <div className="edit-background">
+                                        <div className="edit-title-tags">
 
-                                        <div className="mb32">
-                                            <div className="mb10">
-                                                <label htmlFor="title" className="edit-label">НАЗВАНИЕ*</label>
+                                            <div className="mb32">
+                                                <div className="mb10">
+                                                    <label htmlFor="title" className="edit-label">НАЗВАНИЕ*</label>
+                                                </div>
+
+                                                <input id="title" className="edit-input" type="text" placeholder="Название"
+                                                       defaultValue={this.state.title} onChange={this.title}
+                                                />
+
+                                                <div className="mt5 color-g2 fs12 fw400">
+                                                    {this.state.title.length} из 60 максимально допустимых символов
+                                                </div>
                                             </div>
 
-                                            <input id="title" className="edit-input" type="text" placeholder="Название"
-                                                   defaultValue={this.state.title} onChange={this.title}
-                                            />
+                                            <div>
+                                                <div className="mb10">
+                                                    <label htmlFor="tag" className="edit-label">ТЭГИ* (3)</label>
+                                                </div>
 
-                                            <div className="mt5 color-g2 fs12 fw400">
-                                                {this.state.title.length} из 60 максимально допустимых символов
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <div className="mb10">
-                                                <label htmlFor="tag" className="edit-label">ТЭГИ* (3)</label>
-                                            </div>
-
-                                            <div className="flex-c w100">
-                                                <div style={{position: "relative"}} className="w100">
+                                                <div className="flex-c w100">
+                                                    <div style={{position: "relative"}} className="w100">
                                                     <span
                                                         className="max-s-tag color-g2">{this.state.tag.length}/25</span>
-                                                    <input id="tag" className="edit-input" type="text" placeholder="Тэг"
-                                                           onChange={this.tag}
+                                                        <input id="tag" className="edit-input" type="text" placeholder="Тэг"
+                                                               onChange={this.tag}
+                                                        />
+                                                    </div>
+
+                                                    <button className="add-tag" onClick={this.addTag}>Добавить</button>
+                                                </div>
+
+                                                <div className="flex-c tags">
+                                                    {this.state.tags.map((tag, index) => {
+                                                        return (
+                                                            <div className="tag color-g2 mt16" key={index}>
+                                                                <span className="wnohte">#{tag.name}</span>
+                                                                <img src={'/img/plus.png'} width="10px" alt="plus"
+                                                                     onClick={this.deleteTag.bind(this, index)}
+                                                                     className="delete-tag"
+                                                                     title="Удалить"/>
+                                                            </div>
+                                                        )
+                                                    })}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="edit-audio-img">
+
+                                            <div className="edit-audio">
+                                                <div className="mb10">
+                                                    <span className="edit-label">АУДИО ФАЙЛЫ</span>
+                                                </div>
+
+                                                <label htmlFor="mp3" className="audio-btn mp3"
+                                                       style={this.state.mp3Name !== null ? {backgroundColor: "#005ff8"} : null}>
+                                                    MP3*
+                                                    <span>{this.state.mp3OriginalName}</span>
+                                                </label>
+                                                <input id="mp3" type="file" onChange={this.changeMp3}/>
+
+                                                <label htmlFor="wav" className="audio-btn wav"
+                                                       style={this.state.wavName !== null ? {backgroundColor: "#005ff8"} : null}>
+                                                    WAV*
+                                                    <span>{this.state.wavOriginalName}</span>
+                                                </label>
+                                                <input id="wav" type="file" onChange={this.changeWav}/>
+
+                                                <label htmlFor="zip" className="audio-btn zip"
+                                                       style={this.state.zipName !== null ? {backgroundColor: "#005ff8"} : null}>
+                                                    ZIP*
+                                                    <span>{this.state.zipOriginalName}</span>
+                                                </label>
+                                                <input id="zip" type="file" onChange={this.changeZip}/>
+                                            </div>
+
+                                            <div className="edit-img">
+                                                <div className="mb10">
+                                                    <span className="edit-label">ФОТОГРАФИЯ</span>
+                                                </div>
+                                                <label htmlFor="file" title="Загрузить фото">
+                                                    {this.state.imageSrc !== null ?
+                                                        <img className="edit-image"
+                                                             style={{pointerEvents: "initial", cursor: "pointer"}}
+                                                             src={this.state.imageSrc} alt=""/>
+                                                        :
+                                                        <img className="edit-image"
+                                                             style={{pointerEvents: "initial", cursor: "pointer"}}
+                                                             src={this.state.imageName !== null && this.state.imageName !== "" ?
+                                                                 `/img/user-${this.state.beat.user.id}/beats/beat-${this.state.beat.id}/${this.state.imageName}`
+                                                                 : '/img/track-placeholder.svg'} alt=""/>
+                                                    }
+                                                </label>
+                                                <input type="file" onChange={this.uploadImage} id="file" required
+                                                       style={{display: "none"}}/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div className="edit-beat-title">
+                                        <span>Подробная информация</span>
+                                    </div>
+
+                                    <div className="edit-background">
+
+                                        <div className="edit-title-tags">
+                                            <div className="mb16">
+                                                <div className="mb10">
+                                                    <label htmlFor="genre" className="edit-label">ЖАНР*</label>
+                                                </div>
+                                                <button id="genre" className="edit-input input-select" type="text"
+                                                        placeholder="Жанр"
+                                                        style={{cursor: "pointer", textAlign: "left", position: "relative"}}
+                                                        onClick={() => this.setState({genrePopUp: !this.state.genrePopUp})}>
+                                                    {this.state.genre === "POP" ? "Поп" : null}
+                                                    {this.state.genre === "HIP_HOP" ? "Хип-Хоп" : null}
+                                                    {this.state.genre === "ROCK" ? "Рок" : null}
+                                                    {this.state.genre === "RNB" ? "R&B" : null}
+                                                    {this.state.genre === "ELECTRONIC" ? "Электронная музыка" : null}
+                                                    {this.state.genre === "REGGAE" ? "Рэгги" : null}
+                                                    {this.state.genre === "COUNTRY" ? "Кантри" : null}
+                                                    {this.state.genre === "DRILL" ? "DRILL" : null}
+                                                    {this.state.genre === "HYPERPOP" ? "HYPERPOP" : null}
+                                                    {this.state.genre === "LO_FI" ? "LO-FI" : null}
+                                                    <img src={"/img/arrow.png"} alt="" className="edit-arrow"/>
+                                                    {this.state.genrePopUp ?
+                                                        <div className="pus-container">
+                                                            <div className="pop-up-select">
+                                                                <button className="select-edit" value="POP"
+                                                                        style={this.state.genre === "POP" ? {color: "white"} : null}
+                                                                        onClick={this.setGenre}>Поп
+                                                                </button>
+                                                                <button className="select-edit" value="HIP_HOP"
+                                                                        style={this.state.genre === "HIP_HOP" ? {color: "white"} : null}
+                                                                        onClick={this.setGenre}>Хип-Хоп
+                                                                </button>
+                                                                <button className="select-edit" value="ROCK"
+                                                                        style={this.state.genre === "ROCK" ? {color: "white"} : null}
+                                                                        onClick={this.setGenre}>Рок
+                                                                </button>
+                                                                <button className="select-edit" value="RNB"
+                                                                        style={this.state.genre === "RNB" ? {color: "white"} : null}
+                                                                        onClick={this.setGenre}>R&B
+                                                                </button>
+                                                                <button className="select-edit" value="ELECTRONIC"
+                                                                        style={this.state.genre === "ELECTRONIC" ? {color: "white"} : null}
+                                                                        onClick={this.setGenre}>Электронная музыка
+                                                                </button>
+                                                                <button className="select-edit" value="REGGAE"
+                                                                        style={this.state.genre === "REGGAE" ? {color: "white"} : null}
+                                                                        onClick={this.setGenre}>Рэгги
+                                                                </button>
+                                                                <button className="select-edit" value="COUNTRY"
+                                                                        style={this.state.genre === "COUNTRY" ? {color: "white"} : null}
+                                                                        onClick={this.setGenre}>Кантри
+                                                                </button>
+                                                                <button className="select-edit" value="DRILL"
+                                                                        style={this.state.genre === "DRILL" ? {color: "white"} : null}
+                                                                        onClick={this.setGenre}>DRILL
+                                                                </button>
+                                                                <button className="select-edit" value="HYPERPOP"
+                                                                        style={this.state.genre === "HYPERPOP" ? {color: "white"} : null}
+                                                                        onClick={this.setGenre}>HYPERPOP
+                                                                </button>
+                                                                <button className="select-edit" value="LO_FI"
+                                                                        style={this.state.genre === "LO_FI" ? {color: "white"} : null}
+                                                                        onClick={this.setGenre}>LO-FI
+                                                                </button>
+                                                            </div>
+                                                        </div> : null}
+                                                </button>
+                                            </div>
+
+                                            <div className="mb16">
+                                                <div className="mb10">
+                                                    <label htmlFor="description" className="edit-label">ОПИСАНИЕ</label>
+                                                </div>
+                                                <textarea id="description" className="edit-input" placeholder="Описание"
+                                                          style={{height: 126, paddingTop: 15, resize: "none"}}
+                                                          value={this.state.description} onChange={this.setDescription}
+                                                />
+
+                                                <div className="mt5 color-g2 fs12 fw400">
+                                                    {this.state.description.length} из 120 максимально допустимых символов
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="edit-audio-img">
+                                            <div className="w100">
+                                                <div className="mb16">
+                                                    <div className="mb10">
+                                                        <label htmlFor="mood" className="edit-label">НАСТРОЕНИЕ*</label>
+                                                    </div>
+
+                                                    <button id="mood" className="edit-input input-select" type="text"
+                                                            placeholder="Жанр"
+                                                            style={{
+                                                                cursor: "pointer",
+                                                                textAlign: "left",
+                                                                position: "relative"
+                                                            }}
+                                                            onClick={() => this.setState({moodPopUp: !this.state.moodPopUp})}>
+                                                        {this.state.mood === "ACCOMPLISHED" ? "Удавшийся" : null}
+                                                        {this.state.mood === "ADORED" ? "Обожаемый" : null}
+                                                        {this.state.mood === "ANGRY" ? "Злой" : null}
+                                                        {this.state.mood === "ANXIOUS" ? "Тревожный" : null}
+                                                        {this.state.mood === "BOUNCY" ? "Бодрый" : null}
+                                                        {this.state.mood === "CALM" ? "Спокойствие" : null}
+                                                        {this.state.mood === "CONFIDENT" ? "Уверенный" : null}
+                                                        {this.state.mood === "CRAZY" ? "Сумасшедший" : null}
+                                                        <img src={"/img/arrow.png"} alt="" className="edit-arrow"/>
+                                                        {this.state.moodPopUp ?
+                                                            <div className="pus-container">
+                                                                <div className="pop-up-select">
+                                                                    <button className="select-edit" value="ACCOMPLISHED"
+                                                                            style={this.state.mood === "ACCOMPLISHED" ? {color: "white"} : null}
+                                                                            onClick={this.setMood}>Удавшийся
+                                                                    </button>
+                                                                    <button className="select-edit" value="ADORED"
+                                                                            style={this.state.mood === "ADORED" ? {color: "white"} : null}
+                                                                            onClick={this.setMood}>Обожаемый
+                                                                    </button>
+                                                                    <button className="select-edit" value="ANGRY"
+                                                                            style={this.state.mood === "ANGRY" ? {color: "white"} : null}
+                                                                            onClick={this.setMood}>Злой
+                                                                    </button>
+                                                                    <button className="select-edit" value="ANXIOUS"
+                                                                            style={this.state.mood === "ANXIOUS" ? {color: "white"} : null}
+                                                                            onClick={this.setMood}>Тревожный
+                                                                    </button>
+                                                                    <button className="select-edit" value="BOUNCY"
+                                                                            style={this.state.mood === "BOUNCY" ? {color: "white"} : null}
+                                                                            onClick={this.setMood}>Бодрый
+                                                                    </button>
+                                                                    <button className="select-edit" value="CALM"
+                                                                            style={this.state.mood === "CALM" ? {color: "white"} : null}
+                                                                            onClick={this.setMood}>Спокойствие
+                                                                    </button>
+                                                                    <button className="select-edit" value="CONFIDENT"
+                                                                            style={this.state.mood === "CONFIDENT" ? {color: "white"} : null}
+                                                                            onClick={this.setMood}>Уверенный
+                                                                    </button>
+                                                                    <button className="select-edit" value="CRAZY"
+                                                                            style={this.state.mood === "CRAZY" ? {color: "white"} : null}
+                                                                            onClick={this.setMood}>Сумасшедший
+                                                                    </button>
+                                                                </div>
+                                                            </div> : null}
+                                                    </button>
+                                                </div>
+
+                                                <div className="mb16">
+                                                    <div className="mb10">
+                                                        <label htmlFor="bpm" className="edit-label">BPM (Ударов в
+                                                            минуту)</label>
+                                                    </div>
+                                                    <input id="bpm" className="edit-input" type="text" placeholder="BPM"
+                                                           value={this.state.bpm} onChange={this.setBpm}
                                                     />
                                                 </div>
 
-                                                <button className="add-tag" onClick={this.addTag}>Добавить</button>
-                                            </div>
-
-                                            <div className="flex-c tags">
-                                                {this.state.tags.map((tag, index) => {
-                                                    return (
-                                                        <div className="tag color-g2 mt16" key={index}>
-                                                            <span className="wnohte">#{tag.name}</span>
-                                                            <img src={'/img/plus.png'} width="10px" alt="plus"
-                                                                 onClick={this.deleteTag.bind(this, index)}
-                                                                 className="delete-tag"
-                                                                 title="Удалить"/>
-                                                        </div>
-                                                    )
-                                                })}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="edit-audio-img">
-
-                                        <div className="edit-audio">
-                                            <div className="mb10">
-                                                <span className="edit-label">АУДИО ФАЙЛЫ</span>
-                                            </div>
-
-                                            <label htmlFor="mp3" className="audio-btn mp3"
-                                                   style={this.state.mp3Name !== null ? {backgroundColor: "#005ff8"} : null}>
-                                                MP3*
-                                                <span>{this.state.mp3Name}</span>
-                                            </label>
-                                            <input id="mp3" type="file" onChange={this.changeMp3}/>
-
-                                            <label htmlFor="wav" className="audio-btn wav"
-                                                   style={this.state.wavName !== null ? {backgroundColor: "#005ff8"} : null}>
-                                                WAV*
-                                                <span>{this.state.wavName}</span>
-                                            </label>
-                                            <input id="wav" type="file" onChange={this.changeWav}/>
-
-                                            <label htmlFor="zip" className="audio-btn zip"
-                                                   style={this.state.zipName !== null ? {backgroundColor: "#005ff8"} : null}>
-                                                ZIP*
-                                                <span>{this.state.zipName}</span>
-                                            </label>
-                                            <input id="zip" type="file" onChange={this.changeZip}/>
-                                        </div>
-
-                                        <div className="edit-img">
-                                            <div className="mb10">
-                                                <span className="edit-label">ФОТОГРАФИЯ</span>
-                                            </div>
-                                            <label htmlFor="file" title="Загрузить фото">
-                                                {this.state.imageSrc !== null ?
-                                                    <img className="edit-image"
-                                                         style={{pointerEvents: "initial", cursor: "pointer"}}
-                                                         src={this.state.imageSrc} alt=""/>
-                                                    :
-                                                    <img className="edit-image"
-                                                         style={{pointerEvents: "initial", cursor: "pointer"}}
-                                                         src={this.state.imageName !== null && this.state.imageName !== "" ?
-                                                             `/img/user-${this.state.beat.user.id}/beats/beat-${this.state.beat.id}/${this.state.imageName}`
-                                                             : '/img/track-placeholder.svg'} alt=""/>
-                                                }
-                                            </label>
-                                            <input type="file" onChange={this.uploadImage} id="file" required
-                                                   style={{display: "none"}}/>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                                <div className="edit-beat-title">
-                                    <span>Подробная информация</span>
-                                </div>
-
-                                <div className="edit-background">
-
-                                    <div className="edit-title-tags">
-                                        <div className="mb16">
-                                            <div className="mb10">
-                                                <label htmlFor="genre" className="edit-label">ЖАНР*</label>
-                                            </div>
-                                            <button id="genre" className="edit-input input-select" type="text"
-                                                    placeholder="Жанр"
-                                                    style={{cursor: "pointer", textAlign: "left", position: "relative"}}
-                                                    onClick={() => this.setState({genrePopUp: !this.state.genrePopUp})}>
-                                                {this.state.genre === "POP" ? "Поп" : null}
-                                                {this.state.genre === "HIP_HOP" ? "Хип-Хоп" : null}
-                                                {this.state.genre === "ROCK" ? "Рок" : null}
-                                                {this.state.genre === "RNB" ? "R&B" : null}
-                                                {this.state.genre === "ELECTRONIC" ? "Электронная музыка" : null}
-                                                {this.state.genre === "REGGAE" ? "Рэгги" : null}
-                                                {this.state.genre === "COUNTRY" ? "Кантри" : null}
-                                                {this.state.genre === "DRILL" ? "DRILL" : null}
-                                                {this.state.genre === "HYPERPOP" ? "HYPERPOP" : null}
-                                                {this.state.genre === "LO_FI" ? "LO-FI" : null}
-                                                <img src={"/img/arrow.png"} alt="" className="edit-arrow"/>
-                                                {this.state.genrePopUp ?
-                                                    <div className="pus-container">
-                                                        <div className="pop-up-select">
-                                                            <button className="select-edit" value="POP"
-                                                                    style={this.state.genre === "POP" ? {color: "white"} : null}
-                                                                    onClick={this.setGenre}>Поп
-                                                            </button>
-                                                            <button className="select-edit" value="HIP_HOP"
-                                                                    style={this.state.genre === "HIP_HOP" ? {color: "white"} : null}
-                                                                    onClick={this.setGenre}>Хип-Хоп
-                                                            </button>
-                                                            <button className="select-edit" value="ROCK"
-                                                                    style={this.state.genre === "ROCK" ? {color: "white"} : null}
-                                                                    onClick={this.setGenre}>Рок
-                                                            </button>
-                                                            <button className="select-edit" value="RNB"
-                                                                    style={this.state.genre === "RNB" ? {color: "white"} : null}
-                                                                    onClick={this.setGenre}>R&B
-                                                            </button>
-                                                            <button className="select-edit" value="ELECTRONIC"
-                                                                    style={this.state.genre === "ELECTRONIC" ? {color: "white"} : null}
-                                                                    onClick={this.setGenre}>Электронная музыка
-                                                            </button>
-                                                            <button className="select-edit" value="REGGAE"
-                                                                    style={this.state.genre === "REGGAE" ? {color: "white"} : null}
-                                                                    onClick={this.setGenre}>Рэгги
-                                                            </button>
-                                                            <button className="select-edit" value="COUNTRY"
-                                                                    style={this.state.genre === "COUNTRY" ? {color: "white"} : null}
-                                                                    onClick={this.setGenre}>Кантри
-                                                            </button>
-                                                            <button className="select-edit" value="DRILL"
-                                                                    style={this.state.genre === "DRILL" ? {color: "white"} : null}
-                                                                    onClick={this.setGenre}>DRILL
-                                                            </button>
-                                                            <button className="select-edit" value="HYPERPOP"
-                                                                    style={this.state.genre === "HYPERPOP" ? {color: "white"} : null}
-                                                                    onClick={this.setGenre}>HYPERPOP
-                                                            </button>
-                                                            <button className="select-edit" value="LO_FI"
-                                                                    style={this.state.genre === "LO_FI" ? {color: "white"} : null}
-                                                                    onClick={this.setGenre}>LO-FI
-                                                            </button>
-                                                        </div>
-                                                    </div> : null}
-                                            </button>
-                                        </div>
-
-                                        <div className="mb16">
-                                            <div className="mb10">
-                                                <label htmlFor="description" className="edit-label">ОПИСАНИЕ</label>
-                                            </div>
-                                            <textarea id="description" className="edit-input" placeholder="Описание"
-                                                      style={{height: 126, paddingTop: 15, resize: "none"}}
-                                                      value={this.state.description} onChange={this.setDescription}
-                                            />
-
-                                            <div className="mt5 color-g2 fs12 fw400">
-                                                {this.state.description.length} из 120 максимально допустимых символов
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="edit-audio-img">
-                                        <div className="w100">
-                                            <div className="mb16">
-                                                <div className="mb10">
-                                                    <label htmlFor="mood" className="edit-label">НАСТРОЕНИЕ*</label>
+                                                <div className="mb16">
+                                                    <div className="mb10">
+                                                        <label htmlFor="key" className="edit-label">Тональность</label>
+                                                    </div>
+                                                    <button id="key" className="edit-input input-select" type="text"
+                                                            placeholder="Жанр"
+                                                            style={{
+                                                                cursor: "pointer",
+                                                                textAlign: "left",
+                                                                position: "relative"
+                                                            }}
+                                                            onClick={() => this.setState({keyPopUp: !this.state.keyPopUp})}>
+                                                        {this.state.key === "AFMJ" ? "Ab Major" : null}
+                                                        {this.state.key === "AM" ? "A Minor" : null}
+                                                        {this.state.key === "AMJ" ? "A Major" : null}
+                                                        {this.state.key === "ASM" ? "A# Minor" : null}
+                                                        {this.state.key === "ASMJ" ? "A# Major" : null}
+                                                        {this.state.key === "BFM" ? "Bb Minor" : null}
+                                                        {this.state.key === "BFMJ" ? "Bb Major" : null}
+                                                        {this.state.key === "BM" ? "B Minor" : null}
+                                                        <img src={"/img/arrow.png"} alt="" className="edit-arrow"/>
+                                                        {this.state.keyPopUp ?
+                                                            <div className="pus-container">
+                                                                <div className="pop-up-select">
+                                                                    <button className="select-edit" value="AFMJ"
+                                                                            style={this.state.key === "AFMJ" ? {color: "white"} : null}
+                                                                            onClick={this.setKey}>Ab Major
+                                                                    </button>
+                                                                    <button className="select-edit" value="AM"
+                                                                            style={this.state.key === "AM" ? {color: "white"} : null}
+                                                                            onClick={this.setKey}>A Minor
+                                                                    </button>
+                                                                    <button className="select-edit" value="AMJ"
+                                                                            style={this.state.key === "AMJ" ? {color: "white"} : null}
+                                                                            onClick={this.setKey}>A Major
+                                                                    </button>
+                                                                    <button className="select-edit" value="ASM"
+                                                                            style={this.state.key === "ASM" ? {color: "white"} : null}
+                                                                            onClick={this.setKey}>A# Minor
+                                                                    </button>
+                                                                    <button className="select-edit" value="ASMJ"
+                                                                            style={this.state.key === "ASMJ" ? {color: "white"} : null}
+                                                                            onClick={this.setKey}>A# Major
+                                                                    </button>
+                                                                    <button className="select-edit" value="BFM"
+                                                                            style={this.state.key === "BFM" ? {color: "white"} : null}
+                                                                            onClick={this.setKey}>Bb Minor
+                                                                    </button>
+                                                                    <button className="select-edit" value="BFMJ"
+                                                                            style={this.state.key === "BFMJ" ? {color: "white"} : null}
+                                                                            onClick={this.setKey}>Bb Major
+                                                                    </button>
+                                                                    <button className="select-edit" value="BM"
+                                                                            style={this.state.key === "BM" ? {color: "white"} : null}
+                                                                            onClick={this.setKey}>B Minor
+                                                                    </button>
+                                                                </div>
+                                                            </div> : null}
+                                                    </button>
                                                 </div>
 
-                                                <button id="mood" className="edit-input input-select" type="text"
-                                                        placeholder="Жанр"
-                                                        style={{
-                                                            cursor: "pointer",
-                                                            textAlign: "left",
-                                                            position: "relative"
-                                                        }}
-                                                        onClick={() => this.setState({moodPopUp: !this.state.moodPopUp})}>
-                                                    {this.state.mood === "ACCOMPLISHED" ? "Удавшийся" : null}
-                                                    {this.state.mood === "ADORED" ? "Обожаемый" : null}
-                                                    {this.state.mood === "ANGRY" ? "Злой" : null}
-                                                    {this.state.mood === "ANXIOUS" ? "Тревожный" : null}
-                                                    {this.state.mood === "BOUNCY" ? "Бодрый" : null}
-                                                    {this.state.mood === "CALM" ? "Спокойствие" : null}
-                                                    {this.state.mood === "CONFIDENT" ? "Уверенный" : null}
-                                                    {this.state.mood === "CRAZY" ? "Сумасшедший" : null}
-                                                    <img src={"/img/arrow.png"} alt="" className="edit-arrow"/>
-                                                    {this.state.moodPopUp ?
-                                                        <div className="pus-container">
-                                                            <div className="pop-up-select">
-                                                                <button className="select-edit" value="ACCOMPLISHED"
-                                                                        style={this.state.mood === "ACCOMPLISHED" ? {color: "white"} : null}
-                                                                        onClick={this.setMood}>Удавшийся
-                                                                </button>
-                                                                <button className="select-edit" value="ADORED"
-                                                                        style={this.state.mood === "ADORED" ? {color: "white"} : null}
-                                                                        onClick={this.setMood}>Обожаемый
-                                                                </button>
-                                                                <button className="select-edit" value="ANGRY"
-                                                                        style={this.state.mood === "ANGRY" ? {color: "white"} : null}
-                                                                        onClick={this.setMood}>Злой
-                                                                </button>
-                                                                <button className="select-edit" value="ANXIOUS"
-                                                                        style={this.state.mood === "ANXIOUS" ? {color: "white"} : null}
-                                                                        onClick={this.setMood}>Тревожный
-                                                                </button>
-                                                                <button className="select-edit" value="BOUNCY"
-                                                                        style={this.state.mood === "BOUNCY" ? {color: "white"} : null}
-                                                                        onClick={this.setMood}>Бодрый
-                                                                </button>
-                                                                <button className="select-edit" value="CALM"
-                                                                        style={this.state.mood === "CALM" ? {color: "white"} : null}
-                                                                        onClick={this.setMood}>Спокойствие
-                                                                </button>
-                                                                <button className="select-edit" value="CONFIDENT"
-                                                                        style={this.state.mood === "CONFIDENT" ? {color: "white"} : null}
-                                                                        onClick={this.setMood}>Уверенный
-                                                                </button>
-                                                                <button className="select-edit" value="CRAZY"
-                                                                        style={this.state.mood === "CRAZY" ? {color: "white"} : null}
-                                                                        onClick={this.setMood}>Сумасшедший
-                                                                </button>
-                                                            </div>
-                                                        </div> : null}
-                                                </button>
                                             </div>
-
-                                            <div className="mb16">
-                                                <div className="mb10">
-                                                    <label htmlFor="bpm" className="edit-label">BPM (Ударов в
-                                                        минуту)</label>
-                                                </div>
-                                                <input id="bpm" className="edit-input" type="text" placeholder="BPM"
-                                                       value={this.state.bpm} onChange={this.setBpm}
-                                                />
-                                            </div>
-
-                                            <div className="mb16">
-                                                <div className="mb10">
-                                                    <label htmlFor="key" className="edit-label">Тональность</label>
-                                                </div>
-                                                <button id="key" className="edit-input input-select" type="text"
-                                                        placeholder="Жанр"
-                                                        style={{
-                                                            cursor: "pointer",
-                                                            textAlign: "left",
-                                                            position: "relative"
-                                                        }}
-                                                        onClick={() => this.setState({keyPopUp: !this.state.keyPopUp})}>
-                                                    {this.state.key === "AFMJ" ? "Ab Major" : null}
-                                                    {this.state.key === "AM" ? "A Minor" : null}
-                                                    {this.state.key === "AMJ" ? "A Major" : null}
-                                                    {this.state.key === "ASM" ? "A# Minor" : null}
-                                                    {this.state.key === "ASMJ" ? "A# Major" : null}
-                                                    {this.state.key === "BFM" ? "Bb Minor" : null}
-                                                    {this.state.key === "BFMJ" ? "Bb Major" : null}
-                                                    {this.state.key === "BM" ? "B Minor" : null}
-                                                    <img src={"/img/arrow.png"} alt="" className="edit-arrow"/>
-                                                    {this.state.keyPopUp ?
-                                                        <div className="pus-container">
-                                                            <div className="pop-up-select">
-                                                                <button className="select-edit" value="AFMJ"
-                                                                        style={this.state.key === "AFMJ" ? {color: "white"} : null}
-                                                                        onClick={this.setKey}>Ab Major
-                                                                </button>
-                                                                <button className="select-edit" value="AM"
-                                                                        style={this.state.key === "AM" ? {color: "white"} : null}
-                                                                        onClick={this.setKey}>A Minor
-                                                                </button>
-                                                                <button className="select-edit" value="AMJ"
-                                                                        style={this.state.key === "AMJ" ? {color: "white"} : null}
-                                                                        onClick={this.setKey}>A Major
-                                                                </button>
-                                                                <button className="select-edit" value="ASM"
-                                                                        style={this.state.key === "ASM" ? {color: "white"} : null}
-                                                                        onClick={this.setKey}>A# Minor
-                                                                </button>
-                                                                <button className="select-edit" value="ASMJ"
-                                                                        style={this.state.key === "ASMJ" ? {color: "white"} : null}
-                                                                        onClick={this.setKey}>A# Major
-                                                                </button>
-                                                                <button className="select-edit" value="BFM"
-                                                                        style={this.state.key === "BFM" ? {color: "white"} : null}
-                                                                        onClick={this.setKey}>Bb Minor
-                                                                </button>
-                                                                <button className="select-edit" value="BFMJ"
-                                                                        style={this.state.key === "BFMJ" ? {color: "white"} : null}
-                                                                        onClick={this.setKey}>Bb Major
-                                                                </button>
-                                                                <button className="select-edit" value="BM"
-                                                                        style={this.state.key === "BM" ? {color: "white"} : null}
-                                                                        onClick={this.setKey}>B Minor
-                                                                </button>
-                                                            </div>
-                                                        </div> : null}
-                                                </button>
-                                            </div>
-
                                         </div>
                                     </div>
-                                </div>
 
 
-                                <div className="edit-beat-title">
-                                    <span>Предпочтения по продаже</span>
-                                    <span className="check" onClick={this.setFree} id="check-free"
-                                          style={this.state.free ?
-                                              {backgroundColor: "#005ff8", border: "1px solid #005ff8"} : null}>
+                                    <div className="edit-beat-title">
+                                        <span>Предпочтения по продаже</span>
+                                        <span className="check" onClick={this.setFree} id="check-free"
+                                              style={this.state.free ?
+                                                  {backgroundColor: "#005ff8", border: "1px solid #005ff8"} : null}>
 
                                     {this.state.free ? <img src={"/img/check.png"} width="10px" alt=""/> : null}
                                 </span>
-                                    <span className="free" style={{cursor: "pointer"}}
-                                          onClick={this.setFree}>Бесплатно</span>
-                                </div>
-
-                                <div className="edit-background">
-
-                                    {this.state.free ? <div className="licenses-disable"></div> : null}
-
-                                    <div className="edit-title-tags">
-                                        <div className="mb16">
-                                            <div className="mb10">
-                                                <label htmlFor="priceMp3" className="edit-label">MP3 Лизинг (MP3)
-                                                    ₽*</label>
-                                            </div>
-                                            <input id="priceMp3" className="edit-input" type="text" placeholder="Цена"
-                                                   value={this.state.priceMp3} onChange={this.setPriceMp3}
-                                            />
-                                        </div>
-
-                                        <div className="mb16">
-                                            <div className="mb10">
-                                                <label htmlFor="priceWav" className="edit-label">WAV Лизинг (MP3, WAV)
-                                                    ₽*</label>
-                                            </div>
-                                            <input id="priceWav" className="edit-input" type="text" placeholder="Цена"
-                                                   value={this.state.priceWav} onChange={this.setPriceWav}
-                                            />
-                                        </div>
+                                        <span className="free" style={{cursor: "pointer"}}
+                                              onClick={this.setFree}>Бесплатно</span>
                                     </div>
-                                    <div className="edit-audio-img">
-                                        <div className="w100">
+
+                                    <div className="edit-background">
+
+                                        {this.state.free ? <div className="licenses-disable"></div> : null}
+
+                                        <div className="edit-title-tags">
                                             <div className="mb16">
                                                 <div className="mb10">
-                                                    <label htmlFor="priceUnlimited" className="edit-label">UNLIMITED
-                                                        Лизинг (MP3, WAV, TRACK
-                                                        STEMS) ₽*</label>
+                                                    <label htmlFor="priceMp3" className="edit-label">MP3 Лизинг (MP3)
+                                                        ₽*</label>
                                                 </div>
-                                                <input id="priceUnlimited" className="edit-input" type="text"
-                                                       placeholder="Цена"
-                                                       value={this.state.priceUnlimited}
-                                                       onChange={this.setPriceUnlimited}
+                                                <input id="priceMp3" className="edit-input" type="text" placeholder="Цена"
+                                                       value={this.state.priceMp3} onChange={this.setPriceMp3}
                                                 />
                                             </div>
 
                                             <div className="mb16">
                                                 <div className="mb10">
-                                                    <label htmlFor="priceExclusive" className="edit-label">ЭКСЛЮЗИВНЫЕ
-                                                        ПРАВА ₽*</label>
+                                                    <label htmlFor="priceWav" className="edit-label">WAV Лизинг (MP3, WAV)
+                                                        ₽*</label>
                                                 </div>
-                                                <input id="priceExclusive" className="edit-input" type="text"
-                                                       placeholder="Цена"
-                                                       value={this.state.priceExclusive}
-                                                       onChange={this.setPriceExclusive}
+                                                <input id="priceWav" className="edit-input" type="text" placeholder="Цена"
+                                                       value={this.state.priceWav} onChange={this.setPriceWav}
                                                 />
                                             </div>
                                         </div>
+                                        <div className="edit-audio-img">
+                                            <div className="w100">
+                                                <div className="mb16">
+                                                    <div className="mb10">
+                                                        <label htmlFor="priceUnlimited" className="edit-label">UNLIMITED
+                                                            Лизинг (MP3, WAV, TRACK
+                                                            STEMS) ₽*</label>
+                                                    </div>
+                                                    <input id="priceUnlimited" className="edit-input" type="text"
+                                                           placeholder="Цена"
+                                                           value={this.state.priceUnlimited}
+                                                           onChange={this.setPriceUnlimited}
+                                                    />
+                                                </div>
+
+                                                <div className="mb16">
+                                                    <div className="mb10">
+                                                        <label htmlFor="priceExclusive" className="edit-label">ЭКСЛЮЗИВНЫЕ
+                                                            ПРАВА ₽*</label>
+                                                    </div>
+                                                    <input id="priceExclusive" className="edit-input" type="text"
+                                                           placeholder="Цена"
+                                                           value={this.state.priceExclusive}
+                                                           onChange={this.setPriceExclusive}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div className="save-button">
-                                    <button className="btn-primary" onClick={this.updateBeat}>Сохранить</button>
-                                </div>
+                                    <div className="save-button">
+                                        <button className="btn-primary" onClick={this.updateBeat}>Сохранить</button>
+                                    </div>
 
-                                <div style={{height: 100, width: "100%"}}></div>
+                                    <div style={{height: 100, width: "100%"}}></div>
+                                </div>
                             </div>
-                        </div>
 
-                        {this.state.genrePopUp || this.state.moodPopUp || this.state.keyPopUp
-                            ? <div className="edit-back"
-                                   onClick={() => this.setState({
-                                       genrePopUp: false,
-                                       moodPopUp: false, keyPopUp: false
-                                   })}></div> : null}
-                    </div>
-                )
+                            {this.state.genrePopUp || this.state.moodPopUp || this.state.keyPopUp
+                                ? <div className="edit-back"
+                                       onClick={() => this.setState({
+                                           genrePopUp: false,
+                                           moodPopUp: false, keyPopUp: false
+                                       })}></div> : null}
+                        </div>
+                    )
+                } else {
+                    location.href = '/beats'
+                }
+            } else if (this.state.beat === "empty") {
+                document.title = "404 | Не найдено"
+                return (<NotFound/>);
             }
         }
     }

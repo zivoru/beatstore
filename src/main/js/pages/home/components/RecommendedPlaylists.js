@@ -13,7 +13,7 @@ class RecommendedPlaylists extends Component {
 
     componentDidMount() {
         axios.get('/api/v1/playlists/recommended?limit=10').then(res => {
-            res.data.length !== 0 ? this.setState({playlists: res.data}) : this.setState({playlists: null})
+            this.setState({playlists: res.data.length !== 0 ? res.data : null})
         }).catch(() => {
             this.setState({playlists: null})
         })
@@ -33,7 +33,8 @@ class RecommendedPlaylists extends Component {
                                 <span className="front-layer"></span>
 
                                 <div className="slide-img-container" style={{width: 350, height: 350}}>
-                                    <Link to={"playlist/" + playlist.id} className="inl-blk trs" style={{width: 350, height: 350}}>
+                                    <Link to={"playlist/" + playlist.id} className="inl-blk trs"
+                                          style={{width: 350, height: 350}}>
                                         <img className="slide-img" style={{width: 350, height: 350}}
                                              src={playlist.imageName !== null && playlist.imageName !== "" ?
                                                  `/img/user-${playlist.user.id}/playlists/playlist-${playlist.id}/${playlist.imageName}`

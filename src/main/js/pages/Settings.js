@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import axios from "axios";
 
 class Settings extends Component {
+    social;
 
     constructor(props) {
         super(props);
@@ -36,7 +37,7 @@ class Settings extends Component {
 
     setStateFromProps() {
         let user = this.props.user;
-        if (user !== null && user !== undefined) {
+        if (user !== null && user !== undefined && user !== "empty") {
             let profile = user.profile;
             let social = user.social;
             this.setState({
@@ -89,7 +90,7 @@ class Settings extends Component {
         if (username !== null && username !== "" && username !== " ") {
             axios.put(`/api/v1/users?username=${username}&email=${this.state.email}`).then(() => {
                 setTimeout(() => this.props.updateUser(), 1000);
-            })
+            }).catch()
         }
     }
 
@@ -132,7 +133,6 @@ class Settings extends Component {
         let displayName = this.state.displayName;
         if (displayName !== null && displayName !== "" && displayName !== " ") {
             axios.put('api/v1/profiles', {
-                imageName: "",
                 firstName: s.firstName,
                 lastName: s.lastName,
                 displayName: s.displayName,
@@ -151,9 +151,9 @@ class Settings extends Component {
                         }
                     }).then(() => {
                         setTimeout(() => this.props.updateUser(), 1000);
-                    })
+                    }).catch()
                 }
-            })
+            }).catch()
         }
     }
 
@@ -207,84 +207,87 @@ class Settings extends Component {
             vkontakte: s.vkontakte
         }).then(() => {
             setTimeout(() => this.props.updateUser(), 1000);
-        })
+        }).catch()
     }
 
     render() {
 
-        if (this.props.user !== null && this.props.user !== undefined) {
+        if (this.props.user !== null && this.props.user !== undefined && this.props.user !== "empty") {
             document.title = "Настройки | " + this.props.user.profile.displayName
-        }
 
-        return (
-            <div className="wrapper">
-                <div className="settings">
+            return (
+                <div className="wrapper">
+                    <div className="settings">
 
-                    <div>
-                        <label htmlFor="file">
-                            {this.state.imageSrc !== null ?
-                                <img className="card-img" style={{pointerEvents: "initial", cursor: "pointer"}}
-                                     src={this.state.imageSrc} alt=""/> :
-                                <img className="card-img" style={{pointerEvents: "initial", cursor: "pointer"}}
-                                     src={this.state.imageName !== null && this.state.imageName !== "" ?
-                                         `/img/user-${this.state.userId}/profile/${this.state.imageName}`
-                                         : '/img/default-avatar.svg'} alt=""/>
-                            }
-                        </label>
-                        <input type="file" onChange={this.uploadImage} id="file" required style={{display: "none"}}/>
-                        <p style={{marginTop: 16}}></p>
-                        <p style={{marginBottom: 5}}>Имя</p>
-                        <input type="text" value={this.state.firstName} onChange={this.setFirstName} placeholder="Имя"/>
-                        <p style={{marginTop: 16}}></p>
-                        <p style={{marginBottom: 5}}>Фамилия</p>
-                        <input type="text" value={this.state.lastName} onChange={this.setLastName} placeholder="Фамилия"/>
-                        <p style={{marginTop: 16}}></p>
-                        <p style={{marginBottom: 5}}>Никнейм</p>
-                        <input type="text" value={this.state.displayName} onChange={this.setDisplayName}
-                               placeholder="Никнейм" id="display-name"/>
-                        <p style={{marginTop: 16}}></p>
-                        <p style={{marginBottom: 5}}>Адрес</p>
-                        <input type="text" value={this.state.location} onChange={this.setLocation} placeholder="Адрес"/>
-                        <p style={{marginTop: 16}}></p>
-                        <p style={{marginBottom: 5}}>Биография</p>
-                        <input type="text" value={this.state.biography} onChange={this.setBiography}
-                               placeholder="Биография"/>
-                        <p style={{marginTop: 16}}></p>
-                        <button className="btn-primary" onClick={this.requestProfile}>Сохранить</button>
-                    </div>
+                        <div>
+                            <label htmlFor="file">
+                                {this.state.imageSrc !== null ?
+                                    <img className="card-img" style={{pointerEvents: "initial", cursor: "pointer"}}
+                                         src={this.state.imageSrc} alt=""/> :
+                                    <img className="card-img" style={{pointerEvents: "initial", cursor: "pointer"}}
+                                         src={this.state.imageName !== null && this.state.imageName !== "" ?
+                                             `/img/user-${this.state.userId}/profile/${this.state.imageName}`
+                                             : '/img/default-avatar.svg'} alt=""/>
+                                }
+                            </label>
+                            <input type="file" onChange={this.uploadImage} id="file" required style={{display: "none"}}/>
+                            <p style={{marginTop: 16}}></p>
+                            <p style={{marginBottom: 5}}>Имя</p>
+                            <input type="text" value={this.state.firstName} onChange={this.setFirstName} placeholder="Имя"/>
+                            <p style={{marginTop: 16}}></p>
+                            <p style={{marginBottom: 5}}>Фамилия</p>
+                            <input type="text" value={this.state.lastName} onChange={this.setLastName}
+                                   placeholder="Фамилия"/>
+                            <p style={{marginTop: 16}}></p>
+                            <p style={{marginBottom: 5}}>Никнейм</p>
+                            <input type="text" value={this.state.displayName} onChange={this.setDisplayName}
+                                   placeholder="Никнейм" id="display-name"/>
+                            <p style={{marginTop: 16}}></p>
+                            <p style={{marginBottom: 5}}>Адрес</p>
+                            <input type="text" value={this.state.location} onChange={this.setLocation} placeholder="Адрес"/>
+                            <p style={{marginTop: 16}}></p>
+                            <p style={{marginBottom: 5}}>Биография</p>
+                            <input type="text" value={this.state.biography} onChange={this.setBiography}
+                                   placeholder="Биография"/>
+                            <p style={{marginTop: 16}}></p>
+                            <button className="btn-primary" onClick={this.requestProfile}>Сохранить</button>
+                        </div>
 
-                    <div>
-                        <p style={{marginBottom: 5}}>Инстаграм</p>
-                        <input type="text" value={this.state.instagram} onChange={this.setInstagram}
-                               placeholder="Instagram"/>
-                        <p style={{marginTop: 16}}></p>
-                        <p style={{marginBottom: 5}}>Ютуб</p>
-                        <input type="text" value={this.state.youtube} onChange={this.setYoutube} placeholder="YouTube"/>
-                        <p style={{marginTop: 16}}></p>
-                        <p style={{marginBottom: 5}}>Тик-ток</p>
-                        <input type="text" value={this.state.tiktok} onChange={this.setTiktok} placeholder="Tik-Tok"/>
-                        <p style={{marginTop: 16}}></p>
-                        <p style={{marginBottom: 5}}>Вконтакте</p>
-                        <input type="text" value={this.state.vkontakte} onChange={this.setVkontakte} placeholder="VK"/>
-                        <p style={{marginTop: 16}}></p>
-                        <button className="btn-primary" onClick={this.requestSocial}>Сохранить</button>
-                    </div>
+                        <div>
+                            <p style={{marginBottom: 5}}>Инстаграм</p>
+                            <input type="text" value={this.state.instagram} onChange={this.setInstagram}
+                                   placeholder="Instagram"/>
+                            <p style={{marginTop: 16}}></p>
+                            <p style={{marginBottom: 5}}>Ютуб</p>
+                            <input type="text" value={this.state.youtube} onChange={this.setYoutube} placeholder="YouTube"/>
+                            <p style={{marginTop: 16}}></p>
+                            <p style={{marginBottom: 5}}>Тик-ток</p>
+                            <input type="text" value={this.state.tiktok} onChange={this.setTiktok} placeholder="Tik-Tok"/>
+                            <p style={{marginTop: 16}}></p>
+                            <p style={{marginBottom: 5}}>Вконтакте</p>
+                            <input type="text" value={this.state.vkontakte} onChange={this.setVkontakte} placeholder="VK"/>
+                            <p style={{marginTop: 16}}></p>
+                            <button className="btn-primary" onClick={this.requestSocial}>Сохранить</button>
+                        </div>
 
-                    <div>
+                        <div>
 
-                        <p style={{marginBottom: 5}}>Username</p>
-                        <input type="text" value={this.state.username} onChange={this.setUsername} placeholder="Username"
-                               id="username"/>
-                        <p style={{marginTop: 16}}></p>
-                        <p style={{marginBottom: 5}}>Email</p>
-                        <input type="text" value={this.state.email} onChange={this.setEmail} placeholder="Email"/>
-                        <p style={{marginTop: 16}}></p>
-                        <button className="btn-primary" onClick={this.request}>Сохранить</button>
+                            <p style={{marginBottom: 5}}>Username</p>
+                            <input type="text" value={this.state.username} onChange={this.setUsername}
+                                   placeholder="Username"
+                                   id="username"/>
+                            <p style={{marginTop: 16}}></p>
+                            <p style={{marginBottom: 5}}>Email</p>
+                            <input type="text" value={this.state.email} onChange={this.setEmail} placeholder="Email"/>
+                            <p style={{marginTop: 16}}></p>
+                            <button className="btn-primary" onClick={this.request}>Сохранить</button>
 
+                        </div>
                     </div>
                 </div>
-            </div>
-        );
+            );
+
+        }
     }
 }
 

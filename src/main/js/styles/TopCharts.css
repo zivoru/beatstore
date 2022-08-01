@@ -125,12 +125,15 @@
 }
 .filter-cont {
     position: relative;
-    width: 10%;
+    width: 13%;
 }
 .filter {
     background-color: inherit;
     color: #9f9f9f;
     width: 100%;
+    font-size: 12px;
+    font-weight: 400;
+    white-space: nowrap;
 }
 .filter:hover {
     color: white;

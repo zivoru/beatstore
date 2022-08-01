@@ -10,7 +10,7 @@ class Tags extends Component {
 
     componentDidMount() {
         axios.get('/api/v1/tags/trend-tags?limit=8').then(res => {
-            res.data.length !== 0 ? this.setState({tags: res.data}) : this.setState({tags: null})
+            this.setState({tags: res.data.length !== 0 ? res.data : null})
         }).catch(() => {
             this.setState({tags: null})
         })
