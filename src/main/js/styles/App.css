@@ -58,7 +58,7 @@ a {
     font-size: 12px;
     font-weight: 500;
     letter-spacing: initial;
-    /*line-height: 1.5;*/
+    line-height: 1.5;
 }
 
 .btn-primary:hover {

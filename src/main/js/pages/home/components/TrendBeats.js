@@ -59,7 +59,9 @@ class TrendBeats extends Component {
                                             <img src={'/img/account-verified.svg'} alt="verified"/> : null}
                                     </div>
 
-                                    <h5 className="fs12 fw400 color-g1">{beat.bpm} BPM</h5>
+                                    {beat.bpm !== null && beat.bpm !== ""
+                                        ? <h5 className="fs12 fw400 color-g1">{beat.bpm} BPM</h5>
+                                        : null}
                                 </div>
                             </div>
                         );

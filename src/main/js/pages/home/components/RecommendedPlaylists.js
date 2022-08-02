@@ -12,11 +12,42 @@ class RecommendedPlaylists extends Component {
     }
 
     componentDidMount() {
-        axios.get('/api/v1/playlists/recommended?limit=10').then(res => {
-            this.setState({playlists: res.data.length !== 0 ? res.data : null})
-        }).catch(() => {
-            this.setState({playlists: null})
-        })
+        // axios.get('/api/v1/playlists/recommended?limit=10').then(res => {
+        //     this.setState({playlists: res.data.length !== 0 ? res.data : null})
+        // }).catch(() => {
+        //     this.setState({playlists: null})
+        // })
+
+        // async function getPlaylists() {
+        //     try {
+        //         const response = await axios.get('/api/v1/playlists/recommended?limit=10');
+        //         this.setState({playlists: response.data.length !== 0 ? response.data : null})
+        //     } catch (error) {
+        //         console.error(error);
+        //     }
+        // }
+
+        this.getPlaylists().then();
+
+        setInterval(() => {
+            this.getPlaylists().then()
+            console.log('выполнено')
+        }, 3000)
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps !== this.props) {
+            this.getPlaylists().then();
+        }
+    }
+
+    async getPlaylists() {
+        try {
+            const response = await axios.get('/api/v1/playlists/recommended?limit=10');
+            this.setState({playlists: response.data.length !== 0 ? response.data : null})
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     render() {

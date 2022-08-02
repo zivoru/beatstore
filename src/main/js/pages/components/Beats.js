@@ -77,22 +77,25 @@ class Beats extends Component {
                                         </button>
                                     </div>
                                     <div className="qwe-title wnohte">
-                                        <Link to={"/beat/" + beat.id}
-                                              className="qwe-name wnohte">{beat.title}</Link>
+                                        <Link to={"/beat/" + beat.id} className="qwe-name wnohte"
+                                              title={beat.title}>
+                                            {beat.title}
+                                        </Link>
                                         <div className="qwe-bpm">
 
                                             <button id={beat.id}
                                                     onClick={props.openLicenses}>{beat.license.price_mp3}₽
                                             </button>
 
-                                            <Link to={"/" + beat.user.username}
-                                                  className="qwe-user wnohte">{beat.user.profile.displayName}
+                                            <Link to={"/" + beat.user.username} className="qwe-user wnohte"
+                                                  title={beat.user.profile.displayName}>
+                                                {beat.user.profile.displayName}
                                             </Link>
 
                                             {beat.user.verified === true ?
                                                 <img src={'/img/account-verified.svg'} alt="verified"/> : null}
 
-                                            <span>• {beat.bpm} BPM</span>
+                                            {beat.bpm !== null && beat.bpm !== "" ? <span>• {beat.bpm} BPM</span> : null}
                                         </div>
                                     </div>
                                 </div>

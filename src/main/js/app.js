@@ -31,6 +31,7 @@ import {Home} from "./pages/home/Home";
 import Profile1 from "./pages/Profile1";
 import {Settings} from "./pages/Settings";
 import {CreateBeat} from "./pages/CreateBeat";
+import {MyPlaylists} from "./pages/MyPlaylists";
 
 // const client = require('./client');
 
@@ -819,6 +820,13 @@ class App extends React.Component {
                                    openPlaylists={this.openPlaylists}
                                    openDownload={this.openDownload}/>}/>
 
+                    <Route path="/my-playlists" element={userIsPresent
+                        ? <Navigate to="/" replace={true} />
+                        : <MyPlaylists user={this.state.user}
+                                   setAudio={this.setAudio}
+                                   openPlaylists={this.openPlaylists}
+                                   openDownload={this.openDownload}/>}/>
+
                     <Route path="/history" element={userIsPresent
                         ? <Navigate to="/" replace={true} />
                         : <History user={this.state.user}
@@ -859,7 +867,7 @@ class App extends React.Component {
 
                 {this.state.loginPopUp ?
                     <div>
-                        <div className="pop-up trs" style={{display: "initial", opacity: 1, height: 200}}>
+                        <div className="pop-up trs" style={{display: "initial", opacity: 1, height: 200, transform: "translate(-50%, -50%)"}}>
                             <div className="pop-up-header">
                                 Авторизация
                                 <img src={'/img/close.png'} alt="close" width="18px"

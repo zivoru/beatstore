@@ -40,10 +40,13 @@ public class PlaylistController {
     }
 
     @Operation(summary = "Создание плейлиста")
-    @PostMapping("{userId}")
-    public ResponseEntity<Long> create(@PathVariable String userId, @RequestBody Playlist playlist) {
-        Playlist savedPlaylist = playlistService.create(userId, playlist);
-        return ResponseEntity.ok(savedPlaylist.getId());
+    @PostMapping()
+    public ResponseEntity<Long> create(@AuthenticationPrincipal OAuth2User principal, @RequestBody Playlist playlist) {
+        if (principal != null) {
+            Playlist savedPlaylist = playlistService.create(principal.getAttribute("sub"), playlist);
+            return ResponseEntity.ok(savedPlaylist.getId());
+        }
+        return null;
     }
 
     @Operation(summary = "Изменение плейлиста")
