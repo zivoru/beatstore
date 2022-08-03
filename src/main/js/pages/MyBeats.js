@@ -109,7 +109,7 @@ class MyBeats extends Component {
 
         if (state.publishedBeats !== null && state.publishedBeats !== "empty") {
             publishedBeats =
-                <div>
+                <div style={state.publishedView ? null : {display: "none"}}>
                     <div className="wrapper mt32" style={{paddingTop: 0}}>
                         <div className="container">
 
@@ -134,7 +134,7 @@ class MyBeats extends Component {
                                     }
 
                                     return (
-                                        <div className="qwe" key={index} onClick={click}>
+                                        <div className="qwe" key={index} style={{cursor: "initial"}}>
 
                                             <div className="qwe-left">
                                                 <div className="qwe-id">
@@ -158,10 +158,9 @@ class MyBeats extends Component {
                                                     ></button>
                                                 </div>
 
-                                                <div className="qwe-title wnohte">
-                                                    <p className="qwe-name wnohte"
-                                                       style={{textDecoration: "none"}}>{beat.title}</p>
-                                                </div>
+                                                    <Link to={"/beat/" + beat.id} className="qwe-name wnohte hu">
+                                                        {beat.title}
+                                                    </Link>
                                             </div>
 
                                             <div className="qwe-right">
@@ -241,7 +240,7 @@ class MyBeats extends Component {
                 </div>
         } else if (state.publishedBeats === "empty") {
             publishedBeats =
-                <div className="wrapper">
+                <div className="wrapper" style={state.publishedView ? null : {display: "none"}}>
                     <div className="container">
                         <div className="qwe-null">
                             <span>Ничего нет</span>
@@ -252,7 +251,7 @@ class MyBeats extends Component {
 
         if (state.draftBeats !== null && state.draftBeats !== "empty") {
             draftBeats =
-                <div>
+                <div style={state.draftView ? null : {display: "none"}}>
                     <div className="wrapper mt32" style={{paddingTop: 0}}>
                         <div className="container">
 
@@ -383,7 +382,7 @@ class MyBeats extends Component {
                 </div>
         } else if (state.draftBeats === "empty") {
             draftBeats =
-                <div className="wrapper">
+                <div className="wrapper" style={state.draftView ? null : {display: "none"}}>
                     <div className="container">
                         <div className="qwe-null">
                             <span>Ничего нет</span>
@@ -394,7 +393,7 @@ class MyBeats extends Component {
 
         if (state.soldBeats !== null && state.soldBeats !== "empty") {
             soldBeats =
-                <div>
+                <div style={state.soldView ? null : {display: "none"}}>
                     <div className="wrapper mt32" style={{paddingTop: 0}}>
                         <div className="container">
 
@@ -523,7 +522,7 @@ class MyBeats extends Component {
                 </div>
         } else if (state.soldBeats === "empty") {
             soldBeats =
-                <div className="wrapper">
+                <div className="wrapper" style={state.soldView ? null : {display: "none"}}>
                     <div className="container">
                         <div className="qwe-null">
                             <span>Ничего нет</span>
@@ -562,9 +561,9 @@ class MyBeats extends Component {
                     </div>
                 </div>
 
-                {state.publishedView ? publishedBeats : null}
-                {state.draftView ? draftBeats : null}
-                {state.soldView ? soldBeats : null}
+                { publishedBeats }
+                { draftBeats }
+                { soldBeats }
             </div>
         )
     }

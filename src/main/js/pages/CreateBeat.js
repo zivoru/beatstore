@@ -28,7 +28,7 @@ class CreateBeat extends Component {
             description: "",
             mood: "ACCOMPLISHED",
             moodPopUp: false,
-            bpm: null,
+            bpm: "",
             key: "AFMJ",
             keyPopUp: false,
             loading: false

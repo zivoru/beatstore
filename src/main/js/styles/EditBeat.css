@@ -301,3 +301,9 @@
         height: initial;
     }
 }
+
+@media (max-width: 300px) {
+    .free {
+        font-size: 10px;
+    }
+}

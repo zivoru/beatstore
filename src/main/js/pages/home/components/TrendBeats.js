@@ -18,6 +18,35 @@ class TrendBeats extends Component {
         })
     }
 
+    playPlay = (beat, path) => {
+        this.props.setAudio(beat.id, beat.audio.mp3Name !== null ? `${path}${beat.audio.mp3Name}` : null)
+
+        document.getElementById(`play-play${beat.id}`).style.display = "none"
+        document.getElementById(`pause-beat${beat.id}`).style.display = "initial"
+    }
+    play = (beatId) => {
+        this.props.btnPlay()
+
+        let buttonPlay = document.getElementById(`play-play${beatId}`);
+        let buttonPause = document.getElementById(`pause-beat${beatId}`);
+        if (buttonPlay !== null) buttonPlay.style.display = "none"
+        if (buttonPause !== null) buttonPause.style.display = "initial"
+
+        // document.getElementById(`play-play${beatId}`).style.display = "none"
+        // document.getElementById(`pause-beat${beatId}`).style.display = "initial"
+    }
+    pause = (beatId) => {
+        this.props.btnPause()
+
+        let buttonPlay = document.getElementById(`play-play${beatId}`);
+        let buttonPause = document.getElementById(`pause-beat${beatId}`);
+        if (buttonPlay !== null) buttonPlay.style.display = "initial"
+        if (buttonPause !== null) buttonPause.style.display = "none"
+
+        // document.getElementById(`play-play${beatId}`).style.display = "initial"
+        // document.getElementById(`pause-beat${beatId}`).style.display = "none"
+    }
+
     render() {
         if (this.state.beats !== null && this.state.beats.length !== 0) {
             return (
@@ -35,10 +64,33 @@ class TrendBeats extends Component {
                                                  `${path}${beat.imageName}` : '/img/track-placeholder.svg'} alt="beat"/>
                                     </Link>
 
-                                    <button className="play" title="Воспроизвести"
-                                            onClick={this.props.setAudio.bind(this, beat.id,
-                                                beat.audio.mp3Name !== null
-                                                    ? `${path}${beat.audio.mp3Name}` : null)}></button>
+                                    {this.props.playBeatId === beat.id
+                                        ? <>
+                                            <button id={`play-play${beat.id}`} className="play" title="Воспроизвести"
+                                                    style={this.props.playback ? {display: "none"} : null}
+                                                    onClick={this.play.bind(this, beat, path, beat.id)}></button>
+
+                                            <button id={`pause-beat${beat.id}`} className="pause-beat" title="Пауза"
+                                                    style={!this.props.playback ? {display: "none"} : null}
+                                                    onClick={this.pause.bind(this, beat.id)}></button>
+                                        </>
+                                        : <>
+                                            <button id={`play-play${beat.id}`} className="play" title="Воспроизвести"
+                                                    onClick={this.playPlay.bind(this, beat, path)}></button>
+
+                                            <button id={`pause-beat${beat.id}`} className="pause-beat" title="Пауза"
+                                                    style={{display: "none"}}
+                                                    onClick={this.pause.bind(this, beat.id)}></button>
+                                        </>
+                                    }
+
+                                    {/*<button id={`play-play${index}`} className="play" title="Воспроизвести"*/}
+                                    {/*        style={{display: "none"}}*/}
+                                    {/*        onClick={this.play.bind(this, beat, path, index)}></button>*/}
+
+                                    {/*<button id={`pause-beat${index}`} className="pause-beat" title="Пауза"*/}
+                                    {/*        style={{display: "none"}}*/}
+                                    {/*        onClick={this.pause.bind(this, index)}></button>*/}
                                 </div>
 
                                 <div className="grid-item">

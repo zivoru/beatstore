@@ -7,7 +7,7 @@ export default function Beat1(props) {
     let params = useParams();
 
     return <Beat user={props.user}
-                 nullToCart={props.nullToCart}
+                 updateCart={props.updateCart}
                  setAudio={props.setAudio}
                  openShare={props.openShare}
                  openPlaylists={props.openPlaylists}

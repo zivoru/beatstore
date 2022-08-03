@@ -54,6 +54,23 @@ public class BeatServiceImpl implements BeatService {
     }
 
     @Override
+    public BeatDto findDtoById(String userId, Long id) {
+        Beat beat = findById(id);
+        BeatDto beatDto = BeatDto.builder().beat(beat).addedToCart(false).build();
+        if (userId == null) return beatDto;
+
+        User user = Users.getUser(userId);
+        for (Cart cart : user.getCart()) {
+            if (cart.getBeat() == beat) {
+                beatDto.setAddedToCart(true);
+                beatDto.setLicensing(cart.getLicensing());
+                return beatDto;
+            }
+        }
+        return beatDto;
+    }
+
+    @Override
     public Beat create(String userId, Beat beat) {
         beat.setUser(Users.getUser(userId));
 

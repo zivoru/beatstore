@@ -87,15 +87,15 @@ public class PlaylistController {
     }
 
     @Operation(summary = "Добавление в избранное")
-    @PostMapping("addFavorite/{playlistId}/{userId}")
-    public void addFavorite(@PathVariable Long playlistId, @PathVariable String userId) {
-        playlistService.addFavorite(playlistId, userId);
+    @PostMapping("addFavorite/{playlistId}")
+    public void addFavorite(@PathVariable Long playlistId, @AuthenticationPrincipal OAuth2User principal) {
+        if (principal != null) playlistService.addFavorite(playlistId, principal.getAttribute("sub"));
     }
 
     @Operation(summary = "Удаление из избранного")
-    @PostMapping("removeFavorite/{playlistId}/{userId}")
-    public void removeFavorite(@PathVariable Long playlistId, @PathVariable String userId) {
-        playlistService.removeFavorite(playlistId, userId);
+    @PostMapping("removeFavorite/{playlistId}")
+    public void removeFavorite(@PathVariable Long playlistId, @AuthenticationPrincipal OAuth2User principal) {
+        if (principal != null) playlistService.removeFavorite(playlistId, principal.getAttribute("sub"));
     }
 
     @Operation(summary = "Получение рекомендуемых плейлистов")

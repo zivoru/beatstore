@@ -26,4 +26,9 @@ public class MainController {
     public String edit() {
         return "index";
     }
+
+    @GetMapping("/playlist/*")
+    public String playlist() {
+        return "index";
+    }
 }

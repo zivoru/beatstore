@@ -12,6 +12,8 @@ import './styles/Playeer.css';
 import './styles/Profile.css';
 import './styles/TopCharts.css';
 import './styles/Settings.css';
+import './styles/MyPlaylists.css';
+import './styles/PlaylistsPopUp.css';
 import {Header} from "./components/Header";
 
 const React = require('react');
@@ -32,6 +34,7 @@ import Profile1 from "./pages/Profile1";
 import {Settings} from "./pages/Settings";
 import {CreateBeat} from "./pages/CreateBeat";
 import {MyPlaylists} from "./pages/MyPlaylists";
+import Playlist1 from "./pages/Playlist1";
 
 // const client = require('./client');
 
@@ -51,6 +54,7 @@ class App extends React.Component {
             audio: '',
             beat: null,
             playerBeat: null,
+            playback: false,
             like: '/img/heart.png',
             btn: null,
             licenseCode: null,
@@ -60,7 +64,8 @@ class App extends React.Component {
             profilePopUp: false,
             play: null,
             loginPopUp: false,
-            loading: false
+            loading: false,
+            updateCart: false
         };
     }
 
@@ -76,9 +81,10 @@ class App extends React.Component {
             });
 
             if (res.data.user !== undefined && res.data.user !== null) {
-                axios.get('/api/v1/carts/').then(response => {
-                    this.setState({cart: response.data})
-                })
+                // axios.get('/api/v1/carts/').then(response => {
+                //     this.setState({cart: response.data})
+                // })
+                this.getCart().then();
             }
         }).catch(() => {
             this.setState({
@@ -86,6 +92,24 @@ class App extends React.Component {
                 loading: false
             })
         })
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+
+        if (prevState.updateCart !== this.state.updateCart) {
+            if (this.state.user !== undefined && this.state.user !== null && this.state.user !== "empty") {
+                this.getCart().then();
+            }
+        }
+    }
+
+    async getCart() {
+        try {
+            const res = await axios.get('/api/v1/carts/');
+            this.setState({cart: res.data.length === 0 ? "empty" : res.data})
+        } catch (error) {
+            this.setState({cart: "empty"})
+        }
     }
 
     logout = () => {
@@ -125,13 +149,14 @@ class App extends React.Component {
         this.setState({cartPopUp: false})
     }
 
-    setAudio = (id, path, event) => {
+    setAudio = (id, path) => {
 
         document.getElementById("root").style.paddingBottom = "70px"
 
-        if (event.target.nodeName !== "DIV" && event.target.className !== "play") {
-            return
-        }
+        // console.log(event.target.nodeName)
+        // if (event.target.nodeName !== "DIV" && event.target.className !== "play") {
+        //     return
+        // }
 
         // добавление прослушивания
         axios.post("/api/v1/beats/plays/" + id).then()
@@ -272,6 +297,15 @@ class App extends React.Component {
                         <span>{res.data.license.price_mp3} ₽</span>
                     </button>
                 })
+
+                if (res.data.free === true) {
+                    this.setState({
+                        btn: <button className="btn-primary btn-cart btn-free" style={{padding: "5px 16px"}}
+                                     onClick={this.openDownload.bind(this, this.state.beat)}>
+                            <span>Скачать</span>
+                        </button>
+                    })
+                }
             }
 
             this.setState({
@@ -328,6 +362,8 @@ class App extends React.Component {
                         </div>
                     </div>
             })
+
+            setTimeout(() => this.btnPlay(), 200)
         })
 
         this.setState({play: "play"})
@@ -557,9 +593,11 @@ class App extends React.Component {
     }
     closePopUp = (name) => {
         let popUp = document.querySelector("." + name);
-        popUp.style.transform = "translate(-50%, -50%) scale(0.7)"
-        popUp.style.opacity = "0"
-        setTimeout(() => popUp.style.display = "none", 50)
+        if (popUp !== null) {
+            popUp.style.transform = "translate(-50%, -50%) scale(0.7)"
+            popUp.style.opacity = "0"
+            setTimeout(() => popUp.style.display = "none", 50)
+        }
     }
     closePopUps = () => {
         this.closePopUp("playlists")
@@ -621,10 +659,11 @@ class App extends React.Component {
 
         this.selectLicense("exclusive", "EXCLUSIVE")
     }
-    nullToCart = () => {
-        axios.get('/api/v1/carts/').then(response => {
-            this.setState({cart: response.data})
-        })
+    updateCart = () => {
+        this.setState({updateCart: !this.state.updateCart})
+        // axios.get('/api/v1/carts/').then(response => {
+        //     this.setState({cart: response.data})
+        // })
     }
     addToCart = () => {
 
@@ -693,7 +732,7 @@ class App extends React.Component {
         }
 
         axios.post("/api/v1/beats/beat/" + this.state.beat.id + "/license/" + this.state.license).then(() => {
-            this.nullToCart();
+            this.updateCart();
 
             if (window.screen.width > 767) {
                 setTimeout(() => {
@@ -712,6 +751,109 @@ class App extends React.Component {
         axios.get('/user').then(res => {
             this.setState({user: res.data.user});
         })
+    }
+
+    audioPlay;
+
+    btnPlay = () => {
+
+        this.setState({playback: true})
+
+        let audio = document.getElementById("audio");    // Берём элемент audio
+        let time = document.querySelector(".time");      // Берём аудио дорожку
+        let playBtn = document.querySelector(".playplay");   // Берём кнопку проигрывания
+        let pauseBtn = document.querySelector(".pause"); // Берём кнопку паузы
+
+        audio.play(); // Запуск песни
+        // Запуск интервала
+        playBtn.style.display = "none"
+        pauseBtn.style.display = "initial"
+
+        let buttonPlay = document.getElementById(`play-play${this.state.playerBeat.id}`);
+        let buttonPause = document.getElementById(`pause-beat${this.state.playerBeat.id}`);
+        if (buttonPlay !== null && buttonPlay !== undefined) buttonPlay.style.display = "none"
+        if (buttonPause !== null && buttonPause !== undefined) buttonPause.style.display = "initial"
+
+        this.audioPlay = setInterval(function () {
+            // Получаем значение на какой секунде песня
+            let audioTime = Math.round(audio.currentTime);
+            // Получаем всё время песни
+            let audioLength = Math.round(audio.duration)
+            // Назначаем ширину элементу time
+            time.style.width = (audioTime * 100) / audioLength + '%';
+
+            if (audioTime === audioLength) {
+                pauseBtn.style.display = "none"
+                playBtn.style.display = "initial"
+            }
+        }, 10)
+    }
+
+    btnPause = () => {
+
+        this.setState({playback: false})
+
+        let audio = document.getElementById("audio");    // Берём элемент audio
+        let playBtn = document.querySelector(".playplay");   // Берём кнопку проигрывания
+        let pauseBtn = document.querySelector(".pause"); // Берём кнопку паузы
+
+        audio.pause(); // Останавливает песню
+        pauseBtn.style.display = "none"
+        playBtn.style.display = "initial"
+
+        let buttonPlay = document.getElementById(`play-play${this.state.playerBeat.id}`);
+        let buttonPause = document.getElementById(`pause-beat${this.state.playerBeat.id}`);
+        if (buttonPlay !== null && buttonPlay !== undefined) buttonPlay.style.display = "initial"
+        if (buttonPause !== null && buttonPause !== undefined) buttonPause.style.display = "none"
+
+        clearInterval(this.audioPlay) // Останавливает интервал
+    }
+
+    minus15sec = () => {
+        let audio = document.getElementById("audio");    // Берём элемент audio
+        let time = document.querySelector(".time");      // Берём аудио дорожку
+
+        audio.currentTime = Math.max(audio.currentTime - 15, 0)
+        // Получаем значение на какой секунде песня
+        let audioTime = Math.round(audio.currentTime);
+        // Получаем всё время песни
+        let audioLength = Math.round(audio.duration)
+        // Назначаем ширину элементу time
+        time.style.width = (audioTime * 100) / audioLength + '%';
+    }
+
+    plus15sec = () => {
+        let audio = document.getElementById("audio");    // Берём элемент audio
+        let time = document.querySelector(".time");      // Берём аудио дорожку
+
+        audio.currentTime = Math.min(audio.currentTime + 15, audio.duration)
+        // Получаем значение на какой секунде песня
+        let audioTime = Math.round(audio.currentTime);
+        // Получаем всё время песни
+        let audioLength = Math.round(audio.duration)
+        // Назначаем ширину элементу time
+        time.style.width = (audioTime * 100) / audioLength + '%';
+    }
+
+    getPosition = (e) => {
+        let x = 0;
+        let y = 0;
+
+        if (!e) {
+            let e = window.event;
+        }
+
+        if (e.pageX || e.pageY){
+            x = e.pageX;
+            y = e.pageY;
+        } else if (e.clientX || e.clientY){
+            x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+            y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+        }
+
+        console.log("x:" + x)
+        console.log("y:" + y)
+        return {x: x, y: y}
     }
 
     render() {
@@ -753,10 +895,15 @@ class App extends React.Component {
                     openShare={this.openShare}
                     audio={this.state.audio}
                     btn={this.state.btn}
+                    play={this.state.play}
                 />
             }
 
-            playlists = <PlaylistsPopUp closePopUps={this.closePopUps}/>
+            if (this.state.user !== null && this.state.user !== undefined && this.state.user !== "empty") {
+                playlists = <PlaylistsPopUp user={this.state.user}
+                                            beat={this.state.beat}
+                                            closePopUps={this.closePopUps}/>
+            }
 
             download = <DownloadPopUp closePopUps={this.closePopUps} beat={this.state.beat}/>
 
@@ -777,6 +924,78 @@ class App extends React.Component {
 
         let userIsPresent = this.state.user === "empty";
 
+        let beat = this.state.playerBeat
+
+        // let audioPlay;
+        //
+        // function btnPlay() {
+        //     let audio = document.getElementById("audio");    // Берём элемент audio
+        //     let time = document.querySelector(".time");      // Берём аудио дорожку
+        //     let playBtn = document.querySelector(".playplay");   // Берём кнопку проигрывания
+        //     let pauseBtn = document.querySelector(".pause"); // Берём кнопку паузы
+        //
+        //     audio.play(); // Запуск песни
+        //     // Запуск интервала
+        //     audioPlay = setInterval(function () {
+        //         // Получаем значение на какой секунде песня
+        //         let audioTime = Math.round(audio.currentTime);
+        //         // Получаем всё время песни
+        //         let audioLength = Math.round(audio.duration)
+        //         // Назначаем ширину элементу time
+        //         time.style.width = (audioTime * 100) / audioLength + '%';
+        //
+        //         if (audioTime === audioLength) {
+        //             pauseBtn.style.display = "none"
+        //             playBtn.style.display = "initial"
+        //         }
+        //     }, 10)
+        //
+        //     playBtn.style.display = "none"
+        //     pauseBtn.style.display = "initial"
+        // }
+
+        // function btnPause() {
+        //     let audio = document.getElementById("audio");    // Берём элемент audio
+        //     let playBtn = document.querySelector(".playplay");   // Берём кнопку проигрывания
+        //     let pauseBtn = document.querySelector(".pause"); // Берём кнопку паузы
+        //
+        //     audio.pause(); // Останавливает песню
+        //     clearInterval(audioPlay) // Останавливает интервал
+        //
+        //     pauseBtn.style.display = "none"
+        //     playBtn.style.display = "initial"
+        // }
+
+        // function minus15sec() {
+        //     let audio = document.getElementById("audio");    // Берём элемент audio
+        //     let time = document.querySelector(".time");      // Берём аудио дорожку
+        //
+        //     audio.currentTime = Math.max(audio.currentTime - 15, 0)
+        //     // Получаем значение на какой секунде песня
+        //     let audioTime = Math.round(audio.currentTime);
+        //     // Получаем всё время песни
+        //     let audioLength = Math.round(audio.duration)
+        //     // Назначаем ширину элементу time
+        //     time.style.width = (audioTime * 100) / audioLength + '%';
+        // }
+
+        // function plus15sec() {
+        //     let audio = document.getElementById("audio");    // Берём элемент audio
+        //     let time = document.querySelector(".time");      // Берём аудио дорожку
+        //
+        //     audio.currentTime = Math.min(audio.currentTime + 15, audio.duration)
+        //     // Получаем значение на какой секунде песня
+        //     let audioTime = Math.round(audio.currentTime);
+        //     // Получаем всё время песни
+        //     let audioLength = Math.round(audio.duration)
+        //     // Назначаем ширину элементу time
+        //     time.style.width = (audioTime * 100) / audioLength + '%';
+        // }
+
+        // if (this.state.playerBeat !== null && this.state.play === "play") {
+        //     setTimeout(() => btnPlay(), 200)
+        // }
+
         return (
             <div>
 
@@ -791,12 +1010,17 @@ class App extends React.Component {
                 />
 
                 <Routes>
-                    <Route path="/" element={<Home setAudio={this.setAudio}/>}/>
+                    <Route path="/" element={<Home setAudio={this.setAudio}
+                                                   btnPause={this.btnPause}
+                                                   btnPlay={this.btnPlay}
+                                                   playback={this.state.playback}
+                                                   playBeatId={this.state.playerBeat !== null
+                                                       ? this.state.playerBeat.id : null}/>}/>
 
                     <Route path="/feed" element={<Feed/>}/>
 
                     <Route path="/beat/:beatId" element={<Beat1 user={this.state.user}
-                                                                nullToCart={this.nullToCart}
+                                                                updateCart={this.updateCart}
                                                                 setAudio={this.setAudio}
                                                                 openShare={this.openShare}
                                                                 openPlaylists={this.openPlaylists}
@@ -806,36 +1030,36 @@ class App extends React.Component {
                     />}/>
 
                     <Route path="/edit/:beatId" element={userIsPresent
-                        ? <Navigate to="/" replace={true} />
+                        ? <Navigate to="/" replace={true}/>
                         : <Edit1 user={this.state.user}/>}/>
 
                     <Route path="/upload-beat" element={userIsPresent
-                        ? <Navigate to="/" replace={true} />
+                        ? <Navigate to="/" replace={true}/>
                         : <CreateBeat/>}/>
 
                     <Route path="/beats" element={userIsPresent
-                        ? <Navigate to="/" replace={true} />
+                        ? <Navigate to="/" replace={true}/>
                         : <MyBeats user={this.state.user}
                                    setAudio={this.setAudio}
                                    openPlaylists={this.openPlaylists}
                                    openDownload={this.openDownload}/>}/>
 
                     <Route path="/my-playlists" element={userIsPresent
-                        ? <Navigate to="/" replace={true} />
+                        ? <Navigate to="/" replace={true}/>
                         : <MyPlaylists user={this.state.user}
-                                   setAudio={this.setAudio}
-                                   openPlaylists={this.openPlaylists}
-                                   openDownload={this.openDownload}/>}/>
+                                       setAudio={this.setAudio}
+                                       openPlaylists={this.openPlaylists}
+                                       openDownload={this.openDownload}/>}/>
 
                     <Route path="/history" element={userIsPresent
-                        ? <Navigate to="/" replace={true} />
+                        ? <Navigate to="/" replace={true}/>
                         : <History user={this.state.user}
                                    setAudio={this.setAudio}
                                    openLicenses={this.openLicenses}
                                    openDownload={this.openDownload}/>}/>
 
                     <Route path="/favorites" element={userIsPresent
-                        ? <Navigate to="/" replace={true} />
+                        ? <Navigate to="/" replace={true}/>
                         : <Favorite user={this.state.user}
                                     setAudio={this.setAudio}
                                     openLicenses={this.openLicenses}
@@ -847,19 +1071,97 @@ class App extends React.Component {
                     />}/>
 
                     <Route path="/:username" element={<Profile1 user={this.state.user}
-                                                                resourceUrl={this.resourceUrl}
                                                                 setAudio={this.setAudio}
                                                                 openLicenses={this.openLicenses}
                                                                 openDownload={this.openDownload}
                                                                 setLoginPopUp={this.setLoginPopUp}
                     />}/>
 
+                    <Route path="/playlist/:playlistId" element={<Playlist1 user={this.state.user}
+                                                                            setAudio={this.setAudio}
+                                                                            openLicenses={this.openLicenses}
+                                                                            openDownload={this.openDownload}
+                                                                            setLoginPopUp={this.setLoginPopUp}
+                                                                            btnPause={this.btnPause}
+                                                                            btnPlay={this.btnPlay}
+                                                                            playback={this.state.playback}
+                                                                            playBeatId={this.state.playerBeat !== null
+                                                                                ? this.state.playerBeat.id : null}
+                    />}/>
+
                     <Route path="/settings" element={userIsPresent
-                        ? <Navigate to="/" replace={true} />
-                        : <Settings user={this.state.user} updateUser={this.updateUser}/> }/>
+                        ? <Navigate to="/" replace={true}/>
+                        : <Settings user={this.state.user} updateUser={this.updateUser}/>}/>
                 </Routes>
 
-                {player}
+                {/*{player}*/}
+
+                {this.state.playerBeat !== null
+                    ? <div className="audio-player" style={this.state.play !== "play" ? {display: "none"} : null}>
+                        <div className="header__container flex-c" style={{position: "relative"}}>
+                            <div className="flex-c-sb w100">
+                                <div className="flex-c" style={{width: "33.33%"}}>
+                                    <img className="player-img"
+                                         src={beat.imageName !== null && beat.imageName !== "" ?
+                                             `/img/user-${beat.user.id}/beats/beat-${beat.id}/${beat.imageName}` :
+                                             '/img/track-placeholder.svg'} alt="Профиль"/>
+
+                                    <div className="player-title flex-c">
+                                        <Link to={"/beat/" + beat.id} className="fs14 fw400 hu wnohte mw100"
+                                              title={beat.title}>
+                                            {beat.title}
+                                        </Link>
+                                        <Link to={beat.user.username}
+                                              className="fs12 fw400 color-g1 hu wnohte mw100"
+                                              title={beat.user.profile.displayName}>
+                                            {beat.user.profile.displayName}
+                                        </Link>
+                                    </div>
+
+                                    <img src={this.state.like} width="14px" alt="heart" className="player-icon"
+                                         onClick={this.like} title="Добавить в избранное"/>
+
+                                    <img src={'/img/plus.png'} width="14px" alt="plus" className="player-icon"
+                                         onClick={this.openPlaylists.bind(this, null)} title="Добавить в плейлист"/>
+
+                                    <img src={'/img/share.png'} width="14px" alt="share" className="player-icon"
+                                         onClick={this.openShare.bind(this, null)} title="Поделиться"/>
+                                </div>
+
+                                <div className="flex-c-c" style={{width: "33.33%"}}>
+
+                                    <audio id="audio" src={this.state.audio} controls></audio>
+
+                                    <div id="controls" style={{display: "flex"}}>
+                                        <div className="audio-track" onClick={this.getPosition}>
+                                            <div className="time"></div>
+                                        </div>
+
+                                        <button onClick={this.minus15sec} className="rewind fs12 fw400"
+                                                title="Перемотать на 15 секунд назад">-15с
+                                        </button>
+
+                                        <button className="circle playplay ml16 mr16" onClick={this.btnPlay}
+                                                title="Воспроизвести"></button>
+                                        <button className="circle pause ml16 mr16" onClick={this.btnPause} title="Пауза"></button>
+
+                                        <button onClick={this.plus15sec} className="rewind fs12 fw400"
+                                                title="Перемотать на 15 секунд вперед">+15с
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="flex-c" style={{width: "33.33%", justifyContent: "right"}}>
+                                    {this.state.btn}
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                    </div>
+                    : null}
+
                 {playlists}
                 {download}
                 {sharePopUp}
@@ -867,7 +1169,8 @@ class App extends React.Component {
 
                 {this.state.loginPopUp ?
                     <div>
-                        <div className="pop-up trs" style={{display: "initial", opacity: 1, height: 200, transform: "translate(-50%, -50%)"}}>
+                        <div className="pop-up trs"
+                             style={{display: "initial", opacity: 1, height: 200, transform: "translate(-50%, -50%)"}}>
                             <div className="pop-up-header">
                                 Авторизация
                                 <img src={'/img/close.png'} alt="close" width="18px"

@@ -17,160 +17,52 @@ class Beat extends Component {
             comments: [],
             comment: null,
             warningDeleteComment: false,
-            deleteCommentId: null
+            deleteCommentId: null,
+            update: false
         };
     }
 
     componentDidMount() {
         this.setState({user: this.props.user});
-        this.setBeat();
+        this.setBeat().then();
         this.setComments();
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.user !== this.props.user) {
             this.setState({user: this.props.user})
-            this.setBeat();
+            this.setBeat().then();
             this.setComments();
         }
         if (prevProps.beatId !== this.props.beatId) {
-            this.setBeat();
+            this.setBeat().then();
             this.setComments();
             window.scrollTo({top: 0, behavior: 'smooth'})
         }
+        if (prevState.update !== this.state.update) {
+            this.setBeat().then();
+            this.setComments();
+        }
     }
 
-    setBeat = () => {
-        axios.get(`/api/v1/beats/${this.props.beatId}`).then(res => {
+    async setBeat() {
+
+        try {
+            const res = await axios.get(`/api/v1/beats/dto/${this.props.beatId}`);
             this.setState({
                 beat: res.data,
                 like: '/img/heart.png'
             })
 
             if (this.props.user !== null && this.props.user !== undefined && this.props.user !== "empty") {
-                for (const like of res.data.likes) {
+                for (const like of res.data.beat.likes) {
                     if (like.id === this.props.user.id) this.setState({like: '/img/heart-fill.png'})
                 }
             }
-
-            this.setState({
-                licenseCode:
-                    <div className="licenses">
-                        <div className="main-license mp3" onClick={this.selectMp3}
-                        >
-                            <h3 className="license-title">MP3</h3>
-                            <p className="price">{res.data.license.price_mp3}₽</p>
-                            <span className="description">MP3</span>
-
-                            <Link to="/cart" className="btn-primary selectLicenseBtn btn-mp3"
-                                  onClick={this.closePopUps}>
-                                В корзине
-                            </Link>
-                        </div>
-                        <div className="main-license wav" onClick={this.selectWav}
-                        >
-                            <h3 className="license-title">WAV</h3>
-                            <p className="price">{res.data.license.price_wav}₽</p>
-                            <span className="description">MP3 и WAV</span>
-
-                            <Link to="/cart" className="btn-primary selectLicenseBtn btn-wav"
-                                  onClick={this.closePopUps}>
-                                В корзине
-                            </Link>
-                        </div>
-                        <div className="main-license unlimited" onClick={this.selectUnlimited}
-                        >
-                            <h3 className="license-title">UNLIMITED</h3>
-                            <p className="price">{res.data.license.price_unlimited}₽</p>
-                            <span className="description">MP3, WAV и TRACK STEMS</span>
-
-
-                            <Link to="/cart" className="btn-primary selectLicenseBtn btn-unlimited"
-                                  onClick={this.closePopUps}>
-                                В корзине
-                            </Link>
-                        </div>
-                        <div className="main-license exclusive" onClick={this.selectExclusive}
-                        >
-                            <h3 className="license-title">EXCLUSIVE</h3>
-                            <p className="price">{res.data.license.price_exclusive}₽</p>
-                            <span className="description">EXCLUSIVE</span>
-
-                            <Link to="/cart" className="btn-primary selectLicenseBtn btn-exclusive"
-                                  onClick={this.closePopUps}>
-                                В корзине
-                            </Link>
-                        </div>
-                    </div>
-            })
-
-            if (this.props.user !== null && this.props.user !== undefined && this.props.user !== "empty") {
-                axios.get("/api/v1/carts/").then(response => {
-
-                    let mp3 = document.querySelector(".mp3");
-                    mp3.classList.remove("select")
-                    let wav = document.querySelector(".wav");
-                    wav.classList.remove("select")
-                    let unlimited = document.querySelector(".unlimited");
-                    unlimited.classList.remove("select")
-                    let exclusive = document.querySelector(".exclusive");
-                    exclusive.classList.remove("select")
-
-                    let exc = document.querySelector(".btn-exclusive");
-                    exc.style.display = "none"
-                    let mp = document.querySelector(".btn-mp3");
-                    mp.style.display = "none"
-                    let wa = document.querySelector(".btn-wav");
-                    wa.style.display = "none"
-                    let unl = document.querySelector(".btn-unlimited");
-                    unl.style.display = "none"
-
-                    for (const mapBeat of response.data) {
-                        if (mapBeat.beat.id === res.data.id) {
-
-                            if (mapBeat.licensing === "MP3") {
-
-                                let license = document.querySelector(".mp3");
-                                license.classList.add("select")
-
-                                let btn = document.querySelector(".btn-mp3");
-                                btn.style.display = "initial"
-                            }
-
-                            if (mapBeat.licensing === "WAV") {
-
-                                let license = document.querySelector(".wav");
-                                license.classList.add("select")
-
-                                let btn = document.querySelector(".btn-wav");
-                                btn.style.display = "initial"
-                            }
-
-                            if (mapBeat.licensing === "UNLIMITED") {
-
-                                let license = document.querySelector(".unlimited");
-                                license.classList.add("select")
-
-                                let btn = document.querySelector(".btn-unlimited");
-                                btn.style.display = "initial"
-                            }
-
-                            if (mapBeat.licensing === "EXCLUSIVE") {
-
-                                let license = document.querySelector(".exclusive");
-                                license.classList.add("select")
-
-                                let btn = document.querySelector(".btn-exclusive");
-                                btn.style.display = "initial"
-                            }
-                        }
-                    }
-
-                }).catch();
-            }
-        }).catch(() => {
+        } catch (error) {
             this.setState({beat: "empty"})
-        })
+        }
+
     }
 
     setComments = () => {
@@ -203,132 +95,77 @@ class Beat extends Component {
 
     unselectLicenses = (name) => {
         let license = document.querySelector("." + name);
-        if (license !== null) {
-            license.style.backgroundColor = "rgba(0,0,0,0)";
-            license.style.border = "1px solid #272727"
-        }
+        if (license !== null) license.classList.remove("select")
     }
 
     selectLicense = (name, stateLicense) => {
         let license = document.querySelector("." + name);
-        license.style.backgroundColor = "#081b39"
-        license.style.border = "1px solid #005ff8"
-
-        let select = document.querySelector(".select");
-        if (select !== null) {
-            select.style.backgroundColor = "#081b39";
-            select.style.border = "1px solid #005ff8"
-        }
+        if (license !== null) license.classList.add("select")
 
         this.setState({
             license: stateLicense
         })
+
+        let btn = document.getElementById('beat-btn-add-to-cart');
+        if (btn !== null) {
+            btn.style.backgroundColor = "#005ff8"
+            btn.style.pointerEvents = "initial"
+            btn.style.opacity = "1"
+        }
     }
 
     selectMp3 = () => {
-        this.unselectLicenses("wav")
-        this.unselectLicenses("unlimited")
-        this.unselectLicenses("exclusive")
+        this.unselectLicenses("beat-wav")
+        this.unselectLicenses("beat-unlimited")
+        this.unselectLicenses("beat-exclusive")
 
-        this.selectLicense("mp3", "MP3")
+        this.selectLicense("beat-mp3", "MP3")
     }
 
     selectWav = () => {
-        this.unselectLicenses("mp3")
-        this.unselectLicenses("unlimited")
-        this.unselectLicenses("exclusive")
+        this.unselectLicenses("beat-mp3")
+        this.unselectLicenses("beat-unlimited")
+        this.unselectLicenses("beat-exclusive")
 
-        this.selectLicense("wav", "WAV")
+        this.selectLicense("beat-wav", "WAV")
     }
 
     selectUnlimited = () => {
-        this.unselectLicenses("mp3")
-        this.unselectLicenses("wav")
-        this.unselectLicenses("exclusive")
+        this.unselectLicenses("beat-mp3")
+        this.unselectLicenses("beat-wav")
+        this.unselectLicenses("beat-exclusive")
 
-        this.selectLicense("unlimited", "UNLIMITED")
+        this.selectLicense("beat-unlimited", "UNLIMITED")
     }
 
     selectExclusive = () => {
-        this.unselectLicenses("mp3")
-        this.unselectLicenses("wav")
-        this.unselectLicenses("unlimited")
+        this.unselectLicenses("beat-mp3")
+        this.unselectLicenses("beat-wav")
+        this.unselectLicenses("beat-unlimited")
 
-        this.selectLicense("exclusive", "EXCLUSIVE")
+        this.selectLicense("beat-exclusive", "EXCLUSIVE")
     }
 
     addToCart = () => {
-        this.unselectLicenses("mp3")
-        this.unselectLicenses("wav")
-        this.unselectLicenses("unlimited")
-        this.unselectLicenses("exclusive")
+        axios.post("/api/v1/beats/beat/" + this.state.beat.beat.id + "/license/" + this.state.license).then(() => {
+            this.props.updateCart()
 
-        let mp3 = document.querySelector(".mp3");
-        mp3.classList.remove("select")
-        let wav = document.querySelector(".wav");
-        wav.classList.remove("select")
-        let unlimited = document.querySelector(".unlimited");
-        unlimited.classList.remove("select")
-        let exclusive = document.querySelector(".exclusive");
-        exclusive.classList.remove("select")
+            let license = this.state.license;
+            if (license === "MP3") document.querySelector('.beat-btn-mp3').style.display = "initial"
+            if (license === "WAV") document.querySelector('.beat-btn-wav').style.display = "initial"
+            if (license === "UNLIMITED") document.querySelector('.beat-btn-unlimited').style.display = "initial"
+            if (license === "EXCLUSIVE") document.querySelector('.beat-btn-exclusive').style.display = "initial"
 
-        let exc = document.querySelector(".btn-exclusive");
-        exc.style.display = "none"
-        let mp = document.querySelector(".btn-mp3");
-        mp.style.display = "none"
-        let wa = document.querySelector(".btn-wav");
-        wa.style.display = "none"
-        let unl = document.querySelector(".btn-unlimited");
-        unl.style.display = "none"
-
-
-        if (this.state.license === "MP3") {
-
-            let license = document.querySelector(".mp3");
-            license.classList.add("select")
-
-            let btn = document.querySelector(".btn-mp3");
-            btn.style.display = "initial"
-        }
-
-        if (this.state.license === "WAV") {
-
-            let license = document.querySelector(".wav");
-            license.classList.add("select")
-
-            let btn = document.querySelector(".btn-wav");
-            btn.style.display = "initial"
-        }
-
-        if (this.state.license === "UNLIMITED") {
-
-            let license = document.querySelector(".unlimited");
-            license.classList.add("select")
-
-            let btn = document.querySelector(".btn-unlimited");
-            btn.style.display = "initial"
-        }
-
-        if (this.state.license === "EXCLUSIVE") {
-
-            let license = document.querySelector(".exclusive");
-            license.classList.add("select")
-
-            let btn = document.querySelector(".btn-exclusive");
-            btn.style.display = "initial"
-        }
-
-        let select = document.querySelector(".select");
-        if (select !== null) {
-            select.style.backgroundColor = "#081b39";
-            select.style.border = "1px solid #005ff8"
-        }
-
-        axios.post("/api/v1/beats/beat/" + this.state.beat.id + "/license/" + this.state.license).then(() => {
-            this.props.nullToCart()
+            let btn = document.getElementById('beat-btn-add-to-cart');
+            if (btn !== null) {
+                btn.style.backgroundColor = "rgba(38,38,38,0.91)"
+                btn.style.pointerEvents = "none"
+                btn.style.opacity = "0.4"
+            }
 
             if (window.screen.width > 767) setTimeout(() => {
-                this.props.cartPopUpOpen()
+                this.props.cartPopUpOpen();
+                this.setState({update: !this.state.update});
             }, 100)
         }).catch()
     }
@@ -351,7 +188,7 @@ class Beat extends Component {
     }
 
     createComment = () => {
-        axios.post(`/api/v1/comments/${this.state.beat.id}`,
+        axios.post(`/api/v1/comments/${this.state.beat.beat.id}`,
             {"comment": this.state.comment}).then(res => {
             this.setState({comment: null})
 
@@ -382,73 +219,8 @@ class Beat extends Component {
     render() {
         if (this.state.beat !== null && this.state.beat !== "empty") {
 
-            if (this.props.user !== null && this.props.user !== undefined && this.props.user !== "empty") {
-                axios.get("/api/v1/carts/").then(response => {
-
-                    let mp3 = document.querySelector(".mp3");
-                    mp3.classList.remove("select")
-                    let wav = document.querySelector(".wav");
-                    wav.classList.remove("select")
-                    let unlimited = document.querySelector(".unlimited");
-                    unlimited.classList.remove("select")
-                    let exclusive = document.querySelector(".exclusive");
-                    exclusive.classList.remove("select")
-
-                    let exc = document.querySelector(".btn-exclusive");
-                    exc.style.display = "none"
-                    let mp = document.querySelector(".btn-mp3");
-                    mp.style.display = "none"
-                    let wa = document.querySelector(".btn-wav");
-                    wa.style.display = "none"
-                    let unl = document.querySelector(".btn-unlimited");
-                    unl.style.display = "none"
-
-                    for (const mapBeat of response.data) {
-                        if (mapBeat.beat.id === this.state.beat.id) {
-
-                            if (mapBeat.licensing === "MP3") {
-
-                                let license = document.querySelector(".mp3");
-                                license.classList.add("select")
-
-                                let btn = document.querySelector(".btn-mp3");
-                                btn.style.display = "initial"
-                            }
-
-                            if (mapBeat.licensing === "WAV") {
-
-                                let license = document.querySelector(".wav");
-                                license.classList.add("select")
-
-                                let btn = document.querySelector(".btn-wav");
-                                btn.style.display = "initial"
-                            }
-
-                            if (mapBeat.licensing === "UNLIMITED") {
-
-                                let license = document.querySelector(".unlimited");
-                                license.classList.add("select")
-
-                                let btn = document.querySelector(".btn-unlimited");
-                                btn.style.display = "initial"
-                            }
-
-                            if (mapBeat.licensing === "EXCLUSIVE") {
-
-                                let license = document.querySelector(".exclusive");
-                                license.classList.add("select")
-
-                                let btn = document.querySelector(".btn-exclusive");
-                                btn.style.display = "initial"
-                            }
-                        }
-                    }
-
-                }).catch();
-            }
-
-            document.title = this.state.beat.title + " | BeatStore";
-            let beat = this.state.beat;
+            document.title = this.state.beat.beat.title + " | BeatStore";
+            let beat = this.state.beat.beat;
             let user = this.props.user;
             let createComment;
 
@@ -479,6 +251,8 @@ class Beat extends Component {
                     </div>
             }
 
+            let licensing = this.state.beat.licensing;
+            let addedToCart = this.state.beat.addedToCart;
             return (
                 <div>
 
@@ -591,16 +365,93 @@ class Beat extends Component {
 
                                         <div className="stats-line mb32"></div>
 
-                                        {this.state.licenseCode}
+                                        <div className="licenses">
+                                            <div className={addedToCart && licensing === "MP3"
+                                                ? "select main-license beat-mp3"
+                                                : "main-license beat-mp3"}
+                                                 onClick={this.selectMp3}>
+
+                                                <h3 className="license-title">MP3</h3>
+                                                <p className="price">{beat.license.price_mp3}₽</p>
+                                                <span className="description">MP3</span>
+
+                                                <Link to="/cart" style={addedToCart && licensing === "MP3"
+                                                    ? {display: "initial"} : null}
+                                                      className="btn-primary selectLicenseBtn beat-btn-mp3"
+                                                      onClick={this.closePopUps}>
+                                                    В корзине
+                                                </Link>
+                                            </div>
+
+                                            <div className={addedToCart && licensing === "WAV"
+                                                ? "select main-license beat-wav"
+                                                : "main-license beat-wav"}
+                                                 onClick={this.selectWav}>
+
+                                                <h3 className="license-title">WAV</h3>
+                                                <p className="price">{beat.license.price_wav}₽</p>
+                                                <span className="description">MP3 и WAV</span>
+
+                                                <Link to="/cart" style={addedToCart && licensing === "WAV"
+                                                    ? {display: "initial"} : null}
+                                                      className="btn-primary selectLicenseBtn beat-btn-wav"
+                                                      onClick={this.closePopUps}>
+                                                    В корзине
+                                                </Link>
+                                            </div>
+
+                                            <div className={addedToCart && licensing === "UNLIMITED"
+                                                ? "select main-license beat-unlimited"
+                                                : "main-license beat-unlimited"}
+                                                 onClick={this.selectUnlimited}>
+
+                                                <h3 className="license-title">UNLIMITED</h3>
+                                                <p className="price">{beat.license.price_unlimited}₽</p>
+                                                <span className="description">MP3, WAV и TRACK STEMS</span>
+
+
+                                                <Link to="/cart" style={addedToCart && licensing === "UNLIMITED"
+                                                    ? {display: "initial"} : null}
+                                                      className="btn-primary selectLicenseBtn beat-btn-unlimited"
+                                                      onClick={this.closePopUps}>
+                                                    В корзине
+                                                </Link>
+                                            </div>
+
+                                            <div className={addedToCart && licensing === "EXCLUSIVE"
+                                                ? "select main-license beat-exclusive"
+                                                : "main-license beat-exclusive"}
+                                                 onClick={this.selectExclusive}>
+
+                                                <h3 className="license-title">EXCLUSIVE</h3>
+                                                <p className="price">{beat.license.price_exclusive}₽</p>
+                                                <span className="description">EXCLUSIVE</span>
+
+                                                <Link to="/cart" style={addedToCart && licensing === "EXCLUSIVE"
+                                                    ? {display: "initial"} : null}
+                                                      className="btn-primary selectLicenseBtn beat-btn-exclusive"
+                                                      onClick={this.closePopUps}>
+                                                    В корзине
+                                                </Link>
+                                            </div>
+                                        </div>
 
                                         {this.props.user !== null && this.props.user !== undefined && this.props.user !== "empty" ?
-                                            <button className="btn-primary w100" onClick={this.addToCart}
-                                                    style={{padding: "10px 0"}}>
+                                            <button id="beat-btn-add-to-cart" className="btn-primary w100"
+                                                    onClick={this.addToCart}
+                                                    style={{
+                                                        padding: "10px 0", backgroundColor: "rgba(38,38,38,0.91)",
+                                                        pointerEvents: "none", opacity: 0.4
+                                                    }}>
                                                 Добавить в корзину
                                             </button>
                                             :
-                                            <button className="btn-primary w100" onClick={this.props.setLoginPopUp}
-                                                    style={{padding: "10px 0"}}>
+                                            <button id="beat-btn-add-to-cart" className="btn-primary w100"
+                                                    onClick={this.props.setLoginPopUp}
+                                                    style={{
+                                                        padding: "10px 0", backgroundColor: "rgba(38,38,38,0.91)",
+                                                        pointerEvents: "none", opacity: 0.4
+                                                    }}>
                                                 Добавить в корзину
                                             </button>}
                                     </div>

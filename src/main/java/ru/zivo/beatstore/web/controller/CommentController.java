@@ -1,5 +1,6 @@
 package ru.zivo.beatstore.web.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +24,13 @@ public class CommentController {
         this.commentService = commentService;
     }
 
+    @Operation(summary = "Получение комментариев по beatId")
     @GetMapping("{beatId}")
     public ResponseEntity<List<Comment>> findByBeatId(@PathVariable Long beatId) {
         return ResponseEntity.ok(commentService.findByBeatId(beatId));
     }
 
+    @Operation(summary = "Создание комментария")
     @PostMapping("{beatId}")
     public ResponseEntity<Comment> addComment(@PathVariable Long beatId,
                                               @AuthenticationPrincipal OAuth2User principal,
@@ -36,6 +39,7 @@ public class CommentController {
                 ResponseEntity.ok(commentService.addComment(beatId, principal.getAttribute("sub"), comment));
     }
 
+    @Operation(summary = "Удаление комментария по id")
     @DeleteMapping("{id}")
     public void delete(@AuthenticationPrincipal OAuth2User principal, @PathVariable Long id) {
         if (principal != null) commentService.delete(principal.getAttribute("sub"), id);

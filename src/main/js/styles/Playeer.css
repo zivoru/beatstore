@@ -55,7 +55,7 @@
 
 .pop-up {
     position: fixed;
-    z-index: 200;
+    z-index: 600;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%) scale(0.7);
@@ -83,7 +83,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 40px;
+    margin-bottom: 32px;
     font-size: 24px;
     font-weight: 500;
 }
@@ -284,5 +284,7 @@
 }
 
 @media (max-width: 300px) {
-
+    .pop-up-header {
+        font-size: 20px;
+    }
 }

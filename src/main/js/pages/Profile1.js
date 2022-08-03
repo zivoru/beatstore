@@ -6,7 +6,7 @@ export default function Profile1(props) {
 
     let params = useParams();
 
-    return <Profile user={props.user} resourceUrl={props.resourceUrl}
+    return <Profile user={props.user}
                     setAudio={props.setAudio}
                     openLicenses={props.openLicenses}
                     openDownload={props.openDownload}

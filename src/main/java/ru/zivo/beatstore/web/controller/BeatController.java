@@ -40,6 +40,13 @@ public class BeatController {
         return ResponseEntity.ok(beatService.findById(id));
     }
 
+    @Operation(summary = "Дто бита по id")
+    @GetMapping("dto/{id}")
+    public ResponseEntity<BeatDto> findDtoById(@AuthenticationPrincipal OAuth2User principal, @PathVariable Long id) {
+        return ResponseEntity.ok(
+                beatService.findDtoById(principal != null ? principal.getAttribute("sub") : null, id));
+    }
+
     @Operation(summary = "Создание бита")
     @PostMapping()
     public ResponseEntity<Long> create(@AuthenticationPrincipal OAuth2User principal, @RequestBody Beat beat) {

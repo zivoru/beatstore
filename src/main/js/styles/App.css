@@ -1,6 +1,7 @@
 body {
     background-color: black;
     color:  rgba(255,255,255,0.93);
+    overflow-y: scroll;
 }
 
 a {

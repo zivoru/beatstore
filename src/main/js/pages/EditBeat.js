@@ -34,7 +34,7 @@ class EditBeat extends Component {
             description: "",
             mood: "ACCOMPLISHED",
             moodPopUp: false,
-            bpm: null,
+            bpm: "",
             key: "AFMJ",
             keyPopUp: false,
             loading: false
@@ -66,9 +66,9 @@ class EditBeat extends Component {
                 priceUnlimited: data.license.price_unlimited,
                 priceExclusive: data.license.price_exclusive,
                 genre: data.genre,
-                description: data.description,
+                description: data.description === null ? "" : data.description,
                 mood: data.mood,
-                bpm: data.bpm,
+                bpm: data.bpm === null ? "" : data.bpm,
                 key: data.key
             })
             if (data.description === null) {

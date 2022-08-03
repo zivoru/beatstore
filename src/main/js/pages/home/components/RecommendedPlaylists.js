@@ -6,74 +6,46 @@ class RecommendedPlaylists extends Component {
     beatCount;
     likesCount;
 
-    constructor(props) {
-        super(props);
-        this.state = {playlists: []};
-    }
-
-    componentDidMount() {
-        // axios.get('/api/v1/playlists/recommended?limit=10').then(res => {
-        //     this.setState({playlists: res.data.length !== 0 ? res.data : null})
-        // }).catch(() => {
-        //     this.setState({playlists: null})
-        // })
-
-        // async function getPlaylists() {
-        //     try {
-        //         const response = await axios.get('/api/v1/playlists/recommended?limit=10');
-        //         this.setState({playlists: response.data.length !== 0 ? response.data : null})
-        //     } catch (error) {
-        //         console.error(error);
-        //     }
-        // }
-
-        this.getPlaylists().then();
-
-        setInterval(() => {
-            this.getPlaylists().then()
-            console.log('выполнено')
-        }, 3000)
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps !== this.props) {
-            this.getPlaylists().then();
-        }
-    }
-
-    async getPlaylists() {
-        try {
-            const response = await axios.get('/api/v1/playlists/recommended?limit=10');
-            this.setState({playlists: response.data.length !== 0 ? response.data : null})
-        } catch (error) {
-            console.error(error);
-        }
-    }
+    // constructor(props) {
+    //     super(props);
+    //     this.state = {playlists: []};
+    // }
+    //
+    // componentDidMount() {
+    //     axios.get('/api/v1/playlists/recommended?limit=10').then(res => {
+    //         this.setState({playlists: res.data.length !== 0 ? res.data : null})
+    //     }).catch(() => {
+    //         this.setState({playlists: null})
+    //     })
+    // }
+    //
+    // componentDidUpdate(prevProps, prevState, snapshot) {
+    //
+    // }
 
     render() {
-        if (this.state.playlists !== null && this.state.playlists.length !== 0) {
+        if (this.props.playlists !== null && this.props.playlists.length !== 0 && this.props.playlists !== "empty") {
             return (
                 <div className="slider">
-                    {this.state.playlists.map((playlist, index) => {
-
+                    {this.props.playlists.map((playlist, index) => {
                         return (
-                            <div className="slide" key={index} style={{width: 350}}>
+                            <div className="slide" key={index} style={{width: 203}}>
 
                                 <span className="back-layer"></span>
 
                                 <span className="front-layer"></span>
 
-                                <div className="slide-img-container" style={{width: 350, height: 350}}>
+                                <div className="slide-img-container" style={{width: 203, height: 203}}>
                                     <Link to={"playlist/" + playlist.id} className="inl-blk trs"
-                                          style={{width: 350, height: 350}}>
-                                        <img className="slide-img" style={{width: 350, height: 350}}
+                                          style={{width: 203, height: 203}}>
+                                        <img className="slide-img" style={{width: 203, height: 203}}
                                              src={playlist.imageName !== null && playlist.imageName !== "" ?
                                                  `/img/user-${playlist.user.id}/playlists/playlist-${playlist.id}/${playlist.imageName}`
                                                  : '/img/track-placeholder.svg'} alt="playlist"/>
                                     </Link>
                                 </div>
 
-                                <div className="grid-item" style={{width: 350}}>
+                                <div className="grid-item" style={{width: 203}}>
                                     <h5 className="fs12 fw400 color-g1">
                                         {playlist.beatCount} • {playlist.likesCount}
                                     </h5>

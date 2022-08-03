@@ -8,7 +8,8 @@ class Beats extends Component {
 
         let props = this.props;
 
-        let beatId = props.page !== 0 ? props.page * 10 : 0;
+        // let beatId = props.page !== 0 ? props.page * 10 : 0;
+        let beatId = 0;
 
         return (
             <div className="qwe-container">

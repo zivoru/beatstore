@@ -16,6 +16,8 @@ public interface BeatService {
 
     Beat findById(Long id);
 
+    BeatDto findDtoById(String userId, Long id);
+
     Beat create(String userId, Beat beat);
 
     void update(String userId, Long beatId, Beat beat);

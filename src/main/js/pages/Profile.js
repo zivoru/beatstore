@@ -19,13 +19,14 @@ class Profile extends Component {
             page: 0,
             totalPages: null,
             pagination: [],
-            btnFollow: null
+            btnFollow: null,
+            update: false
         };
     }
 
     componentDidMount() {
         this.setState({user: this.props.user});
-        this.getUser();
+        this.getUser().then();
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -38,7 +39,7 @@ class Profile extends Component {
                     this.setState({
                         btnFollow:
                             <div className="item-stats flex-c-c">
-                                <Link to="/settings" className="btn-primary w50" style={{backgroundColor: "#262626"}}>
+                                <Link to="/settings" className="btn-primary" style={{backgroundColor: "#262626"}}>
                                     Редактировать
                                 </Link>
                             </div>
@@ -60,12 +61,17 @@ class Profile extends Component {
 
             this.setState({user: this.props.user})
 
-            this.getUser();
+            this.getUser().then();
+        }
+
+        if (prevState.update !== this.state.update) {
+            this.getUser().then();
         }
     }
 
-    getUser() {
-        axios.get("/api/v1/users/username/" + this.props.username).then(res => {
+    async getUser() {
+        try {
+            const res = await axios.get('/api/v1/users/username/' + this.props.username);
             this.setState({userProfile: res.data})
 
             let usr = res.data
@@ -74,7 +80,7 @@ class Profile extends Component {
                 this.setState({
                     btnFollow:
                         <div className="item-stats flex-c-c">
-                            <button className="btn-primary w50" style={{backgroundColor: "#262626"}}
+                            <button className="btn-primary" style={{backgroundColor: "#262626"}}
                                     onClick={this.subscribeAndUnsubscribe}>
                                 Отписаться
                             </button>
@@ -86,7 +92,7 @@ class Profile extends Component {
                 this.setState({
                     btnFollow:
                         <div className="item-stats flex-c-c">
-                            <button className="btn-primary w50" onClick={this.subscribeAndUnsubscribe}>
+                            <button className="btn-primary" onClick={this.subscribeAndUnsubscribe}>
                                 Подписаться
                             </button>
                         </div>
@@ -98,7 +104,7 @@ class Profile extends Component {
                     this.setState({
                         btnFollow:
                             <div className="item-stats flex-c-c">
-                                <Link to="/settings" className="btn-primary w50" style={{backgroundColor: "#262626"}}>
+                                <Link to="/settings" className="btn-primary" style={{backgroundColor: "#262626"}}>
                                     Редактировать
                                 </Link>
                             </div>
@@ -112,9 +118,9 @@ class Profile extends Component {
             }).catch(() => {
                 this.setState({beats: "empty"})
             })
-        }).catch(() => {
+        } catch (error) {
             this.setState({userProfile: "empty"})
-        })
+        }
     }
 
     addBeatsToState = (page) => {
@@ -154,7 +160,7 @@ class Profile extends Component {
                 this.setState({
                     btnFollow:
                         <div className="item-stats flex-c-c">
-                            <button className="btn-primary w50" style={{backgroundColor: "#262626"}}
+                            <button className="btn-primary" style={{backgroundColor: "#262626"}}
                                     onClick={this.subscribeAndUnsubscribe}>
                                 Отписаться
                             </button>
@@ -166,12 +172,16 @@ class Profile extends Component {
                 this.setState({
                     btnFollow:
                         <div className="item-stats flex-c-c">
-                            <button className="btn-primary w50" onClick={this.subscribeAndUnsubscribe}>
+                            <button className="btn-primary" onClick={this.subscribeAndUnsubscribe}>
                                 Подписаться
                             </button>
                         </div>
                 })
             }
+
+            setTimeout(() => this.setState({
+                update: !this.state.update
+            }), 100);
         }).catch()
     }
 

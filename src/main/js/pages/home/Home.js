@@ -5,11 +5,26 @@ import {RecommendedUsers} from './components/RecommendedUsers';
 import {TrendBeats} from './components/TrendBeats';
 import {RecommendedPlaylists} from './components/RecommendedPlaylists';
 import {Link} from "react-router-dom";
+import axios from "axios";
 
 class Home extends Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {playlists: []};
+    }
+
     componentDidMount() {
         window.scrollTo({top: 0, behavior: 'smooth'})
+        axios.get('/api/v1/playlists/recommended?limit=10').then(res => {
+            this.setState({playlists: res.data.length !== 0 ? res.data : "empty"})
+        }).catch(() => {
+            this.setState({playlists: "empty"})
+        })
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+
     }
 
     render() {
@@ -37,13 +52,17 @@ class Home extends Component {
                             Трендовые биты
                             <Link to="/top-charts" className="color-or hu fs12 fw400">См. все</Link>
                         </div>
-                        <TrendBeats setAudio={this.props.setAudio}/>
+                        <TrendBeats setAudio={this.props.setAudio}
+                                    btnPause={this.props.btnPause}
+                                    btnPlay={this.props.btnPlay}
+                                    playback={this.props.playback}
+                                    playBeatId={this.props.playBeatId}/>
 
                         <div className="title">
                             Рекомендуемые плейлисты
                             <Link to="/top-charts" className="color-or hu fs12 fw400">См. все</Link>
                         </div>
-                        <RecommendedPlaylists/>
+                        <RecommendedPlaylists playlists={this.state.playlists}/>
 
                         <div className="title">
                             Рекомендуемые битмейкеры

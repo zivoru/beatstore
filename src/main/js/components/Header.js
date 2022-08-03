@@ -67,7 +67,7 @@ class Header extends Component {
         let dropCartClass = user !== null && user !== undefined  && user !== "empty" ?
             "dropdown dropdown__cart trs" : "dropdown dropdown__cart trs drop-cart-right"
 
-        if (cart.length !== 0) {
+        if (cart.length !== 0 && cart !== "empty") {
             amountCart = <div className="cartAmount">{cart.length}</div>
 
             dropCart =
@@ -106,7 +106,7 @@ class Header extends Component {
                     <Link to="/cart" className="btn-primary mw100 fs12 mt32" onClick={this.props.cartPopUpOpen}>Оформить
                         заказ</Link>
                 </div>;
-        } else {
+        } else if (cart === "empty") {
             dropCart =
                 <div className={dropCartClass}>
                     <div className="cart-empty flex-c-c">
