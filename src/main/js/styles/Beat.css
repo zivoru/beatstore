@@ -15,6 +15,10 @@
     position: relative;
 }
 
+.beat-license:hover {
+    background-color: rgb(30,30,30);
+}
+
 /*.main-license:hover {*/
 /*    background-color: #272727;*/
 /*}*/
@@ -65,8 +69,8 @@
 .comment-button {
     border-radius: 999px;
     margin-left: 16px;
-    width: 45px;
-    height: 45px;
+    width: 44px;
+    height: 42px;
     background-color: rgba(38, 38, 38, 0.91);
     display: flex;
     justify-content: center;
@@ -78,10 +82,11 @@
     background-color: #0b8aff;
 }
 
-.comment-button-img {
+.comment-button ion-icon {
+    color: white;
     opacity: 0.2;
-    width: 17px;
-    transform: translateX(-1px);
+    font-size: 17px;
+    transform: translateX(1px);
 }
 
 .comment-delete {

@@ -66,7 +66,7 @@
 }
 
 .vfs34fhr {
-    border-top: 2px solid #383838;
+    /*border-top: 2px solid #383838;*/
     border-bottom: 1px solid #383838;
     width: 100%;
     padding: 32px 32px;
@@ -78,7 +78,8 @@
     flex-wrap: wrap;
     width: 100%;
     /*padding: 32px 0;*/
-    max-width: 1080px;
+    max-width: 1440px;
+    background-color: black;
     margin: auto;
 }
 .dsdsewe {
@@ -106,9 +107,8 @@
 .n3lxs45 {
     background-color: #1B1B1B;
     border-radius: 999px;
-    border: 1px solid #383838;
     padding: 6px 16px;
-    color: white;
+    color: #9f9f9f;
     margin: 0 12px 12px 0;
     display: flex;
     align-items: center;
@@ -117,7 +117,8 @@
     /*line-height: 1px;*/
 }
 .n3lxs45:hover {
-    background-color: #383838;
+    background-color: black;
+    color: white;
 }
 
 .filters {

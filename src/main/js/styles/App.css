@@ -5,16 +5,17 @@ body {
 }
 
 a {
-    color: rgba(255,255,255,0.93);
+    color: white;
 }
 
 .wrapper {
     width: 100%;
-    padding: 44px 32px;
+    padding: 64px 32px;
 }
 
 .container {
-    max-width: 1080px;
+    max-width: 1440px;
+    background-color: black;
     margin: auto;
 }
 
@@ -95,7 +96,7 @@ a {
 
 .hu:hover { text-decoration: underline 0.8px }
 
-.ho:hover { opacity: 0.6 }
+.ho:hover { opacity: 0.8 }
 
 .color-g1 { color: rgb(156 156 156) }
 .color-g2 { color: #707070 }

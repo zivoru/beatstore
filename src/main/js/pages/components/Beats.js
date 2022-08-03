@@ -4,6 +4,29 @@ import {Link} from "react-router-dom";
 class Beats extends Component {
     addedToCart;
 
+    playPlay = (beat, path) => {
+        this.props.setAudio(beat.id, beat.audio.mp3Name !== null ? `${path}${beat.audio.mp3Name}` : null)
+
+        document.getElementById(`play-play${beat.id}`).style.display = "none"
+        document.getElementById(`pause-beat${beat.id}`).style.display = "initial"
+    }
+    play = (beatId) => {
+        this.props.btnPlay()
+
+        let buttonPlay = document.getElementById(`play-play${beatId}`);
+        let buttonPause = document.getElementById(`pause-beat${beatId}`);
+        if (buttonPlay !== null) buttonPlay.style.display = "none"
+        if (buttonPause !== null) buttonPause.style.display = "initial"
+    }
+    pause = (beatId) => {
+        this.props.btnPause()
+
+        let buttonPlay = document.getElementById(`play-play${beatId}`);
+        let buttonPause = document.getElementById(`pause-beat${beatId}`);
+        if (buttonPlay !== null) buttonPlay.style.display = "initial"
+        if (buttonPause !== null) buttonPause.style.display = "none"
+    }
+
     render() {
 
         let props = this.props;
@@ -43,39 +66,63 @@ class Beats extends Component {
                             }
                         }
 
-                        let click;
+                        // let click;
+                        //
+                        // if (window.screen.width > 767) {
+                        //     click = props.setAudio.bind(this,
+                        //         beat.id,
+                        //         `/img/user-${beat.user.id}/beats/beat-${beat.id}/${beat.audio.mp3Name}`)
+                        // }
 
-                        if (window.screen.width > 767) {
-                            click = props.setAudio.bind(this,
-                                beat.id,
-                                `/img/user-${beat.user.id}/beats/beat-${beat.id}/${beat.audio.mp3Name}`)
-                        }
+                        let path = `/img/user-${beat.user.id}/beats/beat-${beat.id}/`;
 
                         return (
-                            <div className="qwe" key={index} onClick={click}>
+                            <div className="qwe"
+                                 // onClick={click}
+                                 key={index}>
                                 <div className="qwe-left">
                                     <div className="qwe-id">
 
                                         <span>{beatId}</span>
 
-                                        <button className="play" onClick={props.setAudio.bind(this,
-                                            beat.id,
-                                            `/img/user-${beat.user.id}/beats/beat-${beat.id}/${beat.audio.mp3Name}`)}
-                                                style={{transform: "translate(-50%, -50%) scale(0.7)"}}
-                                        >
-                                        </button>
+                                        {/*<button className="play" onClick={props.setAudio.bind(this,*/}
+                                        {/*    beat.id,*/}
+                                        {/*    `/img/user-${beat.user.id}/beats/beat-${beat.id}/${beat.audio.mp3Name}`)}*/}
+                                        {/*        style={{transform: "translate(-50%, -50%) scale(0.7)"}}*/}
+                                        {/*>*/}
+                                        {/*</button>*/}
                                     </div>
                                     <div className="qwe-img" style={{position: "relative"}}>
                                         <img src={beat.imageName !== null && beat.imageName !== '' ?
                                             `/img/user-${beat.user.id}/beats/beat-${beat.id}/${beat.imageName}` :
                                             '/img/track-placeholder.svg'} alt=""/>
 
-                                        <button className="play" onClick={props.setAudio.bind(this,
-                                            beat.id,
-                                            `/img/user-${beat.user.id}/beats/beat-${beat.id}/${beat.audio.mp3Name}`)}
-                                                style={{transform: "translate(-50%, -50%) scale(0.7)"}}
-                                        >
-                                        </button>
+
+                                        {this.props.playBeatId === beat.id
+                                            ? <>
+                                                <button id={`play-play${beat.id}`} className="qwe-play" title="Воспроизвести"
+                                                        style={this.props.playback ? {display: "none"} : null}
+                                                        onClick={this.play.bind(this, beat, path, beat.id)}></button>
+
+                                                <button id={`pause-beat${beat.id}`} className="qwe-pause-beat" title="Пауза"
+                                                        style={!this.props.playback ? {display: "none"} : null}
+                                                        onClick={this.pause.bind(this, beat.id)}></button>
+                                            </>
+                                            : <>
+                                                <button id={`play-play${beat.id}`} className="qwe-play" title="Воспроизвести"
+                                                        onClick={this.playPlay.bind(this, beat, path)}></button>
+
+                                                <button id={`pause-beat${beat.id}`} className="qwe-pause-beat" title="Пауза"
+                                                        style={{display: "none"}}
+                                                        onClick={this.pause.bind(this, beat.id)}></button>
+                                            </>
+                                        }
+
+
+                                        {/*<button className="qwe-play" onClick={props.setAudio.bind(this,*/}
+                                        {/*    beat.id,*/}
+                                        {/*    `/img/user-${beat.user.id}/beats/beat-${beat.id}/${beat.audio.mp3Name}`)}>*/}
+                                        {/*</button>*/}
                                     </div>
                                     <div className="qwe-title wnohte">
                                         <Link to={"/beat/" + beat.id} className="qwe-name wnohte"

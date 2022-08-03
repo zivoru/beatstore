@@ -1,4 +1,4 @@
-import {BrowserRouter, Link, Route, Routes, Navigate} from "react-router-dom";
+import {BrowserRouter, Link, Navigate, Route, Routes} from "react-router-dom";
 import axios from 'axios';
 import './styles/App.css';
 import './styles/Beat.css';
@@ -14,11 +14,10 @@ import './styles/TopCharts.css';
 import './styles/Settings.css';
 import './styles/MyPlaylists.css';
 import './styles/PlaylistsPopUp.css';
+import './styles/Equalizer.css';
+import './styles/Loading.css';
 import {Header} from "./components/Header";
-
-const React = require('react');
 import ReactDOM from 'react-dom/client';
-import Player from "./components/Player";
 import PlaylistsPopUp from "./components/PlaylistsPopUp";
 import DownloadPopUp from "./components/DownloadPopUp";
 import SharePopUp from "./components/SharePopUp";
@@ -35,6 +34,8 @@ import {Settings} from "./pages/Settings";
 import {CreateBeat} from "./pages/CreateBeat";
 import {MyPlaylists} from "./pages/MyPlaylists";
 import Playlist1 from "./pages/Playlist1";
+
+const React = require('react');
 
 // const client = require('./client');
 
@@ -55,6 +56,7 @@ class App extends React.Component {
             beat: null,
             playerBeat: null,
             playback: false,
+            playbackStop: false,
             like: '/img/heart.png',
             btn: null,
             licenseCode: null,
@@ -65,7 +67,8 @@ class App extends React.Component {
             play: null,
             loginPopUp: false,
             loading: false,
-            updateCart: false
+            updateCart: false,
+            updateBeat: false,
         };
     }
 
@@ -76,9 +79,10 @@ class App extends React.Component {
 
         axios.get('/user').then(res => {
             this.setState({
-                user: res.data.user === null || res.data.user === undefined ? "empty" : res.data.user,
-                loading: false
+                user: res.data.user === null || res.data.user === undefined ? "empty" : res.data.user
             });
+
+            setTimeout(() => this.setState({loading: false}), 2000)
 
             if (res.data.user !== undefined && res.data.user !== null) {
                 // axios.get('/api/v1/carts/').then(response => {
@@ -100,6 +104,13 @@ class App extends React.Component {
             if (this.state.user !== undefined && this.state.user !== null && this.state.user !== "empty") {
                 this.getCart().then();
             }
+        }
+
+        if (prevState.updateBeat !== this.state.updateBeat) {
+            this.getBeat(this.state.beat.beat.id).then(res => this.setState({
+                beat: res.data,
+                playerBeat: res.data
+            })).catch(() => {this.setState({beat: "empty", playerBeat: "empty"})})
         }
     }
 
@@ -149,14 +160,22 @@ class App extends React.Component {
         this.setState({cartPopUp: false})
     }
 
+    async getBeat(id) {
+        // axios.get("/api/v1/beats/" + id).then(response => {
+        //     this.setState({
+        //         beat: response.data
+        //     })
+        // })
+
+        try {
+            return await axios.get(`/api/v1/beats/dto/${id}`);
+        } catch (error) {
+            this.setState({beat: "empty"})
+        }
+    }
+
     setAudio = (id, path) => {
-
         document.getElementById("root").style.paddingBottom = "70px"
-
-        // console.log(event.target.nodeName)
-        // if (event.target.nodeName !== "DIV" && event.target.className !== "play") {
-        //     return
-        // }
 
         // добавление прослушивания
         axios.post("/api/v1/beats/plays/" + id).then()
@@ -167,338 +186,33 @@ class App extends React.Component {
         }
 
         this.setState({
-            audio: path
-        })
-
-        this.setState({
+            audio: path,
             like: '/img/heart.png'
         })
 
-        axios.get("/api/v1/beats/" + id).then(res => {
-            this.setState({
-                beat: res.data
-            })
-            this.setState({
-                playerBeat: res.data
-            })
+        this.getBeat(id).then(res => this.setState({beat: res.data}))
+
+        axios.get("/api/v1/beats/dto/" + id).then(res => {
+            this.setState({playerBeat: res.data})
 
             if (this.state.user !== null && this.state.user !== undefined && this.state.user !== "empty") {
-
-                this.setState({
-                    btn: <button className="btn-primary btn-cart" style={{padding: "5px 16px"}}
-                                 onClick={this.openLicense}>
-                        <span>{res.data.license.price_mp3} ₽</span>
-                    </button>
-                })
-
-                if (res.data.free === true) {
-                    this.setState({
-                        btn: <button className="btn-primary btn-cart btn-free" style={{padding: "5px 16px"}}
-                                     onClick={this.openDownload.bind(this, this.state.beat)}>
-                            <span>Скачать</span>
-                        </button>
-                    })
-                }
-
-                if (res.data.user.id === this.state.user.id) {
-                    this.setState({
-                        btn: null
-                    })
-                }
-
-                for (const like of res.data.likes) {
-                    if (like.id === this.state.user.id) {
-                        this.setState({
-                            like: '/img/heart-fill.png'
-                        })
-                    }
-                }
-
-                axios.get("/api/v1/carts/").then(response => {
-                    let mp3 = document.querySelector(".mp3");
-                    mp3.classList.remove("select")
-                    let wav = document.querySelector(".wav");
-                    wav.classList.remove("select")
-                    let unlimited = document.querySelector(".unlimited");
-                    unlimited.classList.remove("select")
-                    let exclusive = document.querySelector(".exclusive");
-                    exclusive.classList.remove("select")
-
-                    let exc = document.querySelector(".btn-exclusive");
-                    exc.style.display = "none"
-                    let mp = document.querySelector(".btn-mp3");
-                    mp.style.display = "none"
-                    let wa = document.querySelector(".btn-wav");
-                    wa.style.display = "none"
-                    let unl = document.querySelector(".btn-unlimited");
-                    unl.style.display = "none"
-
-                    for (const mapBeat of response.data) {
-                        if (mapBeat.beat.id === res.data.id) {
-
-                            this.setState({
-                                btn: <button className="btn-primary btn-cart"
-                                             style={{padding: "5px 16px", backgroundColor: "#262626"}}
-                                             onClick={this.openLicense}>
-                                    <span>В корзине</span>
-                                </button>
-                            })
-
-                            if (mapBeat.licensing === "MP3") {
-
-                                let license = document.querySelector(".mp3");
-                                license.classList.add("select")
-
-                                let btn = document.querySelector(".btn-mp3");
-                                btn.style.display = "initial"
-                            }
-
-                            if (mapBeat.licensing === "WAV") {
-
-                                let license = document.querySelector(".wav");
-                                license.classList.add("select")
-
-                                let btn = document.querySelector(".btn-wav");
-                                btn.style.display = "initial"
-                            }
-
-                            if (mapBeat.licensing === "UNLIMITED") {
-
-                                let license = document.querySelector(".unlimited");
-                                license.classList.add("select")
-
-                                let btn = document.querySelector(".btn-unlimited");
-                                btn.style.display = "initial"
-                            }
-
-                            if (mapBeat.licensing === "EXCLUSIVE") {
-
-                                let license = document.querySelector(".exclusive");
-                                license.classList.add("select")
-
-                                let btn = document.querySelector(".btn-exclusive");
-                                btn.style.display = "initial"
-                            }
-                        }
-                    }
-
-                });
-
-                let pause = document.querySelector('.pause');
-                if (pause !== null) pause.style.display = "none"
-
-                let play = document.querySelector('.playplay');
-                if (play !== null) play.style.display = "initial"
-
-            } else {
-                this.setState({
-                    btn: <button className="btn-primary btn-cart" style={{padding: "5px 16px"}}
-                                 onClick={() => this.setState({loginPopUp: true})}>
-                        <span>{res.data.license.price_mp3} ₽</span>
-                    </button>
-                })
-
-                if (res.data.free === true) {
-                    this.setState({
-                        btn: <button className="btn-primary btn-cart btn-free" style={{padding: "5px 16px"}}
-                                     onClick={this.openDownload.bind(this, this.state.beat)}>
-                            <span>Скачать</span>
-                        </button>
-                    })
+                for (const like of res.data.beat.likes) {
+                    if (like.id === this.state.user.id) this.setState({like: '/img/heart-fill.png'})
                 }
             }
 
-            this.setState({
-                licenseCode:
-                    <div className="licenses">
-                        <div className="license mp3" onClick={this.selectMp3}
-                             style={{backgroundColor: "#272727", border: "1px solid #272727"}}
-                        >
-                            <h3 className="license-title">MP3</h3>
-                            <p className="price">{res.data.license.price_mp3}₽</p>
-                            <span className="description">MP3</span>
-
-                            <Link to="/cart" className="btn-primary selectLicenseBtn btn-mp3"
-                                  onClick={this.closePopUps}>
-                                В корзине
-                            </Link>
-                        </div>
-                        <div className="license wav" onClick={this.selectWav}
-                             style={{backgroundColor: "#272727", border: "1px solid #272727"}}
-                        >
-                            <h3 className="license-title">WAV</h3>
-                            <p className="price">{res.data.license.price_wav}₽</p>
-                            <span className="description">MP3 и WAV</span>
-
-                            <Link to="/cart" className="btn-primary selectLicenseBtn btn-wav"
-                                  onClick={this.closePopUps}>
-                                В корзине
-                            </Link>
-                        </div>
-                        <div className="license unlimited" onClick={this.selectUnlimited}
-                             style={{backgroundColor: "#272727", border: "1px solid #272727"}}
-                        >
-                            <h3 className="license-title">UNLIMITED</h3>
-                            <p className="price">{res.data.license.price_unlimited}₽</p>
-                            <span className="description">MP3, WAV и TRACK STEMS</span>
-
-
-                            <Link to="/cart" className="btn-primary selectLicenseBtn btn-unlimited"
-                                  onClick={this.closePopUps}>
-                                В корзине
-                            </Link>
-                        </div>
-                        <div className="license exclusive" onClick={this.selectExclusive}
-                             style={{backgroundColor: "#272727", border: "1px solid #272727"}}
-                        >
-                            <h3 className="license-title">EXCLUSIVE</h3>
-                            <p className="price">{res.data.license.price_exclusive}₽</p>
-                            <span className="description">EXCLUSIVE</span>
-
-                            <Link to="/cart" className="btn-primary selectLicenseBtn btn-exclusive"
-                                  onClick={this.closePopUps}>
-                                В корзине
-                            </Link>
-                        </div>
-                    </div>
-            })
-
             setTimeout(() => this.btnPlay(), 200)
-        })
+
+        }).catch(() => {this.setState({playerBeat: "empty"})})
 
         this.setState({play: "play"})
     }
     openLicenses = (id) => {
         if (this.state.user !== null && this.state.user !== undefined && this.state.user !== "empty") {
-            axios.get("/api/v1/beats/" + id).then(response => {
-                this.setState({
-                    beat: response.data
-                })
+            this.getBeat(id).then(res => this.setState({beat: res.data}))
+                .catch(() => {this.setState({beat: "empty"})})
 
-                this.setState({
-                    licenseCode:
-                        <div className="licenses">
-                            <div className="license mp3" onClick={this.selectMp3}
-                                 style={{backgroundColor: "#272727", border: "1px solid #272727"}}
-                            >
-                                <h3 className="license-title">MP3</h3>
-                                <p className="price">{response.data.license.price_mp3}₽</p>
-                                <span className="description">MP3</span>
-
-                                <Link to="/cart" className="btn-primary selectLicenseBtn btn-mp3"
-                                      onClick={this.closePopUps}>
-                                    В корзине
-                                </Link>
-                            </div>
-                            <div className="license wav" onClick={this.selectWav}
-                                 style={{backgroundColor: "#272727", border: "1px solid #272727"}}
-                            >
-                                <h3 className="license-title">WAV</h3>
-                                <p className="price">{response.data.license.price_wav}₽</p>
-                                <span className="description">MP3 и WAV</span>
-
-                                <Link to="/cart" className="btn-primary selectLicenseBtn btn-wav"
-                                      onClick={this.closePopUps}>
-                                    В корзине
-                                </Link>
-                            </div>
-                            <div className="license unlimited" onClick={this.selectUnlimited}
-                                 style={{backgroundColor: "#272727", border: "1px solid #272727"}}
-                            >
-                                <h3 className="license-title">UNLIMITED</h3>
-                                <p className="price">{response.data.license.price_unlimited}₽</p>
-                                <span className="description">MP3, WAV и TRACK STEMS</span>
-
-
-                                <Link to="/cart" className="btn-primary selectLicenseBtn btn-unlimited"
-                                      onClick={this.closePopUps}>
-                                    В корзине
-                                </Link>
-                            </div>
-                            <div className="license exclusive" onClick={this.selectExclusive}
-                                 style={{backgroundColor: "#272727", border: "1px solid #272727"}}
-                            >
-                                <h3 className="license-title">EXCLUSIVE</h3>
-                                <p className="price">{response.data.license.price_exclusive}₽</p>
-                                <span className="description">EXCLUSIVE</span>
-
-                                <Link to="/cart" className="btn-primary selectLicenseBtn btn-exclusive"
-                                      onClick={this.closePopUps}>
-                                    В корзине
-                                </Link>
-                            </div>
-                        </div>
-                })
-
-
-                if (this.state.user !== null && this.state.user !== undefined && this.state.user !== "empty") {
-
-                    axios.get("/api/v1/carts/").then(response2 => {
-
-                        let mp3 = document.querySelector(".mp3");
-                        mp3.classList.remove("select")
-                        let wav = document.querySelector(".wav");
-                        wav.classList.remove("select")
-                        let unlimited = document.querySelector(".unlimited");
-                        unlimited.classList.remove("select")
-                        let exclusive = document.querySelector(".exclusive");
-                        exclusive.classList.remove("select")
-
-                        let exc = document.querySelector(".btn-exclusive");
-                        exc.style.display = "none"
-                        let mp = document.querySelector(".btn-mp3");
-                        mp.style.display = "none"
-                        let wa = document.querySelector(".btn-wav");
-                        wa.style.display = "none"
-                        let unl = document.querySelector(".btn-unlimited");
-                        unl.style.display = "none"
-
-                        for (const mapBeat of response2.data) {
-                            if (mapBeat.beat.id === response.data.id) {
-
-                                if (mapBeat.licensing === "MP3") {
-
-                                    let license = document.querySelector(".mp3");
-                                    license.classList.add("select")
-
-                                    let btn = document.querySelector(".btn-mp3");
-                                    btn.style.display = "initial"
-                                }
-
-                                if (mapBeat.licensing === "WAV") {
-
-                                    let license = document.querySelector(".wav");
-                                    license.classList.add("select")
-
-                                    let btn = document.querySelector(".btn-wav");
-                                    btn.style.display = "initial"
-                                }
-
-                                if (mapBeat.licensing === "UNLIMITED") {
-
-                                    let license = document.querySelector(".unlimited");
-                                    license.classList.add("select")
-
-                                    let btn = document.querySelector(".btn-unlimited");
-                                    btn.style.display = "initial"
-                                }
-
-                                if (mapBeat.licensing === "EXCLUSIVE") {
-
-                                    let license = document.querySelector(".exclusive");
-                                    license.classList.add("select")
-
-                                    let btn = document.querySelector(".btn-exclusive");
-                                    btn.style.display = "initial"
-                                }
-                            }
-                        }
-
-                        this.openLicense()
-
-                    });
-                }
-            })
+            this.openLicense()
         } else {
             this.setState({loginPopUp: true})
         }
@@ -575,21 +289,25 @@ class App extends React.Component {
         setTimeout(this.openPopUp.bind(this, "sharePopUp"), 100)
     }
     openLicense = () => {
-        this.openBack()
-        this.openPopUp("licensesPopUp")
-
-        this.unselectLicenses("license")
-        this.unselectLicenses("mp3")
-        this.unselectLicenses("wav")
-        this.unselectLicenses("unlimited")
-        this.unselectLicenses("exclusive")
-
-        let select = document.querySelector(".select");
-
-        if (select !== null) {
-            select.style.backgroundColor = "#081b39";
-            select.style.border = "1px solid #005ff8"
+        if (this.state.user !== null && this.state.user !== undefined && this.state.user !== "empty") {
+            this.openBack()
+            this.openPopUp("licensesPopUp")
+        } else {
+            this.setState({loginPopUp: true})
         }
+
+        // this.unselectLicenses("license")
+        // this.unselectLicenses("mp3")
+        // this.unselectLicenses("wav")
+        // this.unselectLicenses("unlimited")
+        // this.unselectLicenses("exclusive")
+
+        // let select = document.querySelector(".select");
+        //
+        // if (select !== null) {
+        //     select.style.backgroundColor = "#081b39";
+        //     select.style.border = "1px solid #005ff8"
+        // }
     }
     closePopUp = (name) => {
         let popUp = document.querySelector("." + name);
@@ -611,25 +329,22 @@ class App extends React.Component {
     }
     unselectLicenses = (name) => {
         let license = document.querySelector("." + name);
-        if (license !== null) {
-            license.style.backgroundColor = "#272727";
-            license.style.border = "1px solid #272727"
-        }
+        if (license !== null) license.classList.remove("select")
     }
     selectLicense = (name, stateLicense) => {
         let license = document.querySelector("." + name);
-        license.style.backgroundColor = "#081b39"
-        license.style.border = "1px solid #005ff8"
-
-        let select = document.querySelector(".select");
-        if (select !== null) {
-            select.style.backgroundColor = "#081b39";
-            select.style.border = "1px solid #005ff8"
-        }
+        if (license !== null) license.classList.add("select")
 
         this.setState({
             license: stateLicense
         })
+
+        let btn = document.getElementById('btn-add-to-cart');
+        if (btn !== null) {
+            btn.style.backgroundColor = "#005ff8"
+            btn.style.pointerEvents = "initial"
+            btn.style.opacity = "1"
+        }
     }
     selectMp3 = () => {
         this.unselectLicenses("wav")
@@ -661,85 +376,56 @@ class App extends React.Component {
     }
     updateCart = () => {
         this.setState({updateCart: !this.state.updateCart})
-        // axios.get('/api/v1/carts/').then(response => {
-        //     this.setState({cart: response.data})
-        // })
     }
     addToCart = () => {
 
-        this.closePopUps()
-
-        this.setState({
-            btn: <button className="btn-primary ml16" style={{backgroundColor: "#262626"}}
-                         onClick={this.openLicense}>
-                В корзине
-            </button>
-        })
-
-        let mp3 = document.querySelector(".mp3");
-        mp3.classList.remove("select")
-        let wav = document.querySelector(".wav");
-        wav.classList.remove("select")
-        let unlimited = document.querySelector(".unlimited");
-        unlimited.classList.remove("select")
-        let exclusive = document.querySelector(".exclusive");
-        exclusive.classList.remove("select")
-
-        let exc = document.querySelector(".btn-exclusive");
-        exc.style.display = "none"
-        let mp = document.querySelector(".btn-mp3");
-        mp.style.display = "none"
-        let wa = document.querySelector(".btn-wav");
-        wa.style.display = "none"
-        let unl = document.querySelector(".btn-unlimited");
-        unl.style.display = "none"
 
 
-        if (this.state.license === "MP3") {
+        // this.setState({
+        //     btn: <button className="btn-primary ml16" style={{backgroundColor: "#262626"}}
+        //                  onClick={this.openLicense}>
+        //         В корзине
+        //     </button>
+        // })
+        if (this.state.license !== null && this.state.beat.beat.free !== true) {
 
-            let license = document.querySelector(".mp3");
-            license.classList.add("select")
+            this.closePopUps()
 
-            let btn = document.querySelector(".btn-mp3");
-            btn.style.display = "initial"
-        }
+            axios.post("/api/v1/beats/beat/" + this.state.beat.beat.id + "/license/" + this.state.license).then(() => {
+                this.updateCart()
 
-        if (this.state.license === "WAV") {
+                let license = this.state.license;
+                if (license === "MP3") document.querySelector('.btn-mp3').style.display = "initial"
+                if (license === "WAV") document.querySelector('.btn-wav').style.display = "initial"
+                if (license === "UNLIMITED") document.querySelector('.btn-unlimited').style.display = "initial"
+                if (license === "EXCLUSIVE") document.querySelector('.btn-exclusive').style.display = "initial"
 
-            let license = document.querySelector(".wav");
-            license.classList.add("select")
+                let btn = document.getElementById('btn-add-to-cart');
+                if (btn !== null) {
+                    btn.style.backgroundColor = "rgba(38,38,38,0.91)"
+                    btn.style.pointerEvents = "none"
+                    btn.style.opacity = "0.4"
+                }
 
-            let btn = document.querySelector(".btn-wav");
-            btn.style.display = "initial"
-        }
-
-        if (this.state.license === "UNLIMITED") {
-
-            let license = document.querySelector(".unlimited");
-            license.classList.add("select")
-
-            let btn = document.querySelector(".btn-unlimited");
-            btn.style.display = "initial"
-        }
-
-        if (this.state.license === "EXCLUSIVE") {
-
-            let license = document.querySelector(".exclusive");
-            license.classList.add("select")
-
-            let btn = document.querySelector(".btn-exclusive");
-            btn.style.display = "initial"
-        }
-
-        axios.post("/api/v1/beats/beat/" + this.state.beat.id + "/license/" + this.state.license).then(() => {
-            this.updateCart();
-
-            if (window.screen.width > 767) {
-                setTimeout(() => {
-                    this.setState({cartPopUp: true})
+                if (window.screen.width > 767) setTimeout(() => {
+                    this.setState({
+                        cartPopUp: true,
+                        updateBeat: !this.state.updateBeat
+                    });
                 }, 100)
-            }
-        })
+            }).catch()
+        }
+
+
+        // axios.post("/api/v1/beats/beat/" + this.state.beat.id + "/license/" + this.state.license).then(() => {
+        //     this.updateCart();
+        //
+        //     if (window.screen.width > 767) {
+        //         setTimeout(() => {
+        //             this.setState({cartPopUp: true})
+        //         }, 100)
+        //     }
+        // })
 
     }
 
@@ -769,8 +455,8 @@ class App extends React.Component {
         playBtn.style.display = "none"
         pauseBtn.style.display = "initial"
 
-        let buttonPlay = document.getElementById(`play-play${this.state.playerBeat.id}`);
-        let buttonPause = document.getElementById(`pause-beat${this.state.playerBeat.id}`);
+        let buttonPlay = document.getElementById(`play-play${this.state.playerBeat.beat.id}`);
+        let buttonPause = document.getElementById(`pause-beat${this.state.playerBeat.beat.id}`);
         if (buttonPlay !== null && buttonPlay !== undefined) buttonPlay.style.display = "none"
         if (buttonPause !== null && buttonPause !== undefined) buttonPause.style.display = "initial"
 
@@ -801,8 +487,8 @@ class App extends React.Component {
         pauseBtn.style.display = "none"
         playBtn.style.display = "initial"
 
-        let buttonPlay = document.getElementById(`play-play${this.state.playerBeat.id}`);
-        let buttonPause = document.getElementById(`pause-beat${this.state.playerBeat.id}`);
+        let buttonPlay = document.getElementById(`play-play${this.state.playerBeat.beat.id}`);
+        let buttonPause = document.getElementById(`pause-beat${this.state.playerBeat.beat.id}`);
         if (buttonPlay !== null && buttonPlay !== undefined) buttonPlay.style.display = "initial"
         if (buttonPause !== null && buttonPause !== undefined) buttonPause.style.display = "none"
 
@@ -843,10 +529,10 @@ class App extends React.Component {
             let e = window.event;
         }
 
-        if (e.pageX || e.pageY){
+        if (e.pageX || e.pageY) {
             x = e.pageX;
             y = e.pageY;
-        } else if (e.clientX || e.clientY){
+        } else if (e.clientX || e.clientY) {
             x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
             y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
         }
@@ -872,136 +558,136 @@ class App extends React.Component {
             }
         });
 
-        let player;
-
         let playlists;
-
         let download;
-
         let sharePopUp;
-
         let licenses;
 
-        if (this.state.beat !== null) {
-
-            if (this.state.play !== null) {
-
-                player = <Player
-                    beat={this.state.playerBeat}
-                    likeImg={this.state.like}
-                    like={this.like}
-                    openPlaylists={this.openPlaylists}
-                    openDownload={this.openDownload}
-                    openShare={this.openShare}
-                    audio={this.state.audio}
-                    btn={this.state.btn}
-                    play={this.state.play}
-                />
-            }
+        if (this.state.beat !== null && this.state.beat !== "empty") {
 
             if (this.state.user !== null && this.state.user !== undefined && this.state.user !== "empty") {
                 playlists = <PlaylistsPopUp user={this.state.user}
-                                            beat={this.state.beat}
+                                            beat={this.state.beat.beat}
                                             closePopUps={this.closePopUps}/>
             }
 
-            download = <DownloadPopUp closePopUps={this.closePopUps} beat={this.state.beat}/>
+            download = <DownloadPopUp closePopUps={this.closePopUps} beat={this.state.beat.beat}/>
 
-            sharePopUp = <SharePopUp closePopUps={this.closePopUps} beat={this.state.beat}/>
+            sharePopUp = <SharePopUp closePopUps={this.closePopUps} beat={this.state.beat.beat}/>
 
-            licenses = <div className="licensesPopUp pop-up trs">
+            if (this.state.beat.beat !== null && this.state.beat.beat !== undefined) {
 
-                <div className="pop-up-header">
-                    Выберите лицензию
-                    <img src={'/img/close.png'} alt="close" width="18px" onClick={this.closePopUps}/>
+                let beat = this.state.beat.beat;
+                let licensing = this.state.beat.licensing;
+                let addedToCart = this.state.beat.addedToCart;
+
+                licenses = <div className="licensesPopUp pop-up trs">
+
+                    <div className="pop-up-header">
+                        Выберите лицензию
+                        <img src={'/img/close.png'} alt="close" width="18px" onClick={this.closePopUps}/>
+                    </div>
+
+                    <div className="licenses">
+                        <div className={addedToCart && licensing === "MP3"
+                            ? "select main-license mp3"
+                            : "main-license mp3"}
+                             onClick={this.selectMp3}>
+
+                            <h3 className="license-title">MP3</h3>
+                            <p className="price">{beat.license.price_mp3}₽</p>
+                            <span className="description">MP3</span>
+
+                            <Link to="/cart" style={addedToCart && licensing === "MP3"
+                                ? {display: "initial"} : null}
+                                  className="btn-primary selectLicenseBtn btn-mp3"
+                                  onClick={this.closePopUps}>
+                                В корзине
+                            </Link>
+                        </div>
+
+                        <div className={addedToCart && licensing === "WAV"
+                            ? "select main-license wav"
+                            : "main-license wav"}
+                             onClick={this.selectWav}>
+
+                            <h3 className="license-title">WAV</h3>
+                            <p className="price">{beat.license.price_wav}₽</p>
+                            <span className="description">MP3 и WAV</span>
+
+                            <Link to="/cart" style={addedToCart && licensing === "WAV"
+                                ? {display: "initial"} : null}
+                                  className="btn-primary selectLicenseBtn btn-wav"
+                                  onClick={this.closePopUps}>
+                                В корзине
+                            </Link>
+                        </div>
+
+                        <div className={addedToCart && licensing === "UNLIMITED"
+                            ? "select main-license unlimited"
+                            : "main-license unlimited"}
+                             onClick={this.selectUnlimited}>
+
+                            <h3 className="license-title">UNLIMITED</h3>
+                            <p className="price">{beat.license.price_unlimited}₽</p>
+                            <span className="description">MP3, WAV и TRACK STEMS</span>
+
+
+                            <Link to="/cart" style={addedToCart && licensing === "UNLIMITED"
+                                ? {display: "initial"} : null}
+                                  className="btn-primary selectLicenseBtn btn-unlimited"
+                                  onClick={this.closePopUps}>
+                                В корзине
+                            </Link>
+                        </div>
+
+                        <div className={addedToCart && licensing === "EXCLUSIVE"
+                            ? "select main-license exclusive"
+                            : "main-license exclusive"}
+                             onClick={this.selectExclusive}>
+
+                            <h3 className="license-title">EXCLUSIVE</h3>
+                            <p className="price">{beat.license.price_exclusive}₽</p>
+                            <span className="description">EXCLUSIVE</span>
+
+                            <Link to="/cart" style={addedToCart && licensing === "EXCLUSIVE"
+                                ? {display: "initial"} : null}
+                                  className="btn-primary selectLicenseBtn btn-exclusive"
+                                  onClick={this.closePopUps}>
+                                В корзине
+                            </Link>
+                        </div>
+                    </div>
+
+                    <button id="btn-add-to-cart" className="btn-primary btn-license"
+                            onClick={this.addToCart}
+                            style={{
+                                padding: "10px 0", backgroundColor: "rgba(38,38,38,0.91)",
+                                pointerEvents: "none", opacity: 0.4
+                            }}>
+                        Добавить в корзину
+                    </button>
+
+                    {/*<button className="btn-primary btn-license" onClick={this.addToCart}>Добавить в корзину</button>*/}
                 </div>
-
-                {this.state.licenseCode}
-
-                <button className="btn-primary btn-license" onClick={this.addToCart}>Добавить в корзину</button>
-            </div>
+            }
         }
 
         let userIsPresent = this.state.user === "empty";
 
-        let beat = this.state.playerBeat
-
-        // let audioPlay;
-        //
-        // function btnPlay() {
-        //     let audio = document.getElementById("audio");    // Берём элемент audio
-        //     let time = document.querySelector(".time");      // Берём аудио дорожку
-        //     let playBtn = document.querySelector(".playplay");   // Берём кнопку проигрывания
-        //     let pauseBtn = document.querySelector(".pause"); // Берём кнопку паузы
-        //
-        //     audio.play(); // Запуск песни
-        //     // Запуск интервала
-        //     audioPlay = setInterval(function () {
-        //         // Получаем значение на какой секунде песня
-        //         let audioTime = Math.round(audio.currentTime);
-        //         // Получаем всё время песни
-        //         let audioLength = Math.round(audio.duration)
-        //         // Назначаем ширину элементу time
-        //         time.style.width = (audioTime * 100) / audioLength + '%';
-        //
-        //         if (audioTime === audioLength) {
-        //             pauseBtn.style.display = "none"
-        //             playBtn.style.display = "initial"
-        //         }
-        //     }, 10)
-        //
-        //     playBtn.style.display = "none"
-        //     pauseBtn.style.display = "initial"
-        // }
-
-        // function btnPause() {
-        //     let audio = document.getElementById("audio");    // Берём элемент audio
-        //     let playBtn = document.querySelector(".playplay");   // Берём кнопку проигрывания
-        //     let pauseBtn = document.querySelector(".pause"); // Берём кнопку паузы
-        //
-        //     audio.pause(); // Останавливает песню
-        //     clearInterval(audioPlay) // Останавливает интервал
-        //
-        //     pauseBtn.style.display = "none"
-        //     playBtn.style.display = "initial"
-        // }
-
-        // function minus15sec() {
-        //     let audio = document.getElementById("audio");    // Берём элемент audio
-        //     let time = document.querySelector(".time");      // Берём аудио дорожку
-        //
-        //     audio.currentTime = Math.max(audio.currentTime - 15, 0)
-        //     // Получаем значение на какой секунде песня
-        //     let audioTime = Math.round(audio.currentTime);
-        //     // Получаем всё время песни
-        //     let audioLength = Math.round(audio.duration)
-        //     // Назначаем ширину элементу time
-        //     time.style.width = (audioTime * 100) / audioLength + '%';
-        // }
-
-        // function plus15sec() {
-        //     let audio = document.getElementById("audio");    // Берём элемент audio
-        //     let time = document.querySelector(".time");      // Берём аудио дорожку
-        //
-        //     audio.currentTime = Math.min(audio.currentTime + 15, audio.duration)
-        //     // Получаем значение на какой секунде песня
-        //     let audioTime = Math.round(audio.currentTime);
-        //     // Получаем всё время песни
-        //     let audioLength = Math.round(audio.duration)
-        //     // Назначаем ширину элементу time
-        //     time.style.width = (audioTime * 100) / audioLength + '%';
-        // }
-
-        // if (this.state.playerBeat !== null && this.state.play === "play") {
-        //     setTimeout(() => btnPlay(), 200)
-        // }
+        let beat;
+        if (this.state.playerBeat !== null && this.state.playerBeat !== "empty") {
+            beat = this.state.playerBeat.beat;
+        }
 
         return (
             <div>
 
-                {this.state.loading ? <div className="loading">
-                    <div className="loader"></div>
-                </div> : null}
+                {this.state.loading
+                    ? <div className="loading-container">
+                        <div className="spinner"></div>
+                    </div>
+                    : null}
 
                 <Header cart={this.state.cart} user={this.state.user} logout={this.logout}
                         cartPopUp={this.state.cartPopUp} profilePopUp={this.state.profilePopUp}
@@ -1014,8 +700,8 @@ class App extends React.Component {
                                                    btnPause={this.btnPause}
                                                    btnPlay={this.btnPlay}
                                                    playback={this.state.playback}
-                                                   playBeatId={this.state.playerBeat !== null
-                                                       ? this.state.playerBeat.id : null}/>}/>
+                                                   playBeatId={this.state.playerBeat !== null && this.state.playerBeat !== "empty"
+                                                       ? this.state.playerBeat.beat.id : null}/>}/>
 
                     <Route path="/feed" element={<Feed/>}/>
 
@@ -1027,6 +713,11 @@ class App extends React.Component {
                                                                 openDownload={this.openDownload}
                                                                 setLoginPopUp={this.setLoginPopUp}
                                                                 cartPopUpOpen={this.cartPopUpOpen}
+                                                                btnPause={this.btnPause}
+                                                                btnPlay={this.btnPlay}
+                                                                playback={this.state.playback}
+                                                                playBeatId={this.state.playerBeat !== null && this.state.playerBeat !== "empty"
+                                                                    ? this.state.playerBeat.beat.id : null}
                     />}/>
 
                     <Route path="/edit/:beatId" element={userIsPresent
@@ -1042,7 +733,12 @@ class App extends React.Component {
                         : <MyBeats user={this.state.user}
                                    setAudio={this.setAudio}
                                    openPlaylists={this.openPlaylists}
-                                   openDownload={this.openDownload}/>}/>
+                                   openDownload={this.openDownload}
+                                   btnPause={this.btnPause}
+                                   btnPlay={this.btnPlay}
+                                   playback={this.state.playback}
+                                   playBeatId={this.state.playerBeat !== null && this.state.playerBeat !== "empty"
+                                       ? this.state.playerBeat.beat.id : null}/>}/>
 
                     <Route path="/my-playlists" element={userIsPresent
                         ? <Navigate to="/" replace={true}/>
@@ -1056,18 +752,33 @@ class App extends React.Component {
                         : <History user={this.state.user}
                                    setAudio={this.setAudio}
                                    openLicenses={this.openLicenses}
-                                   openDownload={this.openDownload}/>}/>
+                                   openDownload={this.openDownload}
+                                   btnPause={this.btnPause}
+                                   btnPlay={this.btnPlay}
+                                   playback={this.state.playback}
+                                   playBeatId={this.state.playerBeat !== null && this.state.playerBeat !== "empty"
+                                       ? this.state.playerBeat.beat.id : null}/>}/>
 
                     <Route path="/favorites" element={userIsPresent
                         ? <Navigate to="/" replace={true}/>
                         : <Favorite user={this.state.user}
                                     setAudio={this.setAudio}
                                     openLicenses={this.openLicenses}
-                                    openDownload={this.openDownload}/>}/>
+                                    openDownload={this.openDownload}
+                                    btnPause={this.btnPause}
+                                    btnPlay={this.btnPlay}
+                                    playback={this.state.playback}
+                                    playBeatId={this.state.playerBeat !== null && this.state.playerBeat !== "empty"
+                                        ? this.state.playerBeat.beat.id : null}/>}/>
 
                     <Route path="/top-charts" element={<TopCharts user={this.state.user} setAudio={this.setAudio}
                                                                   openLicenses={this.openLicenses}
                                                                   openDownload={this.openDownload}
+                                                                  btnPause={this.btnPause}
+                                                                  btnPlay={this.btnPlay}
+                                                                  playback={this.state.playback}
+                                                                  playBeatId={this.state.playerBeat !== null && this.state.playerBeat !== "empty"
+                                                                      ? this.state.playerBeat.beat.id : null}
                     />}/>
 
                     <Route path="/:username" element={<Profile1 user={this.state.user}
@@ -1075,6 +786,11 @@ class App extends React.Component {
                                                                 openLicenses={this.openLicenses}
                                                                 openDownload={this.openDownload}
                                                                 setLoginPopUp={this.setLoginPopUp}
+                                                                btnPause={this.btnPause}
+                                                                btnPlay={this.btnPlay}
+                                                                playback={this.state.playback}
+                                                                playBeatId={this.state.playerBeat !== null && this.state.playerBeat !== "empty"
+                                                                    ? this.state.playerBeat.beat.id : null}
                     />}/>
 
                     <Route path="/playlist/:playlistId" element={<Playlist1 user={this.state.user}
@@ -1085,8 +801,8 @@ class App extends React.Component {
                                                                             btnPause={this.btnPause}
                                                                             btnPlay={this.btnPlay}
                                                                             playback={this.state.playback}
-                                                                            playBeatId={this.state.playerBeat !== null
-                                                                                ? this.state.playerBeat.id : null}
+                                                                            playBeatId={this.state.playerBeat !== null && this.state.playerBeat !== "empty"
+                                                                                ? this.state.playerBeat.beat.id : null}
                     />}/>
 
                     <Route path="/settings" element={userIsPresent
@@ -1096,15 +812,17 @@ class App extends React.Component {
 
                 {/*{player}*/}
 
-                {this.state.playerBeat !== null
+                {this.state.playerBeat !== null && this.state.playerBeat !== "empty"
                     ? <div className="audio-player" style={this.state.play !== "play" ? {display: "none"} : null}>
                         <div className="header__container flex-c" style={{position: "relative"}}>
                             <div className="flex-c-sb w100">
                                 <div className="flex-c" style={{width: "33.33%"}}>
-                                    <img className="player-img"
-                                         src={beat.imageName !== null && beat.imageName !== "" ?
-                                             `/img/user-${beat.user.id}/beats/beat-${beat.id}/${beat.imageName}` :
-                                             '/img/track-placeholder.svg'} alt="Профиль"/>
+                                    <div style={{height: 55, width: 55, marginRight: 16}}>
+                                        <img className="player-img"
+                                             src={beat.imageName !== null && beat.imageName !== "" ?
+                                                 `/img/user-${beat.user.id}/beats/beat-${beat.id}/${beat.imageName}` :
+                                                 '/img/track-placeholder.svg'} alt="Профиль"/>
+                                    </div>
 
                                     <div className="player-title flex-c">
                                         <Link to={"/beat/" + beat.id} className="fs14 fw400 hu wnohte mw100"
@@ -1143,7 +861,8 @@ class App extends React.Component {
 
                                         <button className="circle playplay ml16 mr16" onClick={this.btnPlay}
                                                 title="Воспроизвести"></button>
-                                        <button className="circle pause ml16 mr16" onClick={this.btnPause} title="Пауза"></button>
+                                        <button className="circle pause ml16 mr16" onClick={this.btnPause}
+                                                title="Пауза"></button>
 
                                         <button onClick={this.plus15sec} className="rewind fs12 fw400"
                                                 title="Перемотать на 15 секунд вперед">+15с
@@ -1152,7 +871,30 @@ class App extends React.Component {
                                 </div>
 
                                 <div className="flex-c" style={{width: "33.33%", justifyContent: "right"}}>
-                                    {this.state.btn}
+                                    {/*{this.state.btn}*/}
+
+                                    {/*{this.state.playerBeat.beat.free === false && this.state.playerBeat.beat.id !== this.state.user.id && this.state.playerBeat.addedToCart*/}
+
+
+
+                                    {this.state.playerBeat.beat.free
+                                        ?
+                                        <button className="btn-primary btn-cart btn-free" style={{padding: "5px 16px"}}
+                                                onClick={this.openDownload.bind(this, this.state.beat)}>
+                                            <span>Скачать</span>
+                                        </button>
+                                        : this.state.user.id === this.state.playerBeat.beat.user.id
+                                            ? null
+                                            : this.state.playerBeat.addedToCart
+                                                ? <button className="btn-primary btn-cart"
+                                                          style={{padding: "5px 16px", backgroundColor: "#262626"}}
+                                                          onClick={this.openLicense}>
+                                                    <span>В корзине</span>
+                                                </button>
+                                                : <button className="btn-primary btn-cart" style={{padding: "5px 16px"}}
+                                                          onClick={this.openLicense}>
+                                                    <span>{this.state.playerBeat.beat.license.price_mp3} ₽</span>
+                                                </button>}
                                 </div>
 
                             </div>

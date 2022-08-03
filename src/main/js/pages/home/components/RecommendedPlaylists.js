@@ -6,52 +6,52 @@ class RecommendedPlaylists extends Component {
     beatCount;
     likesCount;
 
-    // constructor(props) {
-    //     super(props);
-    //     this.state = {playlists: []};
-    // }
-    //
-    // componentDidMount() {
-    //     axios.get('/api/v1/playlists/recommended?limit=10').then(res => {
-    //         this.setState({playlists: res.data.length !== 0 ? res.data : null})
-    //     }).catch(() => {
-    //         this.setState({playlists: null})
-    //     })
-    // }
-    //
-    // componentDidUpdate(prevProps, prevState, snapshot) {
-    //
-    // }
+    constructor(props) {
+        super(props);
+        this.state = {playlists: []};
+    }
+
+    componentDidMount() {
+        axios.get('/api/v1/playlists/recommended?limit=10').then(res => {
+            this.setState({playlists: res.data.length !== 0 ? res.data : null})
+        }).catch(() => {
+            this.setState({playlists: null})
+        })
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+
+    }
 
     render() {
-        if (this.props.playlists !== null && this.props.playlists.length !== 0 && this.props.playlists !== "empty") {
+        if (this.state.playlists !== null && this.state.playlists.length !== 0 && this.state.playlists !== "empty") {
             return (
                 <div className="slider">
-                    {this.props.playlists.map((playlist, index) => {
+                    {this.state.playlists.map((playlist, index) => {
                         return (
-                            <div className="slide" key={index} style={{width: 203}}>
+                            <div className="slide" key={index} style={{width: 275}}>
 
                                 <span className="back-layer"></span>
 
                                 <span className="front-layer"></span>
 
-                                <div className="slide-img-container" style={{width: 203, height: 203}}>
-                                    <Link to={"playlist/" + playlist.id} className="inl-blk trs"
-                                          style={{width: 203, height: 203}}>
-                                        <img className="slide-img" style={{width: 203, height: 203}}
+                                <div className="slide-img-container" style={{width: 275, height: 275}}>
+                                    <Link to={"/playlist/" + playlist.id} className="inl-blk trs"
+                                          style={{width: 275, height: 275}}>
+                                        <img className="slide-img" style={{width: 275, height: 275}}
                                              src={playlist.imageName !== null && playlist.imageName !== "" ?
                                                  `/img/user-${playlist.user.id}/playlists/playlist-${playlist.id}/${playlist.imageName}`
                                                  : '/img/track-placeholder.svg'} alt="playlist"/>
                                     </Link>
                                 </div>
 
-                                <div className="grid-item" style={{width: 203}}>
-                                    <h5 className="fs12 fw400 color-g1">
+                                <div className="grid-item" style={{width: 275}}>
+                                    <h5 className="fs14 fw400 color-g1">
                                         {playlist.beatCount} • {playlist.likesCount}
                                     </h5>
 
                                     <div className="sl-gr-it">
-                                        <Link to={"playlist/" + playlist.id} className="fs12 fw400 hu wnohte"
+                                        <Link to={"/playlist/" + playlist.id} className="fs14 fw400 hu wnohte"
                                               title={playlist.name}>
                                             {playlist.name}
                                         </Link>
@@ -59,7 +59,7 @@ class RecommendedPlaylists extends Component {
 
                                     <div className="sl-gr-it">
                                         <Link to={"/" + playlist.user.username}
-                                              className="fs12 fw400 color-g1 mr5 hu wnohte"
+                                              className="fs14 fw400 color-g1 mr5 hu wnohte"
                                               title={playlist.user.profile.displayName}>
                                             {playlist.user.profile.displayName}
                                         </Link>

@@ -115,6 +115,14 @@ class EditBeat extends Component {
             document.querySelector('.add-tag').style.color = "#A3A3A3"
         }
     }
+
+
+    onKeyDown = e =>{
+        if (e.keyCode === 13) {
+            this.addTag()
+        }
+    }
+
     addTag = () => {
         if (this.state.tag !== "" && this.state.tags.length < 3) {
             let tagsDOM = document.getElementsByClassName('tag');
@@ -408,7 +416,8 @@ class EditBeat extends Component {
                                                     <label htmlFor="title" className="edit-label">НАЗВАНИЕ*</label>
                                                 </div>
 
-                                                <input id="title" className="edit-input" type="text" placeholder="Название"
+                                                <input id="title" className="edit-input" type="text"
+                                                       placeholder="Название"
                                                        defaultValue={this.state.title} onChange={this.title}
                                                 />
 
@@ -426,8 +435,9 @@ class EditBeat extends Component {
                                                     <div style={{position: "relative"}} className="w100">
                                                     <span
                                                         className="max-s-tag color-g2">{this.state.tag.length}/25</span>
-                                                        <input id="tag" className="edit-input" type="text" placeholder="Тэг"
-                                                               onChange={this.tag}
+                                                        <input id="tag" className="edit-input" type="text"
+                                                               placeholder="Тэг"
+                                                               onChange={this.tag} onKeyDown={this.onKeyDown}
                                                         />
                                                     </div>
 
@@ -515,7 +525,11 @@ class EditBeat extends Component {
                                                 </div>
                                                 <button id="genre" className="edit-input input-select" type="text"
                                                         placeholder="Жанр"
-                                                        style={{cursor: "pointer", textAlign: "left", position: "relative"}}
+                                                        style={{
+                                                            cursor: "pointer",
+                                                            textAlign: "left",
+                                                            position: "relative"
+                                                        }}
                                                         onClick={() => this.setState({genrePopUp: !this.state.genrePopUp})}>
                                                     {this.state.genre === "POP" ? "Поп" : null}
                                                     {this.state.genre === "HIP_HOP" ? "Хип-Хоп" : null}
@@ -586,7 +600,8 @@ class EditBeat extends Component {
                                                 />
 
                                                 <div className="mt5 color-g2 fs12 fw400">
-                                                    {this.state.description.length} из 120 максимально допустимых символов
+                                                    {this.state.description.length} из 120 максимально допустимых
+                                                    символов
                                                 </div>
                                             </div>
                                         </div>
@@ -752,17 +767,20 @@ class EditBeat extends Component {
                                                     <label htmlFor="priceMp3" className="edit-label">MP3 Лизинг (MP3)
                                                         ₽*</label>
                                                 </div>
-                                                <input id="priceMp3" className="edit-input" type="text" placeholder="Цена"
+                                                <input id="priceMp3" className="edit-input" type="text"
+                                                       placeholder="Цена"
                                                        value={this.state.priceMp3} onChange={this.setPriceMp3}
                                                 />
                                             </div>
 
                                             <div className="mb16">
                                                 <div className="mb10">
-                                                    <label htmlFor="priceWav" className="edit-label">WAV Лизинг (MP3, WAV)
+                                                    <label htmlFor="priceWav" className="edit-label">WAV Лизинг (MP3,
+                                                        WAV)
                                                         ₽*</label>
                                                 </div>
-                                                <input id="priceWav" className="edit-input" type="text" placeholder="Цена"
+                                                <input id="priceWav" className="edit-input" type="text"
+                                                       placeholder="Цена"
                                                        value={this.state.priceWav} onChange={this.setPriceWav}
                                                 />
                                             </div>

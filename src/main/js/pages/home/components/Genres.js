@@ -2,10 +2,10 @@ import React from 'react';
 import {Link} from "react-router-dom";
 
 const genres = [
-    {url: "hip-hop", img: '/img/genres/hip-hop.jpg', title: "ХИП-ХОП"},
+    {url: "hip-hop", img: '/img/genres/hip-hop.jpg', title: "РЭП"},
     {url: "pop", img: '/img/genres/pop.jpg', title: "ПОП"},
-    {url: "r&b", img: '/img/genres/rb.jpg', title: "R&B"},
-    {url: "rock", img: '/img/genres/rock.jpg', title: "РОК"}
+    {url: "r&b", img: '/img/genres/rb.png', title: "R&B"},
+    {url: "rock", img: '/img/genres/rock.jpg', title: "Кальянный рэп"}
 ]
 
 const Genres = () => (
@@ -19,7 +19,7 @@ const Genres = () => (
                 </div>
                 <div className="grid-item">
                     <div>
-                        <Link to={"/top-charts?genres=" + genre.url} className="hu fw400 fs12 wnohte">
+                        <Link to={"/top-charts?genres=" + genre.url} className="hu fw400 fs14 wnohte">
                             {genre.title}
                         </Link>
                     </div>

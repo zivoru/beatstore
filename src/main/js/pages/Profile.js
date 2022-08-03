@@ -207,6 +207,10 @@ class Profile extends Component {
                                    setAudio={this.props.setAudio}
                                    openDownload={this.props.openDownload}
                                    user={this.props.user}
+                                   btnPause={this.props.btnPause}
+                                   btnPlay={this.props.btnPlay}
+                                   playback={this.props.playback}
+                                   playBeatId={this.props.playBeatId}
                             />
                         </div>
 
@@ -239,9 +243,11 @@ class Profile extends Component {
                             <div className="main-info">
                                 <div className="main-info-header" style={{paddingTop: 16}}>
 
-                                    <img src={usr.profile.imageName !== null && usr.profile.imageName !== "" ?
-                                        `/img/user-${usr.id}/profile/${usr.profile.imageName}` :
-                                        '/img/track-placeholder.svg'} alt="" className="item-image-profile"/>
+                                    <div style={{width: 88, height: 88}}>
+                                        <img src={usr.profile.imageName !== null && usr.profile.imageName !== "" ?
+                                            `/img/user-${usr.id}/profile/${usr.profile.imageName}` :
+                                            '/img/track-placeholder.svg'} alt="" className="item-image-profile"/>
+                                    </div>
 
                                     <div className="mw100 flex-c-c">
                                         <h1 className="mw100 wnohte fs20">{usr.profile.displayName}</h1>

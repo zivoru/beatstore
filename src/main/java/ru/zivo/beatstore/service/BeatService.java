@@ -67,4 +67,6 @@ public interface BeatService {
     List<Beat> getDrafts(String userId);
 
     List<Beat> getSold(String userId);
+
+    List<Beat> getSimilarBeats(Long beatId, Integer limit);
 }

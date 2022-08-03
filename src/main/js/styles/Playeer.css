@@ -12,7 +12,7 @@
     z-index: 100;
 }
 .player-img {
-    margin-right: 20px;
+    /*margin-right: 20px;*/
     border-radius: 3px;
     width: 55px;
     height: 55px;
@@ -20,7 +20,7 @@
 }
 .player-title {
     margin-right: 20px;
-    max-width: 180px;
+    width: 130px;
     flex-direction: column;
     justify-content: left;
     align-items: start;
@@ -189,7 +189,7 @@
     width: 0;
     height: 2px;
     background-color: #005ff8;
-    transition: 1.5s;
+    /*transition: 1.5s;*/
 }
 .circle {
     position: relative;
@@ -245,7 +245,7 @@
         padding: 0 16px;
     }
     .player-img {
-        margin-right: 16px;
+        /*margin-right: 16px;*/
         border-radius: 3px;
         width: 45px;
         height: 45px;

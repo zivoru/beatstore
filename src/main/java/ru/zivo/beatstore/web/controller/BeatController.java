@@ -210,4 +210,10 @@ public class BeatController {
     public ResponseEntity<List<Beat>> getSold(@AuthenticationPrincipal OAuth2User principal) {
         return principal == null ? null : ResponseEntity.ok(beatService.getSold(principal.getAttribute("sub")));
     }
+
+    @Operation(summary = "Получение похожих битов")
+    @GetMapping("similar-beats/{beatId}")
+    public ResponseEntity<List<Beat>> getSimilarBeats(@PathVariable Long beatId, @RequestParam Integer limit) {
+        return ResponseEntity.ok(beatService.getSimilarBeats(beatId, limit));
+    }
 }

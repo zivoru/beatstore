@@ -1,11 +1,11 @@
 header {
     width: 100%;
-    height: 44px;
+    height: 64px;
     background: rgba(0, 0, 0, 0.80);
     -webkit-backdrop-filter: saturate(180%) blur(6px);
     backdrop-filter: saturate(180%) blur(6px);
     padding: 0 32px;
-    font-size: 12px;
+    font-size: 14px;
     position: fixed;
     z-index: 50;
     transition: .3s;
@@ -14,7 +14,8 @@ header {
 
 .header__container {
     height: 100%;
-    max-width: 1080px;
+    /*max-width: 1440px;*/
+    width: 100%;
     margin: auto;
     justify-content: space-between;
     position: relative;
@@ -25,10 +26,11 @@ header {
     width: 100%;
     height: 100%;
     padding-left: 8px;
+    transition: .2s;
 }
 
 /*.header-logo:hover > img {*/
-/*    transform: rotate(-45deg);*/
+/*    transform: scale(1.2);*/
 /*}*/
 
 .hdr-input {
@@ -56,25 +58,23 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 8px;
-    font-size: 12px;
+    /*padding: 16px 32px;*/
+    width: 150px;
     font-weight: 300;
     position: relative;
     cursor: pointer;
-    transition: .2s;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.hdr-btn span {
-    opacity: 0.8;
-    transition: .2s;
-}
+/*.hdr-btn span {*/
+/*    transition: .3s;*/
+/*}*/
 
-.hdr-btn:hover span {
-    opacity: 1;
-}
+/*.hdr-btn:hover span {*/
+/*    transform: scale(1.11);*/
+/*}*/
 
 /*.dropdown__menu {*/
 /*    width: 100%;*/
@@ -133,10 +133,8 @@ header {
 }
 
 .hdr-right {
-    display: grid;
+    justify-content: right;
     column-gap: 16px;
-    grid-auto-flow: column;
-    /*position: relative;*/
 }
 
 .header__link:hover {
@@ -191,14 +189,14 @@ header {
     display: none;
 }
 
-.arrow {
-    opacity: 0.8;
-    margin-left: 8px;
-}
+/*.arrow {*/
+/*    opacity: 0.8;*/
+/*    margin-left: 8px;*/
+/*}*/
 
-.hdr-drop-btn:hover > .arrow {
-    opacity: 1;
-}
+/*.hdr-drop-btn:hover > .arrow {*/
+/*    opacity: 1;*/
+/*}*/
 
 .cartAmount {
     position: absolute;
@@ -218,11 +216,11 @@ header {
 .dropdown {
     font-size: 18px;
     position: absolute;
-    top: 44px;
-    border-radius: 25px 0 25px 25px;
+    top: 64px;
+    border-radius: 5px;
     z-index: 999999;
-    background: black;
-    border: 1px solid rgba(25,25,25,1);
+    background: #000000e8;
+    border: 1px solid rgb(16 16 16);
     backdrop-filter: saturate(180%) blur(3px);
     right: -1px;
 }
@@ -360,7 +358,7 @@ header {
 
 .burger__header {
     width: 100%;
-    height: 44px;
+    height: 64px;
     display: flex;
     align-items: center;
     padding: 0 16px;

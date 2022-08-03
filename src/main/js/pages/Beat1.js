@@ -14,6 +14,10 @@ export default function Beat1(props) {
                  openDownload={props.openDownload}
                  setLoginPopUp={props.setLoginPopUp}
                  cartPopUpOpen={props.cartPopUpOpen}
+                 btnPause={props.btnPause}
+                 btnPlay={props.btnPlay}
+                 playback={props.playback}
+                 playBeatId={props.playBeatId}
                  beatId={params.beatId}
     />;
 }

@@ -67,7 +67,10 @@ class History extends Component {
         if (this.state.beats !== null && this.state.beats !== "empty") {
             historyCode =
                 <div>
-                    <h1 className="qwe1-title">История</h1>
+                    <h1 className="qwe1-title">
+                        История
+                        <span className="fs14 fw300 color-g1">то, что вы недавно слушали</span>
+                    </h1>
 
                     {/*<div className="qwe-pagination-container">*/}
 
@@ -88,12 +91,19 @@ class History extends Component {
                            setAudio={this.props.setAudio}
                            openDownload={this.props.openDownload}
                            user={this.props.user}
+                           btnPause={this.props.btnPause}
+                           btnPlay={this.props.btnPlay}
+                           playback={this.props.playback}
+                           playBeatId={this.props.playBeatId}
                     />
                 </div>
         } else if (this.state.beats === "empty") {
             historyCode =
                 <div className="qwe-null">
-                    <h1 className="qwe1-title">История</h1>
+                    <h1 className="qwe1-title">
+                        История
+                        <span className="fs14 fw300 color-g1">то, что вы недавно слушали</span>
+                    </h1>
                     <span>Ничего нет</span>
                 </div>
         }
@@ -102,7 +112,7 @@ class History extends Component {
             <div>
 
                 <div className="wrapper">
-                    <div className="container qwe-container" style={{maxWidth: 1080}}>
+                    <div className="container qwe-container" style={{maxWidth: 1440}}>
                         {historyCode}
                     </div>
                 </div>

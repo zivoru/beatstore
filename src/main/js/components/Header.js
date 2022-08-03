@@ -80,11 +80,13 @@ class Header extends Component {
                                 <div className="flex-c-sb mt16 fs14" key={index}>
                                     <div className="flex-c" style={{width: 175}}>
 
-                                        <img src={cart.beat.imageName !== null && cart.beat.imageName !== '' ?
-                                            `/img/user-${cart.beat.user.id}/beats/beat-${cart.beat.id}/${cart.beat.imageName}`
-                                            :
-                                            '/img/track-placeholder.svg'} alt=""
-                                             className="beat-img"/>
+                                        <div style={{width: 50, height: 50}}>
+                                            <img src={cart.beat.imageName !== null && cart.beat.imageName !== '' ?
+                                                `/img/user-${cart.beat.user.id}/beats/beat-${cart.beat.id}/${cart.beat.imageName}`
+                                                :
+                                                '/img/track-placeholder.svg'} alt=""
+                                                 className="beat-img"/>
+                                        </div>
 
                                         <div className="mw100 pl16" style={{lineHeight: "17px"}}>
                                             <Link to={"/beat/" + cart.beat.id} className="beat-link hu wnohte"
@@ -106,7 +108,7 @@ class Header extends Component {
                     <Link to="/cart" className="btn-primary mw100 fs12 mt32" onClick={this.props.cartPopUpOpen}>Оформить
                         заказ</Link>
                 </div>;
-        } else if (cart === "empty") {
+        } else {
             dropCart =
                 <div className={dropCartClass}>
                     <div className="cart-empty flex-c-c">
@@ -143,7 +145,7 @@ class Header extends Component {
                 `/img/user-${user.id}/profile/${user.profile.imageName}` :
                 '/img/default-avatar.svg';
 
-            headerRight = <div className="hdr-right flex-c">
+            headerRight = <div className="hdr-right flex-c" style={{width: "20%"}}>
                 <Link to="/upload-beat" className="btn-primary NONE"
                       style={{padding: "4px 10px", backgroundColor: "inherit"}}
                       title="Загрузить бит" onClick={this.props.closeHeaderPopUps}>
@@ -181,9 +183,9 @@ class Header extends Component {
         }
 
         if (user === "empty") {
-            headerRight = <div className="hdr-right flex-c">
+            headerRight = <div className="hdr-right flex-c" style={{width: "20%"}}>
 
-                <a href="/oauth2/authorization/google" className="hdr-btn">
+                <a href="/oauth2/authorization/google" className="hdr-btn" style={{width: 160}}>
                     <img src={"/img/google.png"} alt="google"
                          width="18px" className="mr5"/>
                     <span>Войти через Google</span>
@@ -228,17 +230,37 @@ class Header extends Component {
 
                 <header>
                     <div className="header__container flex-c">
-                        <div className="flex-c" onClick={this.props.closeHeaderPopUps}>
+                        <div className="flex-c" style={{width: "20%"}}
+                             onClick={this.props.closeHeaderPopUps}>
                             <div className="burger btn-burger flex-c-c">
                                 <ion-icon name="menu-outline" onClick={this.burgerOpen}></ion-icon>
                             </div>
 
                             <div className="mr16 NONE2">
                                 <Link to="/" className="header-logo">
-                                    <img src={"/img/logo.png"} width="21px" alt=""/>
+                                    <img src={"/img/logo.png"} width="25px" alt=""/>
                                 </Link>
                             </div>
 
+                            {/*<Link to="/top-charts" className="hdr-btn NONE">*/}
+                            {/*    <span>Топ Чарт</span>*/}
+                            {/*</Link>*/}
+
+                            {/*<Link to="/feed" className="hdr-btn NONE">*/}
+                            {/*    <span>Бесплатные биты</span>*/}
+                            {/*</Link>*/}
+
+                            {/*<Link to="/feed" className="hdr-btn NONE">*/}
+                            {/*    <span>Плейлисты</span>*/}
+                            {/*</Link>*/}
+
+                            {/*<div className="hdr-input flex-c">*/}
+                            {/*    <img src={"/img/search.png"} width="17px" alt="search"/>*/}
+                            {/*    <input type="text" placeholder="Введите запрос"/>*/}
+                            {/*</div>*/}
+                        </div>
+
+                        <div className="flex-c-c" style={{width: "60%", columnGap: 16}}>
                             <Link to="/top-charts" className="hdr-btn NONE">
                                 <span>Топ Чарт</span>
                             </Link>
@@ -251,10 +273,9 @@ class Header extends Component {
                                 <span>Плейлисты</span>
                             </Link>
 
-                            {/*<div className="hdr-input flex-c">*/}
-                            {/*    <img src={"/img/search.png"} width="17px" alt="search"/>*/}
-                            {/*    <input type="text" placeholder="Введите запрос"/>*/}
-                            {/*</div>*/}
+                            <Link to="/feed" className="hdr-btn NONE">
+                                <span>Битмейкеры</span>
+                            </Link>
                         </div>
 
                         {headerRight}

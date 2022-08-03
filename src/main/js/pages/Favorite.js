@@ -68,7 +68,10 @@ class Favorite extends Component {
         if (this.state.beats !== null && this.state.beats !== "empty") {
             historyCode =
                 <div>
-                    <h1 className="qwe1-title">Избранное</h1>
+                    <h1 className="qwe1-title">
+                        Избранное
+                        <span className="fs14 fw300 color-g1">то, что мне понравилось</span>
+                    </h1>
 
                     {/*<div className="qwe-pagination-container">*/}
 
@@ -89,12 +92,19 @@ class Favorite extends Component {
                            setAudio={this.props.setAudio}
                            openDownload={this.props.openDownload}
                            user={this.props.user}
+                           btnPause={this.props.btnPause}
+                           btnPlay={this.props.btnPlay}
+                           playback={this.props.playback}
+                           playBeatId={this.props.playBeatId}
                     />
                 </div>
         } else if (this.state.beats === "empty") {
             historyCode =
                 <div className="qwe-null">
-                    <h1 className="qwe1-title">Избранное</h1>
+                    <h1 className="qwe1-title">
+                        Избранное
+                        <span className="fs14 fw300 color-g1">то, что мне понравилось</span>
+                    </h1>
                     <span>Ничего нет</span>
                 </div>
         }
@@ -103,7 +113,7 @@ class Favorite extends Component {
             <div>
 
                 <div className="wrapper">
-                    <div className="container qwe-container" style={{maxWidth: 1080}}>
+                    <div className="container qwe-container" style={{maxWidth: 1440}}>
                         {historyCode}
                     </div>
                 </div>

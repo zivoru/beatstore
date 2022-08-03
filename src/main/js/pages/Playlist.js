@@ -4,6 +4,7 @@ import {Link} from "react-router-dom";
 import Beats from "./components/Beats";
 import NotFound from "./components/NotFound";
 import EditPlaylist from "./components/EditPlaylist";
+import {RecommendedPlaylists} from "./home/components/RecommendedPlaylists";
 
 class Playlist extends Component {
     subscriptionStatus;
@@ -55,11 +56,12 @@ class Playlist extends Component {
         }
 
         if (prevProps.playlistId !== this.props.playlistId) {
-            this.setState({
-                playlist: null,
-                user: null,
-                beats: null
-            })
+            // this.setState({
+            //     playlist: null,
+            //     user: null,
+            //     beats: null
+            // })
+            window.scrollTo({top: 0, behavior: 'smooth'})
 
             this.setState({user: this.props.user})
 
@@ -240,16 +242,18 @@ class Playlist extends Component {
             let playlist = this.state.playlist
             let returnValue =
                 <div>
-                    <div className="wrapper" style={{paddingBottom: 0}}>
+                    <div className="wrapper">
                         <div className="container__main-info">
                             <div className="main-info">
                                 <div className="main-info-header">
 
-                                    <img src={playlist.imageName !== null && playlist.imageName !== "" ?
-                                        `/img/user-${playlist.user.id}/playlists/playlist-${playlist.id}/${playlist.imageName}` :
-                                        '/img/photo-placeholder.svg'} alt="" className="item-image"/>
+                                    <div style={{width: 234, height: 234}}>
+                                        <img src={playlist.imageName !== null && playlist.imageName !== "" ?
+                                            `/img/user-${playlist.user.id}/playlists/playlist-${playlist.id}/${playlist.imageName}` :
+                                            '/img/photo-placeholder.svg'} alt="" className="item-image"/>
+                                    </div>
 
-                                    <div className="mw100 flex-c-c">
+                                    <div className="mw100 flex-c-c mt16">
                                         <h1 className="mw100 wnohte fs20">{playlist.name}</h1>
                                     </div>
 
@@ -264,7 +268,7 @@ class Playlist extends Component {
                                     </Link>
                                 </div>
 
-                                <div className="item-stats">
+                                <div className="item-stats" style={{height: 46}}>
                                     <div className="stats" style={{justifyContent: "center"}}>
 
                                         <img src={this.state.like} width="20px" alt="heart" className="mr32 cp"
@@ -327,28 +331,35 @@ class Playlist extends Component {
 
                                         return (
                                             <div key={index}>
-                                                <div className="slide-img-container">
-                                                    <Link to={"/beat/" + beat.id} className="inl-blk">
-                                                        <img className="slide-img"
+                                                <div className="slide-img-container playlist-img-container">
+                                                    <Link to={"/beat/" + beat.id} className="inl-blk trs"
+                                                          style={{position: "absolute",
+                                                              top: 0, left: 0, width: "100%", height: "100%",}}>
+                                                        <img className="slide-img playlist-img"
                                                              src={beat.imageName !== null && beat.imageName !== '' ?
-                                                                 `${path}${beat.imageName}` : '/img/track-placeholder.svg'} alt="beat"/>
+                                                                 `${path}${beat.imageName}`
+                                                                 : '/img/track-placeholder.svg'}
+                                                             alt="playlist"/>
                                                     </Link>
-
                                                     {this.props.playBeatId === beat.id
                                                         ? <>
-                                                            <button id={`play-play${beat.id}`} className="play" title="Воспроизвести"
+                                                            <button id={`play-play${beat.id}`} className="play"
+                                                                    title="Воспроизвести"
                                                                     style={this.props.playback ? {display: "none"} : null}
                                                                     onClick={this.play.bind(this, beat, path, beat.id)}></button>
 
-                                                            <button id={`pause-beat${beat.id}`} className="pause-beat" title="Пауза"
+                                                            <button id={`pause-beat${beat.id}`} className="pause-beat"
+                                                                    title="Пауза"
                                                                     style={!this.props.playback ? {display: "none"} : null}
                                                                     onClick={this.pause.bind(this, beat.id)}></button>
                                                         </>
                                                         : <>
-                                                            <button id={`play-play${beat.id}`} className="play" title="Воспроизвести"
+                                                            <button id={`play-play${beat.id}`} className="play"
+                                                                    title="Воспроизвести"
                                                                     onClick={this.playPlay.bind(this, beat, path)}></button>
 
-                                                            <button id={`pause-beat${beat.id}`} className="pause-beat" title="Пауза"
+                                                            <button id={`pause-beat${beat.id}`} className="pause-beat"
+                                                                    title="Пауза"
                                                                     style={{display: "none"}}
                                                                     onClick={this.pause.bind(this, beat.id)}></button>
                                                         </>
@@ -383,6 +394,14 @@ class Playlist extends Component {
                                 </div>
                             </div>
                         </div>
+
+                        <div className="container">
+                            <div className="title">
+                                Рекомендуемые плейлисты
+                                <Link to="/top-charts" className="color-or hu fs12 fw400">См. все</Link>
+                            </div>
+                            <RecommendedPlaylists />
+                        </div>
                     </div>
 
                     {this.state.editPlaylistPopUpView
@@ -413,8 +432,6 @@ class Playlist extends Component {
             } else {
 
                 if (this.props.user !== null && this.props.user !== undefined && this.props.user !== "empty") {
-                    console.log(this.props.user.id)
-                    console.log(this.state.playlist.user.id)
                     if (this.state.playlist.user.id === this.props.user.id) {
                         document.title = this.state.playlist.name + " | BeatStore Плейлист"
 

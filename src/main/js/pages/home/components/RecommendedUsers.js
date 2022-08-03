@@ -22,7 +22,7 @@ class RecommendedUsers extends Component {
                 <div className="slider">
                     {this.state.users.map((user, index) => {
                         return (
-                            <div className="mr16 w119" key={index}>
+                            <div className="mr16 w192" key={index}>
                                 <Link to={user.username} className="inl-blk b-r999 trs ho">
                                     <img className="card-img"
                                          src={user.profile.imageName !== null && user.profile.imageName !== "" ?
@@ -30,14 +30,14 @@ class RecommendedUsers extends Component {
                                              : '/img/default-avatar.svg'} alt=""/>
                                 </Link>
                                 <div className="grid-item">
-                                    <div className="flex-jc mt16 w119">
-                                        <Link to={"/" + user.username} className="fw400 fs12 hu wnohte"
+                                    <div className="flex-jc mt16 w192">
+                                        <Link to={"/" + user.username} className="fw400 fs14 hu wnohte"
                                               title={user.profile.displayName}>
                                             {user.profile.displayName}
                                         </Link>
                                     </div>
-                                    <div className="flex-jc w119">
-                                        <p className="fw400 fs12 color-g1 wnohte">{user.profile.location}</p>
+                                    <div className="flex-jc w192">
+                                        <p className="fw400 fs14 color-g1 wnohte">{user.profile.location}</p>
                                     </div>
                                 </div>
                             </div>

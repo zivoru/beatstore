@@ -31,9 +31,6 @@ class TrendBeats extends Component {
         let buttonPause = document.getElementById(`pause-beat${beatId}`);
         if (buttonPlay !== null) buttonPlay.style.display = "none"
         if (buttonPause !== null) buttonPause.style.display = "initial"
-
-        // document.getElementById(`play-play${beatId}`).style.display = "none"
-        // document.getElementById(`pause-beat${beatId}`).style.display = "initial"
     }
     pause = (beatId) => {
         this.props.btnPause()
@@ -42,9 +39,6 @@ class TrendBeats extends Component {
         let buttonPause = document.getElementById(`pause-beat${beatId}`);
         if (buttonPlay !== null) buttonPlay.style.display = "initial"
         if (buttonPause !== null) buttonPause.style.display = "none"
-
-        // document.getElementById(`play-play${beatId}`).style.display = "initial"
-        // document.getElementById(`pause-beat${beatId}`).style.display = "none"
     }
 
     render() {
@@ -83,19 +77,11 @@ class TrendBeats extends Component {
                                                     onClick={this.pause.bind(this, beat.id)}></button>
                                         </>
                                     }
-
-                                    {/*<button id={`play-play${index}`} className="play" title="Воспроизвести"*/}
-                                    {/*        style={{display: "none"}}*/}
-                                    {/*        onClick={this.play.bind(this, beat, path, index)}></button>*/}
-
-                                    {/*<button id={`pause-beat${index}`} className="pause-beat" title="Пауза"*/}
-                                    {/*        style={{display: "none"}}*/}
-                                    {/*        onClick={this.pause.bind(this, index)}></button>*/}
                                 </div>
 
                                 <div className="grid-item">
                                     <div className="sl-gr-it">
-                                        <Link to={"/beat/" + beat.id} className="fs12 fw400 hu wnohte"
+                                        <Link to={"/beat/" + beat.id} className="fs14 fw400 hu wnohte"
                                               title={beat.title}>
                                             {beat.title}
                                         </Link>
@@ -103,7 +89,7 @@ class TrendBeats extends Component {
 
                                     <div className="sl-gr-it">
                                         <Link to={"/" + beat.user.username}
-                                              className="fs12 fw400 mr5 color-g1 hu wnohte"
+                                              className="fs14 fw400 mr5 color-g1 hu wnohte"
                                               title={beat.user.profile.displayName}>
                                             {beat.user.profile.displayName}
                                         </Link>
@@ -112,7 +98,7 @@ class TrendBeats extends Component {
                                     </div>
 
                                     {beat.bpm !== null && beat.bpm !== ""
-                                        ? <h5 className="fs12 fw400 color-g1">{beat.bpm} BPM</h5>
+                                        ? <h5 className="fs14 fw400 color-g1">{beat.bpm} BPM</h5>
                                         : null}
                                 </div>
                             </div>

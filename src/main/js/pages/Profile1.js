@@ -12,5 +12,9 @@ export default function Profile1(props) {
                     openDownload={props.openDownload}
                     setLoginPopUp={props.setLoginPopUp}
                     username={params.username}
+                    btnPause={props.btnPause}
+                    btnPlay={props.btnPlay}
+                    playback={props.playback}
+                    playBeatId={props.playBeatId}
     />;
 }

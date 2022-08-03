@@ -358,6 +358,25 @@ public class BeatServiceImpl implements BeatService {
         return sold;
     }
 
+    @Override
+    public List<Beat> getSimilarBeats(Long beatId, Integer limit) {
+        Beat beatById = findById(beatId);
+        List<Beat> beats = sortedPublishedBeats(beatRepository.findAll());
+        List<Beat> similar = new ArrayList<>();
+
+        for (Beat beat : beats) {
+            if (beat.getGenre() == beatById.getGenre()) {
+                similar.add(beat);
+            }
+        }
+
+        return similar
+                .stream()
+                .sorted((o1, o2) -> Integer.compare(o2.getPlays(), o1.getPlays()))
+                .limit(limit)
+                .collect(Collectors.toList());
+    }
+
     /* not Override */
 
     private void makeDirectory(Beat beat, String pathname) {

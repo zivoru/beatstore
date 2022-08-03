@@ -1,5 +1,6 @@
 .container__main-info {
-    max-width: 1080px;
+    max-width: 1440px;
+    background-color: black;
     display: flex;
     /*padding-top: 16px;*/
     margin: auto;
@@ -12,11 +13,11 @@
     margin-top: 16px;
     /*width: 316px;*/
     width: 25%;
-    display: inline-block;
-    height: 100%;
+    height: 914px;
     padding: 16px;
     background-color: rgb(10,10,10);
     border-radius: 10px;
+
 }
 .main-info-header {
     /*padding-top: 16px;*/

@@ -91,6 +91,29 @@ class MyBeats extends Component {
         document.getElementById("sold").classList.add('menu-active')
     }
 
+    playPlay = (beat, path) => {
+        this.props.setAudio(beat.id, beat.audio.mp3Name !== null ? `${path}${beat.audio.mp3Name}` : null)
+
+        document.getElementById(`play-play${beat.id}`).style.display = "none"
+        document.getElementById(`pause-beat${beat.id}`).style.display = "initial"
+    }
+    play = (beatId) => {
+        this.props.btnPlay()
+
+        let buttonPlay = document.getElementById(`play-play${beatId}`);
+        let buttonPause = document.getElementById(`pause-beat${beatId}`);
+        if (buttonPlay !== null) buttonPlay.style.display = "none"
+        if (buttonPause !== null) buttonPause.style.display = "initial"
+    }
+    pause = (beatId) => {
+        this.props.btnPause()
+
+        let buttonPlay = document.getElementById(`play-play${beatId}`);
+        let buttonPause = document.getElementById(`pause-beat${beatId}`);
+        if (buttonPlay !== null) buttonPlay.style.display = "initial"
+        if (buttonPause !== null) buttonPause.style.display = "none"
+    }
+
     render() {
 
         let state = this.state;

@@ -34,6 +34,8 @@ class TopCharts extends Component {
     }
 
     componentDidMount() {
+        window.scrollTo({top: 0, behavior: 'smooth'})
+
         this.setState({user: this.props.user})
 
         axios.get("/api/v1/tags?page=0&size=28").then(res => {
@@ -284,6 +286,10 @@ class TopCharts extends Component {
                                setAudio={this.props.setAudio}
                                openDownload={this.props.openDownload}
                                user={this.props.user}
+                               btnPause={this.props.btnPause}
+                               btnPlay={this.props.btnPlay}
+                               playback={this.props.playback}
+                               playBeatId={this.props.playBeatId}
                         />
                     </div>
                 </div>
@@ -298,37 +304,40 @@ class TopCharts extends Component {
 
         return (
             <div>
-                <div className="wrapper">
+                <div className="wrapper" style={{padding: "64px 32px 0 32px"}}>
                     <div className="container">
 
-                        <h1 className="qwe1-title">Топ чарт</h1>
+                        <h1 className="qwe1-title">
+                            Топ чарт
+                            <span className="fs14 fw300 color-g1">то, что нравится многим</span>
+                        </h1>
 
-                        <div className="filter-boxes">
-                            <Link to="/recommendation" className="filter-box">
-                                <span>
-                                    <img src="https://www.beatstars.com/assets/img/search/genres/for_you@2x.png"
-                                         alt="top-charts" className="filter-box-img"/>
-                                    <img src={'/img/filterBox/recommendation.png'} alt="" className="filter-box-icon"/>
-                                </span>
-                                <p>Рекомендации</p>
-                            </Link>
-                            <Link to="/top-charts" className="filter-box active">
-                                <span>
-                                    <img src="https://www.beatstars.com/assets/img/search/genres/top_charts@2x.jpg"
-                                         alt="top-charts" className="filter-box-img"/>
-                                    <img src={'/img/filterBox/topCharts.png'} alt="" className="filter-box-icon"/>
-                                </span>
-                                <p>Топ чарт</p>
-                            </Link>
-                            <Link to="/free-beats" className="filter-box">
-                                <span>
-                                    <img src="https://www.beatstars.com/assets/img/search/genres/free_beats@2x.jpg"
-                                         alt="top-charts" className="filter-box-img"/>
-                                    <img src={'/img/filterBox/freeBeats.png'} alt="" className="filter-box-icon"/>
-                                </span>
-                                <p>Бесплатные</p>
-                            </Link>
-                        </div>
+                        {/*<div className="filter-boxes">*/}
+                        {/*    <Link to="/recommendation" className="filter-box">*/}
+                        {/*        <span>*/}
+                        {/*            <img src="https://www.beatstars.com/assets/img/search/genres/for_you@2x.png"*/}
+                        {/*                 alt="top-charts" className="filter-box-img"/>*/}
+                        {/*            <img src={'/img/filterBox/recommendation.png'} alt="" className="filter-box-icon"/>*/}
+                        {/*        </span>*/}
+                        {/*        <p>Рекомендации</p>*/}
+                        {/*    </Link>*/}
+                        {/*    <Link to="/top-charts" className="filter-box active">*/}
+                        {/*        <span>*/}
+                        {/*            <img src="https://www.beatstars.com/assets/img/search/genres/top_charts@2x.jpg"*/}
+                        {/*                 alt="top-charts" className="filter-box-img"/>*/}
+                        {/*            <img src={'/img/filterBox/topCharts.png'} alt="" className="filter-box-icon"/>*/}
+                        {/*        </span>*/}
+                        {/*        <p>Топ чарт</p>*/}
+                        {/*    </Link>*/}
+                        {/*    <Link to="/free-beats" className="filter-box">*/}
+                        {/*        <span>*/}
+                        {/*            <img src="https://www.beatstars.com/assets/img/search/genres/free_beats@2x.jpg"*/}
+                        {/*                 alt="top-charts" className="filter-box-img"/>*/}
+                        {/*            <img src={'/img/filterBox/freeBeats.png'} alt="" className="filter-box-icon"/>*/}
+                        {/*        </span>*/}
+                        {/*        <p>Бесплатные</p>*/}
+                        {/*    </Link>*/}
+                        {/*</div>*/}
                     </div>
                 </div>
 
