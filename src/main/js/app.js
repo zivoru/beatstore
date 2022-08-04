@@ -16,6 +16,7 @@ import './styles/MyPlaylists.css';
 import './styles/PlaylistsPopUp.css';
 import './styles/Equalizer.css';
 import './styles/Loading.css';
+import './styles/Genres.css';
 import {Header} from "./components/Header";
 import ReactDOM from 'react-dom/client';
 import PlaylistsPopUp from "./components/PlaylistsPopUp";
@@ -34,6 +35,7 @@ import {Settings} from "./pages/Settings";
 import {CreateBeat} from "./pages/CreateBeat";
 import {MyPlaylists} from "./pages/MyPlaylists";
 import Playlist1 from "./pages/Playlist1";
+import Genres from "./pages/Genres";
 
 const React = require('react');
 
@@ -808,6 +810,8 @@ class App extends React.Component {
                     <Route path="/settings" element={userIsPresent
                         ? <Navigate to="/" replace={true}/>
                         : <Settings user={this.state.user} updateUser={this.updateUser}/>}/>
+
+                    <Route path="/genres" element={<Genres/>}/>
                 </Routes>
 
                 {/*{player}*/}

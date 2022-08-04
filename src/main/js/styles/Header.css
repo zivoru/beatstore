@@ -21,6 +21,21 @@ header {
     position: relative;
 }
 
+.header-left {
+    width: 20%;
+}
+
+.header-center {
+    width: 60%;
+    column-gap: 16px;
+}
+
+.header-right {
+    width: 20%;
+    justify-content: right;
+    column-gap: 16px;
+}
+
 .header-logo {
     display: inline-block;
     width: 100%;
@@ -130,11 +145,6 @@ header {
 
 .menu li a img {
     margin-right: 15px;
-}
-
-.hdr-right {
-    justify-content: right;
-    column-gap: 16px;
 }
 
 .header__link:hover {
@@ -419,9 +429,28 @@ header {
 /*    }*/
 /*}*/
 
+@media (max-width: 1215px) {
+    .header-left {
+        width: 5%;
+    }
+    .header-center {
+        width: 75%;
+        justify-content: left;
+    }
+
+    .hdr-btn {
+        width: initial;
+    }
+}
+
+
 @media (max-width: 767px) {
     header {
         padding: 0 16px;
+    }
+
+    .header-right {
+        width: 90%;
     }
 
     .header-logo, .hdr-btn {
@@ -440,19 +469,12 @@ header {
         display: flex;
     }
 
-    .arrow {
-        display: none;
-    }
-
     .hdr-drop-btn-mobile {
         display: initial;
     }
     .cartAmount {
         top: 60%;
     }
-    /*.dropdown__profile {*/
-    /*    right: -16px;*/
-    /*}*/
     .dropdown__cart {
         display: none;
     }

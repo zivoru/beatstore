@@ -3,6 +3,8 @@ package ru.zivo.beatstore.web.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -65,5 +67,11 @@ public class UserController {
                                            @PathVariable String channelId) {
         String userId = principal == null ? null : principal.getAttribute("sub");
         return userService.subscribeAndUnsubscribe(userId, channelId);
+    }
+
+    @Operation(summary = "Получение страницы пользователей")
+    @GetMapping("/findAll")
+    public ResponseEntity<Page<User>> findAll(@RequestParam(required = false) String nameFilter, Pageable pageable) {
+        return ResponseEntity.ok(userService.findAll(pageable, nameFilter));
     }
 }

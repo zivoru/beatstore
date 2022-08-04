@@ -3,6 +3,8 @@ package ru.zivo.beatstore.web.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -102,5 +104,12 @@ public class PlaylistController {
     @GetMapping("/recommended")
     public ResponseEntity<List<PlaylistDto>> getRecommended(@RequestParam Integer limit) {
         return ResponseEntity.ok(playlistService.getRecommended(limit));
+    }
+
+    @Operation(summary = "Получение страницы плейлистов")
+    @GetMapping("/findAll")
+    public ResponseEntity<Page<PlaylistDto>> findAll(@RequestParam(required = false) String nameFilter,
+                                                     Pageable pageable) {
+        return ResponseEntity.ok(playlistService.findAll(pageable, nameFilter));
     }
 }

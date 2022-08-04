@@ -377,6 +377,47 @@ public class BeatServiceImpl implements BeatService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Page<BeatDto> getFreeBeats(String userId, Pageable pageable) {
+        List<Beat> beats = sortedPublishedBeats(beatRepository.findAll());
+
+        List<Beat> freeBeats = new ArrayList<>();
+
+        for (Beat beat : beats) {
+            if (beat.getFree()) {
+                freeBeats.add(beat);
+            }
+        }
+
+        return listToPage(pageable, mapToDtoList(Users.getUser(userId), freeBeats));
+    }
+
+    @Override
+    public Page<BeatDto> findAllByGenre(String userId, String genre, Pageable pageable) {
+        List<Beat> beats = sortedPublishedBeats(beatRepository.findAll());
+
+        List<Beat> findAllByGenre = new ArrayList<>();
+
+        for (Beat beat : beats) {
+            if (beat.getGenre().toString().equals(genre)) findAllByGenre.add(beat);
+        }
+
+        return listToPage(pageable, mapToDtoList(Users.getUser(userId), findAllByGenre));
+    }
+
+    @Override
+    public Page<BeatDto> findAllByTag(String userId, Long tagId, Pageable pageable) {
+        List<Beat> beats = sortedPublishedBeats(beatRepository.findAll());
+
+        List<Beat> findAllByTag = new ArrayList<>();
+
+        for (Beat beat : beats) {
+            if (beat.getTags().stream().anyMatch(tag1 -> Objects.equals(tag1.getId(), tagId))) findAllByTag.add(beat);
+        }
+
+        return listToPage(pageable, mapToDtoList(Users.getUser(userId), findAllByTag));
+    }
+
     /* not Override */
 
     private void makeDirectory(Beat beat, String pathname) {
@@ -421,6 +462,13 @@ public class BeatServiceImpl implements BeatService {
 
     private List<BeatDto> mapToDtoList(User user, List<Beat> sortedBeats) {
         List<BeatDto> beatDtoList = new ArrayList<>();
+        Map<Long, Integer> beatsInCart = new HashMap<>();
+
+        if (user != null) {
+            for (Cart cart : user.getCart()) {
+                beatsInCart.put(cart.getBeat().getId(), 1);
+            }
+        }
 
         for (Beat sortedBeat : sortedBeats) {
             BeatDto beatDto = BeatDto.builder()
@@ -429,8 +477,10 @@ public class BeatServiceImpl implements BeatService {
                     .build();
 
             if (user != null) {
-                if (user.getCart().stream()
-                        .anyMatch(c -> c.getBeat() == sortedBeat)) beatDto.setAddedToCart(true);
+                if (beatsInCart.get(sortedBeat.getId()) != null) beatDto.setAddedToCart(true);
+
+//                if (user.getCart().stream()
+//                        .anyMatch(c -> c.getBeat() == sortedBeat)) beatDto.setAddedToCart(true);
             }
 
             beatDtoList.add(beatDto);

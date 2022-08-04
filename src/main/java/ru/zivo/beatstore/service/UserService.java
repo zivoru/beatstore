@@ -1,5 +1,7 @@
 package ru.zivo.beatstore.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import ru.zivo.beatstore.model.User;
 import ru.zivo.beatstore.web.dto.DisplayUserDto;
 
@@ -20,4 +22,6 @@ public interface UserService {
     DisplayUserDto getDisplayUserDto(String username, String authUserId);
 
     boolean subscribeAndUnsubscribe(String userId, String channelId);
+
+    Page<User> findAll(Pageable pageable, String nameFilter);
 }

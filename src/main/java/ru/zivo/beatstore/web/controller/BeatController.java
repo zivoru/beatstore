@@ -216,4 +216,30 @@ public class BeatController {
     public ResponseEntity<List<Beat>> getSimilarBeats(@PathVariable Long beatId, @RequestParam Integer limit) {
         return ResponseEntity.ok(beatService.getSimilarBeats(beatId, limit));
     }
+
+    @Operation(summary = "Бесплатные биты")
+    @GetMapping("/free-beats")
+    public ResponseEntity<Page<BeatDto>> getFreeBeats(@AuthenticationPrincipal OAuth2User principal,
+                                                      Pageable pageable) {
+        return ResponseEntity.ok(beatService.getFreeBeats(principal == null ? null :
+                principal.getAttribute("sub"), pageable));
+    }
+
+    @Operation(summary = "Страница битов по жанру")
+    @GetMapping("/findAllByGenre/{genre}")
+    public ResponseEntity<Page<BeatDto>> findAllByGenre(@AuthenticationPrincipal OAuth2User principal,
+                                                        @PathVariable String genre,
+                                                        Pageable pageable) {
+        return ResponseEntity.ok(beatService.findAllByGenre(principal == null ? null :
+                principal.getAttribute("sub"), genre, pageable));
+    }
+
+    @Operation(summary = "Страница битов по тэгу")
+    @GetMapping("/findAllByTag/{tagId}")
+    public ResponseEntity<Page<BeatDto>> findAllByTag(@AuthenticationPrincipal OAuth2User principal,
+                                                      @PathVariable Long tagId,
+                                                      Pageable pageable) {
+        return ResponseEntity.ok(beatService.findAllByTag(principal == null ? null :
+                principal.getAttribute("sub"), tagId, pageable));
+    }
 }

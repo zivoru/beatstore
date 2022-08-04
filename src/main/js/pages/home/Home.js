@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Tags} from './components/Tags';
-import Genres from './components/Genres';
+import HomeGenres from './components/HomeGenres';
 import {RecommendedUsers} from './components/RecommendedUsers';
 import {TrendBeats} from './components/TrendBeats';
 import {RecommendedPlaylists} from './components/RecommendedPlaylists';
@@ -13,19 +13,6 @@ class Home extends Component {
         super(props);
         this.state = {playlists: []};
     }
-
-    // componentDidMount() {
-    //     window.scrollTo({top: 0, behavior: 'smooth'})
-    //     axios.get('/api/v1/playlists/recommended?limit=10').then(res => {
-    //         this.setState({playlists: res.data.length !== 0 ? res.data : "empty"})
-    //     }).catch(() => {
-    //         this.setState({playlists: "empty"})
-    //     })
-    // }
-    //
-    // componentDidUpdate(prevProps, prevState, snapshot) {
-    //
-    // }
 
     render() {
         document.title = 'BeatStore | Музыкальный маркетплейс для покупки и продажи битов';
@@ -44,15 +31,17 @@ class Home extends Component {
                     <div className="container">
 
                         <h1 className="qwe1-title">
-                            BEATSTORE
+                            BeatStore
                             <span className="fs14 fw300 color-g1">для тех, кто хочет продавать свою музыку</span>
                         </h1>
 
+
                         <div className="title">
-                            <Link to="/top-charts" className="hu">Популярные жанры</Link>
-                            <Link to="/top-charts" className="color-or hu fs12 fw400">См. все</Link>
+                            <Link to="/genres" className="hu">Популярные жанры</Link>
+                            <Link to="/genres" className="color-or hu fs12 fw400">См. все</Link>
                         </div>
-                        <Genres/>
+                        <HomeGenres/>
+
 
                         <div className="title">
                             <Link to="/top-charts" className="hu">Трендовые биты</Link>
@@ -64,22 +53,19 @@ class Home extends Component {
                                     playback={this.props.playback}
                                     playBeatId={this.props.playBeatId}/>
 
+
                         <div className="title">
                             <Link to="/top-charts" className="hu">Рекомендуемые плейлисты</Link>
                             <Link to="/top-charts" className="color-or hu fs12 fw400">См. все</Link>
                         </div>
                         <RecommendedPlaylists />
 
+
                         <div className="title">
                             <Link to="/top-charts" className="hu">Рекомендуемые битмейкеры</Link>
                             <Link to="/top-charts" className="color-or hu fs12 fw400">См. все</Link>
                         </div>
                         <RecommendedUsers/>
-
-
-                        <div className="home-block">
-                            <img src={"/img/beatstore/block1.jpg"} alt=""/>
-                        </div>
 
 
                         <div className="title">

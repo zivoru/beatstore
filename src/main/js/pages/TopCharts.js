@@ -370,23 +370,18 @@ class TopCharts extends Component {
                             {state.filterGenres ?
                                 <div className="pop-up-container">
                                     <div className="pop-up-filter">
-                                        <button onClick={this.filterGenre.bind(this, "", "Все жанры")}>Все жанры
-                                        </button>
-                                        <button onClick={this.filterGenre.bind(this, "HIP_HOP", "Хип-Хоп")}>Хип-Хоп
-                                        </button>
+                                        <button onClick={this.filterGenre.bind(this, "", "Все жанры")}>Все жанры</button>
+                                        <button onClick={this.filterGenre.bind(this, "RAP", "Рэп")}>Рэп</button>
+                                        <button onClick={this.filterGenre.bind(this, "HIP_HOP", "Хип-хоп")}>Хип-хоп</button>
                                         <button onClick={this.filterGenre.bind(this, "POP", "Поп")}>Поп</button>
-                                        <button onClick={this.filterGenre.bind(this, "RNB", "R&B")}>R&B</button>
+                                        <button onClick={this.filterGenre.bind(this, "POP_RAP", "Поп-рэп")}>Поп-рэп</button>
+                                        <button onClick={this.filterGenre.bind(this, "HOOKAH_RAP", "Кальянный рэп")}>Кальянный рэп</button>
+                                        <button onClick={this.filterGenre.bind(this, "HYPERPOP", "HYPERPOP")}>Hyperpop</button>
+                                        <button onClick={this.filterGenre.bind(this, "DETROIT_RAP", "DETROIT_RAP")}>Detroit</button>
                                         <button onClick={this.filterGenre.bind(this, "ROCK", "Рок")}>Рок</button>
-                                        <button
-                                            onClick={this.filterGenre.bind(this, "ELECTRONIC", "Электроника")}>Электроника
-                                        </button>
-                                        <button onClick={this.filterGenre.bind(this, "REGGAE", "Рэгги")}>Рэгги</button>
-                                        <button onClick={this.filterGenre.bind(this, "COUNTRY", "Кантри")}>Кантри
-                                        </button>
+                                        <button onClick={this.filterGenre.bind(this, "POP_ROCK", "Поп-рок")}>Поп-рок</button>
                                         <button onClick={this.filterGenre.bind(this, "DRILL", "DRILL")}>DRILL</button>
-                                        <button onClick={this.filterGenre.bind(this, "HYPERPOP", "HYPERPOP")}>HYPERPOP
-                                        </button>
-                                        <button onClick={this.filterGenre.bind(this, "LO_FI", "LO-FI")}>LO-FI</button>
+                                        <button onClick={this.filterGenre.bind(this, "REGGAE", "Рэгги")}>Рэгги</button>
                                     </div>
                                 </div>
                                 : null}

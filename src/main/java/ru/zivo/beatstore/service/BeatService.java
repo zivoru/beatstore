@@ -69,4 +69,10 @@ public interface BeatService {
     List<Beat> getSold(String userId);
 
     List<Beat> getSimilarBeats(Long beatId, Integer limit);
+
+    Page<BeatDto> getFreeBeats(String userId, Pageable pageable);
+
+    Page<BeatDto> findAllByGenre(String userId, String genre, Pageable pageable);
+
+    Page<BeatDto> findAllByTag(String userId, Long tagId, Pageable pageable);
 }

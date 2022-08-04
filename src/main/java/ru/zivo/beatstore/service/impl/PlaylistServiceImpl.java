@@ -2,6 +2,9 @@ package ru.zivo.beatstore.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.webjars.NotFoundException;
@@ -164,6 +167,29 @@ public class PlaylistServiceImpl implements PlaylistService {
         }
 
         return playlistDtoList;
+    }
+
+    @Override
+    public Page<PlaylistDto> findAll(Pageable pageable, String nameFilter) {
+        List<Playlist> publishedPlaylists = new ArrayList<>();
+
+        List<Playlist> playlists = nameFilter != null
+                ? playlistRepository.findAllByNameContainsIgnoreCase(nameFilter)
+                : playlistRepository.findAll();
+
+        for (Playlist playlist : playlists) {
+            if (playlist.getVisibility()) publishedPlaylists.add(playlist);
+        }
+
+        List<PlaylistDto> playlistDtoList = new ArrayList<>();
+
+        for (Playlist playlist : publishedPlaylists) {
+            playlistDtoList.add(mapToDto(playlist));
+        }
+
+        final int start = (int) pageable.getOffset();
+        final int end = Math.min((start + pageable.getPageSize()), playlistDtoList.size());
+        return new PageImpl<>(playlistDtoList.subList(start, end), pageable, playlistDtoList.size());
     }
 
     private PlaylistDto mapToDto(Playlist playlist) {

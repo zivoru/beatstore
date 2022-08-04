@@ -486,59 +486,64 @@ class CreateBeat extends Component {
                                             placeholder="Жанр"
                                             style={{cursor: "pointer", textAlign: "left", position: "relative"}}
                                             onClick={() => this.setState({genrePopUp: !this.state.genrePopUp})}>
+                                        {this.state.genre === "RAP" ? "Рэп" : null}
+                                        {this.state.genre === "HIP_HOP" ? "Хип-хоп" : null}
                                         {this.state.genre === "POP" ? "Поп" : null}
-                                        {this.state.genre === "HIP_HOP" ? "Хип-Хоп" : null}
+                                        {this.state.genre === "POP_RAP" ? "Поп-рэп" : null}
+                                        {this.state.genre === "HOOKAH_RAP" ? "Кальянный рэп" : null}
+                                        {this.state.genre === "HYPERPOP" ? "Hyperpop" : null}
+                                        {this.state.genre === "DETROIT_RAP" ? "Detroit" : null}
                                         {this.state.genre === "ROCK" ? "Рок" : null}
-                                        {this.state.genre === "RNB" ? "R&B" : null}
-                                        {this.state.genre === "ELECTRONIC" ? "Электронная музыка" : null}
-                                        {this.state.genre === "REGGAE" ? "Рэгги" : null}
-                                        {this.state.genre === "COUNTRY" ? "Кантри" : null}
+                                        {this.state.genre === "POP_ROCK" ? "Поп-рок" : null}
                                         {this.state.genre === "DRILL" ? "DRILL" : null}
-                                        {this.state.genre === "HYPERPOP" ? "HYPERPOP" : null}
-                                        {this.state.genre === "LO_FI" ? "LO-FI" : null}
+                                        {this.state.genre === "REGGAE" ? "Рэгги" : null}
                                         <img src={"/img/arrow.png"} alt="" className="edit-arrow"/>
                                         {this.state.genrePopUp ?
                                             <div className="pus-container">
                                                 <div className="pop-up-select">
+                                                    <button className="select-edit" value="RAP"
+                                                            style={this.state.genre === "RAP" ? {color: "white"} : null}
+                                                            onClick={this.setGenre}>Рэп
+                                                    </button>
+                                                    <button className="select-edit" value="HIP_HOP"
+                                                            style={this.state.genre === "HIP_HOP" ? {color: "white"} : null}
+                                                            onClick={this.setGenre}>Хип-хоп
+                                                    </button>
                                                     <button className="select-edit" value="POP"
                                                             style={this.state.genre === "POP" ? {color: "white"} : null}
                                                             onClick={this.setGenre}>Поп
                                                     </button>
-                                                    <button className="select-edit" value="HIP_HOP"
-                                                            style={this.state.genre === "HIP_HOP" ? {color: "white"} : null}
-                                                            onClick={this.setGenre}>Хип-Хоп
+                                                    <button className="select-edit" value="POP_RAP"
+                                                            style={this.state.genre === "POP_RAP" ? {color: "white"} : null}
+                                                            onClick={this.setGenre}>Поп-рэп
+                                                    </button>
+                                                    <button className="select-edit" value="HOOKAH_RAP"
+                                                            style={this.state.genre === "HOOKAH_RAP" ? {color: "white"} : null}
+                                                            onClick={this.setGenre}>Кальянный рэп
+                                                    </button>
+                                                    <button className="select-edit" value="HYPERPOP"
+                                                            style={this.state.genre === "HYPERPOP" ? {color: "white"} : null}
+                                                            onClick={this.setGenre}>Hyperpop
+                                                    </button>
+                                                    <button className="select-edit" value="DETROIT_RAP"
+                                                            style={this.state.genre === "DETROIT_RAP" ? {color: "white"} : null}
+                                                            onClick={this.setGenre}>Detroit
                                                     </button>
                                                     <button className="select-edit" value="ROCK"
                                                             style={this.state.genre === "ROCK" ? {color: "white"} : null}
                                                             onClick={this.setGenre}>Рок
                                                     </button>
-                                                    <button className="select-edit" value="RNB"
-                                                            style={this.state.genre === "RNB" ? {color: "white"} : null}
-                                                            onClick={this.setGenre}>R&B
-                                                    </button>
-                                                    <button className="select-edit" value="ELECTRONIC"
-                                                            style={this.state.genre === "ELECTRONIC" ? {color: "white"} : null}
-                                                            onClick={this.setGenre}>Электронная музыка
-                                                    </button>
-                                                    <button className="select-edit" value="REGGAE"
-                                                            style={this.state.genre === "REGGAE" ? {color: "white"} : null}
-                                                            onClick={this.setGenre}>Рэгги
-                                                    </button>
-                                                    <button className="select-edit" value="COUNTRY"
-                                                            style={this.state.genre === "COUNTRY" ? {color: "white"} : null}
-                                                            onClick={this.setGenre}>Кантри
+                                                    <button className="select-edit" value="POP_ROCK"
+                                                            style={this.state.genre === "POP_ROCK" ? {color: "white"} : null}
+                                                            onClick={this.setGenre}>Поп-рок
                                                     </button>
                                                     <button className="select-edit" value="DRILL"
                                                             style={this.state.genre === "DRILL" ? {color: "white"} : null}
                                                             onClick={this.setGenre}>DRILL
                                                     </button>
-                                                    <button className="select-edit" value="HYPERPOP"
-                                                            style={this.state.genre === "HYPERPOP" ? {color: "white"} : null}
-                                                            onClick={this.setGenre}>HYPERPOP
-                                                    </button>
-                                                    <button className="select-edit" value="LO_FI"
-                                                            style={this.state.genre === "LO_FI" ? {color: "white"} : null}
-                                                            onClick={this.setGenre}>LO-FI
+                                                    <button className="select-edit" value="REGGAE"
+                                                            style={this.state.genre === "REGGAE" ? {color: "white"} : null}
+                                                            onClick={this.setGenre}>Рэгги
                                                     </button>
                                                 </div>
                                             </div> : null}

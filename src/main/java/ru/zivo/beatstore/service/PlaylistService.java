@@ -1,5 +1,7 @@
 package ru.zivo.beatstore.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 import ru.zivo.beatstore.model.Playlist;
 import ru.zivo.beatstore.web.dto.PlaylistDto;
@@ -32,4 +34,6 @@ public interface PlaylistService {
     void removeFavorite(Long playlistId, String userId);
 
     List<PlaylistDto> getRecommended(Integer limit);
+
+    Page<PlaylistDto> findAll(Pageable pageable, String nameFilter);
 }

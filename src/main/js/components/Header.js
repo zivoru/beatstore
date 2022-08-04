@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 import Tags from "./header-components/Tags";
 import HeaderProfile from "./header-components/HeaderProfile";
 import Categories from "./header-components/Categories";
-import Genres from "./header-components/Genres";
+import HeaderGenres from "./header-components/HeaderGenres";
 
 class Header extends Component {
     state = {}
@@ -145,7 +145,7 @@ class Header extends Component {
                 `/img/user-${user.id}/profile/${user.profile.imageName}` :
                 '/img/default-avatar.svg';
 
-            headerRight = <div className="hdr-right flex-c" style={{width: "20%"}}>
+            headerRight = <div className="flex-c header-right">
                 <Link to="/upload-beat" className="btn-primary NONE"
                       style={{padding: "4px 10px", backgroundColor: "inherit"}}
                       title="Загрузить бит" onClick={this.props.closeHeaderPopUps}>
@@ -183,12 +183,12 @@ class Header extends Component {
         }
 
         if (user === "empty") {
-            headerRight = <div className="hdr-right flex-c" style={{width: "20%"}}>
+            headerRight = <div className="flex-c header-right">
 
-                <a href="/oauth2/authorization/google" className="hdr-btn" style={{width: 160}}>
+                <a href="/oauth2/authorization/google" className="mr10" style={{whiteSpace: "nowrap"}}>
                     <img src={"/img/google.png"} alt="google"
                          width="18px" className="mr5"/>
-                    <span>Войти через Google</span>
+                    <span className="fs14 fw300">Войти</span>
                 </a>
 
                 <div className="line"></div>
@@ -230,7 +230,7 @@ class Header extends Component {
 
                 <header>
                     <div className="header__container flex-c">
-                        <div className="flex-c" style={{width: "20%"}}
+                        <div className="flex-c header-left"
                              onClick={this.props.closeHeaderPopUps}>
                             <div className="burger btn-burger flex-c-c">
                                 <ion-icon name="menu-outline" onClick={this.burgerOpen}></ion-icon>
@@ -260,7 +260,7 @@ class Header extends Component {
                             {/*</div>*/}
                         </div>
 
-                        <div className="flex-c-c" style={{width: "60%", columnGap: 16}}>
+                        <div className="flex-c-c header-center">
                             <Link to="/top-charts" className="hdr-btn NONE">
                                 <span>Топ Чарт</span>
                             </Link>
@@ -306,7 +306,7 @@ class Header extends Component {
 
                             <Tags className="mt16" click={this.burgerClose}/>
 
-                            <Genres className="mt16" click={this.burgerClose} img={false}/>
+                            <HeaderGenres className="mt16" click={this.burgerClose} img={false}/>
 
                         </div>
                     </div>

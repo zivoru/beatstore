@@ -57,9 +57,7 @@
     margin-right: 16px;
 }
 
-.slide_genre {
-    width: 348px;
-}
+
 
 .slide-img-container {
     position: relative;
@@ -151,7 +149,7 @@
     opacity: 1;
 }
 
-.slide-img, .card-img, .slide-img-genre {
+.slide-img, .card-img {
     object-fit: cover;
     border: 1px solid rgba(15, 15, 15, 1);
 }
@@ -167,12 +165,6 @@
     width: 192px;
     height: 192px;
     border-radius: 50%;
-}
-
-.slide-img-genre {
-    width: 348px;
-    height: 200px;
-    border-radius: 5px;
 }
 
 .back-layer {
@@ -212,10 +204,6 @@
 .sl-gr-it {
     display: flex;
     width: 275px;
-}
-
-.home-block {
-
 }
 
 .footer {
