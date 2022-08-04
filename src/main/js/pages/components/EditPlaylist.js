@@ -24,8 +24,8 @@ const EditPlaylist = (props) => (
                                 :
                                 <img className="edit-image playlist-img"
                                      style={{pointerEvents: "initial", cursor: "pointer"}}
-                                     src={props.imageName === null || props.imageName === "" ? '/img/photo-placeholder.svg'
-                                         : `/img/user-${props.userId}/playlists/playlist-${props.id}/${props.imageName}`}
+                                     src={props.imageName === null || props.imageName === "" ? 'https://i.ibb.co/9GFppbG/photo-placeholder.png'
+                                         : `/resources/user-${props.userId}/playlists/playlist-${props.id}/${props.imageName}`}
                                      alt=""/>
                             }
                         </label>

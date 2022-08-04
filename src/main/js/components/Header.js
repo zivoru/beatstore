@@ -82,9 +82,10 @@ class Header extends Component {
 
                                         <div style={{width: 50, height: 50}}>
                                             <img src={cart.beat.imageName !== null && cart.beat.imageName !== '' ?
-                                                `/img/user-${cart.beat.user.id}/beats/beat-${cart.beat.id}/${cart.beat.imageName}`
+                                                `/resources/user-${cart.beat.user.id}/beats/beat-${cart.beat.id}/${cart.beat.imageName}`
                                                 :
-                                                '/img/track-placeholder.svg'} alt=""
+                                                'https://i.ibb.co/ySkyssb/track-placeholder.webp'}
+                                                 alt="track-placeholder"
                                                  className="beat-img"/>
                                         </div>
 
@@ -142,14 +143,14 @@ class Header extends Component {
         if (user !== null && user !== undefined  && user !== "empty") {
 
             let image = user.profile.imageName !== null && user.profile.imageName !== "" ?
-                `/img/user-${user.id}/profile/${user.profile.imageName}` :
+                `/resources/user-${user.id}/profile/${user.profile.imageName}` :
                 'https://i.ibb.co/KXhBMsx/default-avatar.webp';
 
             headerRight = <div className="flex-c header-right">
                 <Link to="/upload-beat" className="btn-primary NONE"
                       style={{padding: "4px 10px", backgroundColor: "inherit"}}
                       title="Загрузить бит" onClick={this.props.closeHeaderPopUps}>
-                    <img src={"/img/upload.png"} width="17px" alt=""/>
+                    <img src={"https://i.ibb.co/V9HwDQy/upload.png"} width="17px" alt="upload"/>
                 </Link>
 
                 <div className="line NONE"></div>
@@ -255,7 +256,7 @@ class Header extends Component {
                             {/*</Link>*/}
 
                             {/*<div className="hdr-input flex-c">*/}
-                            {/*    <img src={"/img/search.png"} width="17px" alt="search"/>*/}
+                            {/*    <img src={"https://i.ibb.co/KrWXzJ1/search.png"} width="17px" alt="search"/>*/}
                             {/*    <input type="text" placeholder="Введите запрос"/>*/}
                             {/*</div>*/}
                         </div>

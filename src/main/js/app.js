@@ -74,8 +74,6 @@ class App extends React.Component {
         };
     }
 
-    resourceUrl = '/img/'
-
     componentDidMount() {
         this.setState({loading: true})
 
@@ -825,9 +823,10 @@ class App extends React.Component {
                                 <div className="flex-c" style={{width: "33.33%"}}>
                                     <div style={{height: 55, width: 55, marginRight: 16}}>
                                         <img className="player-img"
-                                             src={beat.imageName !== null && beat.imageName !== "" ?
-                                                 `/img/user-${beat.user.id}/beats/beat-${beat.id}/${beat.imageName}` :
-                                                 '/img/track-placeholder.svg'} alt="Профиль"/>
+                                             src={beat.imageName !== null && beat.imageName !== ""
+                                                 ? `/resources/user-${beat.user.id}/beats/beat-${beat.id}/${beat.imageName}`
+                                                 : 'https://i.ibb.co/ySkyssb/track-placeholder.webp'}
+                                             alt="track-placeholder"/>
                                     </div>
 
                                     <div className="player-title flex-c">
@@ -845,10 +844,13 @@ class App extends React.Component {
                                     <img src={this.state.like} width="14px" alt="heart" className="player-icon"
                                          onClick={this.like} title="Добавить в избранное"/>
 
-                                    <img src={'/img/plus.png'} width="14px" alt="plus" className="player-icon"
-                                         onClick={this.openPlaylists.bind(this, null)} title="Добавить в плейлист"/>
+                                    <img src={'https://i.ibb.co/QDY1H7D/plus.png'}
+                                         width="14px" alt="plus" className="player-icon"
+                                         onClick={this.openPlaylists.bind(this, null)}
+                                         title="Добавить в плейлист"/>
 
-                                    <img src={'/img/share.png'} width="14px" alt="share" className="player-icon"
+                                    <img src={'/https://i.ibb.co/rsL0r6P/share.png'}
+                                         width="14px" alt="share" className="player-icon"
                                          onClick={this.openShare.bind(this, null)} title="Поделиться"/>
                                 </div>
 

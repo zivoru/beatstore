@@ -83,8 +83,8 @@ class Player extends Component {
                 {/*        <div className="flex-c" style={{width: "33.33%"}}>*/}
                 {/*            <img className="player-img"*/}
                 {/*                 src={beat.imageName !== null && beat.imageName !== "" ?*/}
-                {/*                     `/img/user-${beat.user.id}/beats/beat-${beat.id}/${beat.imageName}` :*/}
-                {/*                     '/img/track-placeholder.svg'} alt="Профиль"/>*/}
+                {/*                     `/resources/user-${beat.user.id}/beats/beat-${beat.id}/${beat.imageName}` :*/}
+                {/*                     'https://i.ibb.co/ySkyssb/track-placeholder.webp'} alt="track-placeholder"/>*/}
 
                 {/*            <div className="player-title flex-c">*/}
                 {/*                <Link to={"/beat/" + beat.id} className="fs14 fw400 hu wnohte mw100"*/}
@@ -101,10 +101,10 @@ class Player extends Component {
                 {/*            <img src={props.likeImg} width="14px" alt="heart" className="player-icon"*/}
                 {/*                 onClick={props.like} title="Добавить в избранное"/>*/}
 
-                {/*            <img src={'/img/plus.png'} width="14px" alt="plus" className="player-icon"*/}
+                {/*            <img src={'https://i.ibb.co/QDY1H7D/plus.png'} width="14px" alt="plus" className="player-icon"*/}
                 {/*                 onClick={props.openPlaylists.bind(this, null)} title="Добавить в плейлист"/>*/}
 
-                {/*            <img src={'/img/share.png'} width="14px" alt="share" className="player-icon"*/}
+                {/*            <img src={'https://i.ibb.co/rsL0r6P/share.png'} width="14px" alt="share" className="player-icon"*/}
                 {/*                 onClick={props.openShare.bind(this, null)} title="Поделиться"/>*/}
                 {/*        </div>*/}
 

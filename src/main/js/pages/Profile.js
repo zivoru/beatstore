@@ -245,7 +245,7 @@ class Profile extends Component {
 
                                     <div style={{width: 88, height: 88}}>
                                         <img src={usr.profile.imageName !== null && usr.profile.imageName !== "" ?
-                                            `/img/user-${usr.id}/profile/${usr.profile.imageName}` :
+                                            `/resources/user-${usr.id}/profile/${usr.profile.imageName}` :
                                             'https://i.ibb.co/KXhBMsx/default-avatar.webp'}
                                              alt="avatar" className="item-image-profile"/>
                                     </div>

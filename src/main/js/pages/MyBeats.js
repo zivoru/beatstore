@@ -151,7 +151,7 @@ class MyBeats extends Component {
 
                                     let click;
 
-                                    let path = `/img/user-${beat.user.id}/beats/beat-${beat.id}/${beat.audio.mp3Name}`;
+                                    let path = `/resources/user-${beat.user.id}/beats/beat-${beat.id}/${beat.audio.mp3Name}`;
                                     if (window.screen.width > 767) {
                                         click = props.setAudio.bind(this, beat.id, path)
                                     }
@@ -172,8 +172,9 @@ class MyBeats extends Component {
 
                                                 <div className="qwe-img" style={{position: "relative"}}>
                                                     <img src={beat.imageName !== null && beat.imageName !== "" ?
-                                                        `/img/user-${beat.user.id}/beats/beat-${beat.id}/${beat.imageName}` :
-                                                        '/img/track-placeholder.svg'} alt=""/>
+                                                        `/resources/user-${beat.user.id}/beats/beat-${beat.id}/${beat.imageName}` :
+                                                        'https://i.ibb.co/ySkyssb/track-placeholder.webp'}
+                                                         alt="track-placeholder"/>
 
                                                     <button className="my-beats-play"
                                                             onClick={props.setAudio.bind(this, beat.id, path)}
@@ -291,7 +292,7 @@ class MyBeats extends Component {
 
                                     let click;
 
-                                    let path = `/img/user-${beat.user.id}/beats/beat-${beat.id}/${beat.audio.mp3Name}`;
+                                    let path = `/resources/user-${beat.user.id}/beats/beat-${beat.id}/${beat.audio.mp3Name}`;
                                     if (window.screen.width > 767) {
                                         click = props.setAudio.bind(this, beat.id, path)
                                     }
@@ -312,8 +313,9 @@ class MyBeats extends Component {
 
                                                 <div className="qwe-img" style={{position: "relative"}}>
                                                     <img src={beat.imageName !== null && beat.imageName !== "" ?
-                                                        `/img/user-${beat.user.id}/beats/beat-${beat.id}/${beat.imageName}` :
-                                                        '/img/track-placeholder.svg'} alt=""/>
+                                                        `/resources/user-${beat.user.id}/beats/beat-${beat.id}/${beat.imageName}` :
+                                                        'https://i.ibb.co/ySkyssb/track-placeholder.webp'}
+                                                         alt="track-placeholder"/>
 
                                                     <button className="my-beats-play"
                                                             onClick={props.setAudio.bind(this, beat.id, path)}
@@ -432,7 +434,7 @@ class MyBeats extends Component {
 
                                     let click;
 
-                                    let path = `/img/user-${beat.user.id}/beats/beat-${beat.id}/${beat.audio.mp3Name}`;
+                                    let path = `/resources/user-${beat.user.id}/beats/beat-${beat.id}/${beat.audio.mp3Name}`;
                                     if (window.screen.width > 767) {
                                         click = props.setAudio.bind(this, beat.id, path)
                                     }
@@ -452,9 +454,10 @@ class MyBeats extends Component {
                                                 </div>
 
                                                 <div className="qwe-img" style={{position: "relative"}}>
-                                                    <img src={beat.imageName !== null && beat.imageName !== "" ?
-                                                        `/img/user-${beat.user.id}/beats/beat-${beat.id}/${beat.imageName}` :
-                                                        '/img/track-placeholder.svg'} alt=""/>
+                                                    <img src={beat.imageName !== null && beat.imageName !== ""
+                                                        ? `/resources/user-${beat.user.id}/beats/beat-${beat.id}/${beat.imageName}`
+                                                        : 'https://i.ibb.co/ySkyssb/track-placeholder.webp'}
+                                                         alt="track-placeholder"/>
 
                                                     <button className="my-beats-play"
                                                             onClick={props.setAudio.bind(this, beat.id, path)}

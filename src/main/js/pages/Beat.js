@@ -262,7 +262,7 @@ class Beat extends Component {
                 createComment =
                     <div className="comment">
                         <img src={user.profile.imageName !== null && user.profile.imageName !== "" ?
-                            `/img/user-${user.id}/profile/${user.profile.imageName}`
+                            `/resources/user-${user.id}/profile/${user.profile.imageName}`
                             : 'https://i.ibb.co/KXhBMsx/default-avatar.webp'}
                              className="comment-img b-r999" alt="avatar"/>
 
@@ -290,7 +290,7 @@ class Beat extends Component {
             let addedToCart = this.state.beat.addedToCart;
 
 
-            let path = `/img/user-${beat.user.id}/beats/beat-${beat.id}/`;
+            let path = `/resources/user-${beat.user.id}/beats/beat-${beat.id}/`;
 
             let play = this.props.playback && this.props.playBeatId === beat.id;
 
@@ -306,8 +306,9 @@ class Beat extends Component {
 
                                     <div style={{width: 234, height: 234, marginBottom: 12}}>
                                         <img src={beat.imageName !== null && beat.imageName !== "" ?
-                                            `/img/user-${beat.user.id}/beats/beat-${beat.id}/${beat.imageName}` :
-                                            '/img/track-placeholder.svg'} alt="" className="item-image"
+                                            `/resources/user-${beat.user.id}/beats/beat-${beat.id}/${beat.imageName}` :
+                                            'https://i.ibb.co/ySkyssb/track-placeholder.webp'}
+                                             alt="track-placeholder" className="item-image"
                                              style={{margin: 0}}
                                         />
                                     </div>
@@ -337,13 +338,15 @@ class Beat extends Component {
                                         </div>
 
                                         <div style={{width: 20, height: 20}}>
-                                            <img src={'/img/plus.png'} width="20px" alt="plus" className="cp"
+                                            <img src={'https://i.ibb.co/QDY1H7D/plus.png'}
+                                                 width="20px" alt="plus" className="cp"
                                                  onClick={this.props.openPlaylists.bind(this, this.state.beat)}
                                                  title="Добавить в плейлист"/>
                                         </div>
 
                                         <div style={{width: 20, height: 20}} className="mr32">
-                                            <img src={'/img/share.png'} width="20px" alt="share" className="cp"
+                                            <img src={'https://i.ibb.co/rsL0r6P/share.png'}
+                                                 width="20px" alt="share" className="cp"
                                                  onClick={this.props.openShare.bind(this, this.state.beat)}
                                                  title="Поделиться"/>
                                         </div>
@@ -410,8 +413,8 @@ class Beat extends Component {
                                 <div className="equalizer">
 
                                     <img src={beat.imageName !== null && beat.imageName !== "" ?
-                                        `/img/user-${beat.user.id}/beats/beat-${beat.id}/${beat.imageName}` :
-                                        '/img/track-placeholder.svg'} alt="" className="equalizer-background"/>
+                                        `/resources/user-${beat.user.id}/beats/beat-${beat.id}/${beat.imageName}` :
+                                        '/resources/track-placeholder.svg'} alt="" className="equalizer-background"/>
 
                                     <div className="mr16">
                                         {this.props.playBeatId === beat.id
@@ -643,7 +646,7 @@ class Beat extends Component {
                                                 <div className="comment" key={index}>
                                                     <div style={{width: 45, height: 45}}>
                                                         <img src={profile.imageName !== null && profile.imageName !== "" ?
-                                                            `/img/user-${comment.author.id}/profile/${profile.imageName}` :
+                                                            `/resources/user-${comment.author.id}/profile/${profile.imageName}` :
                                                             'https://i.ibb.co/KXhBMsx/default-avatar.webp'}
                                                              className="comment-img b-r999" alt="avatar"/>
                                                     </div>
@@ -709,7 +712,7 @@ class Beat extends Component {
                                 && this.state.similarBeats !== "empty"
                                     ? this.state.similarBeats.map((beat, index) => {
 
-                                        let path = `/img/user-${beat.user.id}/beats/beat-${beat.id}/`;
+                                        let path = `/resources/user-${beat.user.id}/beats/beat-${beat.id}/`;
 
                                         return (
                                             <div className="" key={index}>
@@ -723,8 +726,8 @@ class Beat extends Component {
                                                             <img className="slide-img playlist-img"
                                                                  src={beat.imageName !== null && beat.imageName !== '' ?
                                                                      `${path}${beat.imageName}`
-                                                                     : '/img/track-placeholder.svg'}
-                                                                 alt="playlist"/>
+                                                                     : 'https://i.ibb.co/ySkyssb/track-placeholder.webp'}
+                                                                 alt="track-placeholder"/>
                                                         </Link>
                                                         {this.props.playBeatId === beat.id
                                                             ? <>

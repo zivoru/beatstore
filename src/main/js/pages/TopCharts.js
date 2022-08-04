@@ -306,38 +306,10 @@ class TopCharts extends Component {
             <div>
                 <div className="wrapper" style={{padding: "64px 32px 0 32px"}}>
                     <div className="container">
-
                         <h1 className="qwe1-title">
                             Топ чарт
                             <span className="fs14 fw300 color-g1">то, что нравится многим</span>
                         </h1>
-
-                        {/*<div className="filter-boxes">*/}
-                        {/*    <Link to="/recommendation" className="filter-box">*/}
-                        {/*        <span>*/}
-                        {/*            <img src="https://www.beatstars.com/assets/img/search/genres/for_you@2x.png"*/}
-                        {/*                 alt="top-charts" className="filter-box-img"/>*/}
-                        {/*            <img src={'/img/filterBox/recommendation.png'} alt="" className="filter-box-icon"/>*/}
-                        {/*        </span>*/}
-                        {/*        <p>Рекомендации</p>*/}
-                        {/*    </Link>*/}
-                        {/*    <Link to="/top-charts" className="filter-box active">*/}
-                        {/*        <span>*/}
-                        {/*            <img src="https://www.beatstars.com/assets/img/search/genres/top_charts@2x.jpg"*/}
-                        {/*                 alt="top-charts" className="filter-box-img"/>*/}
-                        {/*            <img src={'/img/filterBox/topCharts.png'} alt="" className="filter-box-icon"/>*/}
-                        {/*        </span>*/}
-                        {/*        <p>Топ чарт</p>*/}
-                        {/*    </Link>*/}
-                        {/*    <Link to="/free-beats" className="filter-box">*/}
-                        {/*        <span>*/}
-                        {/*            <img src="https://www.beatstars.com/assets/img/search/genres/free_beats@2x.jpg"*/}
-                        {/*                 alt="top-charts" className="filter-box-img"/>*/}
-                        {/*            <img src={'/img/filterBox/freeBeats.png'} alt="" className="filter-box-icon"/>*/}
-                        {/*        </span>*/}
-                        {/*        <p>Бесплатные</p>*/}
-                        {/*    </Link>*/}
-                        {/*</div>*/}
                     </div>
                 </div>
 
@@ -346,7 +318,9 @@ class TopCharts extends Component {
 
                         <div className="sdfsdvs">
                             <form className="dsdsewe">
-                                <img src={'/img/search.png'} width="17px" alt="search" className="df_ge__ewe"/>
+                                <img src={'https://i.ibb.co/KrWXzJ1/search.png'}
+                                     width="17px" alt="search" className="df_ge__ewe"/>
+
                                 <input type="text" className="__dfdfo-kji_" placeholder="Поиск по тегам"
                                        onChange={this.searchTags}/>
                             </form>

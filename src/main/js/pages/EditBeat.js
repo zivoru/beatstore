@@ -449,7 +449,8 @@ class EditBeat extends Component {
                                                         return (
                                                             <div className="tag color-g2 mt16" key={index}>
                                                                 <span className="wnohte">#{tag.name}</span>
-                                                                <img src={'/img/plus.png'} width="10px" alt="plus"
+                                                                <img src={'https://i.ibb.co/QDY1H7D/plus.png'}
+                                                                     width="10px" alt="plus"
                                                                      onClick={this.deleteTag.bind(this, index)}
                                                                      className="delete-tag"
                                                                      title="Удалить"/>
@@ -501,8 +502,9 @@ class EditBeat extends Component {
                                                         <img className="edit-image"
                                                              style={{pointerEvents: "initial", cursor: "pointer"}}
                                                              src={this.state.imageName !== null && this.state.imageName !== "" ?
-                                                                 `/img/user-${this.state.beat.user.id}/beats/beat-${this.state.beat.id}/${this.state.imageName}`
-                                                                 : '/img/track-placeholder.svg'} alt=""/>
+                                                                 `/resources/user-${this.state.beat.user.id}/beats/beat-${this.state.beat.id}/${this.state.imageName}`
+                                                                 : 'https://i.ibb.co/ySkyssb/track-placeholder.webp'}
+                                                             alt="track-placeholder"/>
                                                     }
                                                 </label>
                                                 <input type="file" onChange={this.uploadImage} id="file" required

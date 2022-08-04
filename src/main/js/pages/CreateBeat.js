@@ -410,7 +410,7 @@ class CreateBeat extends Component {
                                             return (
                                                 <div className="tag color-g2 mt16" key={index}>
                                                     <span className="wnohte">#{tag.name}</span>
-                                                    <img src={'/img/plus.png'} width="10px" alt="plus"
+                                                    <img src={'https://i.ibb.co/QDY1H7D/plus.png'} width="10px" alt="plus"
                                                          onClick={this.deleteTag.bind(this, index)}
                                                          className="delete-tag"
                                                          title="Удалить"/>
@@ -461,7 +461,8 @@ class CreateBeat extends Component {
                                             :
                                             <img className="edit-image"
                                                  style={{pointerEvents: "initial", cursor: "pointer"}}
-                                                 src={'/img/track-placeholder.svg'} alt=""/>
+                                                 src={'https://i.ibb.co/ySkyssb/track-placeholder.webp'}
+                                                 alt="track-placeholder"/>
                                         }
                                     </label>
                                     <input type="file" onChange={this.uploadImage} id="file" required

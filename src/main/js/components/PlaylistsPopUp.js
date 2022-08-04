@@ -208,8 +208,8 @@ class PlaylistsPopUp extends Component {
                                         <div className="flex-c">
                                             <img className="playlists-img"
                                                  src={playlist.imageName !== null && playlist.imageName !== ""
-                                                     ? `/img/user-${this.props.user.id}/playlists/playlist-${playlist.id}/${playlist.imageName}`
-                                                     : '/img/photo-placeholder.svg'} alt=""/>
+                                                     ? `/resources/user-${this.props.user.id}/playlists/playlist-${playlist.id}/${playlist.imageName}`
+                                                     : 'https://i.ibb.co/9GFppbG/photo-placeholder.png'} alt=""/>
                                             <Link to={`/playlist/${playlist.id}`}
                                                   onClick={this.props.closePopUps}
                                                   className="fs12 fw400 hu ml10">
@@ -236,7 +236,7 @@ class PlaylistsPopUp extends Component {
                                     :
                                     <img className="edit-image"
                                          style={{pointerEvents: "initial", cursor: "pointer"}}
-                                         src={'/img/photo-placeholder.svg'} alt=""/>
+                                         src={'https://i.ibb.co/9GFppbG/photo-placeholder.png'} alt=""/>
                                 }
                             </label>
                             <input type="file" onChange={this.uploadImage} id="file" required

@@ -214,8 +214,9 @@ class MyPlaylists extends Component {
                                                 <Link to={"/playlist/" + playlist.id} className="inl-blk trs">
                                                     <img className="slide-img playlist-img"
                                                          src={playlist.imageName !== null && playlist.imageName !== "" ?
-                                                             `/img/user-${playlist.user.id}/playlists/playlist-${playlist.id}/${playlist.imageName}`
-                                                             : '/img/photo-placeholder.svg'} alt="playlist"/>
+                                                             `/resources/user-${playlist.user.id}/playlists/playlist-${playlist.id}/${playlist.imageName}`
+                                                             : 'https://i.ibb.co/9GFppbG/photo-placeholder.png'}
+                                                         alt="photo-placeholder"/>
                                                 </Link>
                                             </Link>
 
@@ -291,7 +292,8 @@ class MyPlaylists extends Component {
                                                 :
                                                 <img className="edit-image playlist-img"
                                                      style={{pointerEvents: "initial", cursor: "pointer"}}
-                                                     src={'/img/photo-placeholder.svg'} alt=""/>
+                                                     src={'https://i.ibb.co/9GFppbG/photo-placeholder.png'}
+                                                     alt="playlist"/>
                                             }
                                         </label>
 

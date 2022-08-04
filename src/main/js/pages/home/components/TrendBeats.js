@@ -47,15 +47,17 @@ class TrendBeats extends Component {
                 <div className="slider">
                     {this.state.beats.map((beat, index) => {
 
-                        let path = `/img/user-${beat.user.id}/beats/beat-${beat.id}/`;
+                        let path = `/resources/user-${beat.user.id}/beats/beat-${beat.id}/`;
 
                         return (
                             <div className="slide" key={index}>
                                 <div className="slide-img-container">
                                     <Link to={"/beat/" + beat.id} className="inl-blk">
                                         <img className="slide-img"
-                                             src={beat.imageName !== null && beat.imageName !== '' ?
-                                                 `${path}${beat.imageName}` : '/img/track-placeholder.svg'} alt="beat"/>
+                                             src={beat.imageName !== null && beat.imageName !== ''
+                                                 ? `${path}${beat.imageName}`
+                                                 : 'https://i.ibb.co/ySkyssb/track-placeholder.webp'}
+                                             alt="track-placeholder"/>
                                     </Link>
 
                                     {this.props.playBeatId === beat.id

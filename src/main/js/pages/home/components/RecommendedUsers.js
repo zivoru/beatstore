@@ -26,7 +26,7 @@ class RecommendedUsers extends Component {
                                 <Link to={user.username} className="inl-blk b-r999 trs ho">
                                     <img className="card-img"
                                          src={user.profile.imageName !== null && user.profile.imageName !== "" ?
-                                             `/img/user-${user.id}/profile/${user.profile.imageName}`
+                                             `/resources/user-${user.id}/profile/${user.profile.imageName}`
                                              : 'https://i.ibb.co/KXhBMsx/default-avatar.webp'} alt="avatar"/>
                                 </Link>
                                 <div className="grid-item">

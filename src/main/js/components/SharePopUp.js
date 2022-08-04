@@ -10,7 +10,7 @@ const SharePopUp = (props) => (
                  width="18px" onClick={props.closePopUps}/>
         </div>
         <div className="share-link flex-c">
-            <img src={'/img/share.png'} width="14px" alt="share"/>
+            <img src={'https://i.ibb.co/rsL0r6P/share.png'} width="14px" alt="share"/>
 
             <input value={shareLink + props.beat.id} readOnly/>
         </div>

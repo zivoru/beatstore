@@ -40,8 +40,8 @@ class RecommendedPlaylists extends Component {
                                           style={{width: 275, height: 275}}>
                                         <img className="slide-img" style={{width: 275, height: 275}}
                                              src={playlist.imageName !== null && playlist.imageName !== "" ?
-                                                 `/img/user-${playlist.user.id}/playlists/playlist-${playlist.id}/${playlist.imageName}`
-                                                 : '/img/track-placeholder.svg'} alt="playlist"/>
+                                                 `/resources/user-${playlist.user.id}/playlists/playlist-${playlist.id}/${playlist.imageName}`
+                                                 : 'https://i.ibb.co/9GFppbG/photo-placeholder.png'} alt="playlist"/>
                                     </Link>
                                 </div>
 

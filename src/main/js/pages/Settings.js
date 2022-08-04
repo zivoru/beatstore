@@ -226,7 +226,7 @@ class Settings extends Component {
                                          src={this.state.imageSrc} alt=""/> :
                                     <img className="card-img" style={{pointerEvents: "initial", cursor: "pointer"}}
                                          src={this.state.imageName !== null && this.state.imageName !== "" ?
-                                             `/img/user-${this.state.userId}/profile/${this.state.imageName}`
+                                             `/resources/user-${this.state.userId}/profile/${this.state.imageName}`
                                              : 'https://i.ibb.co/KXhBMsx/default-avatar.webp'} alt="avatar"/>
                                 }
                             </label>

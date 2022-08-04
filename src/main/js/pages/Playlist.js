@@ -251,8 +251,9 @@ class Playlist extends Component {
 
                                     <div style={{width: 234, height: 234}}>
                                         <img src={playlist.imageName !== null && playlist.imageName !== "" ?
-                                            `/img/user-${playlist.user.id}/playlists/playlist-${playlist.id}/${playlist.imageName}` :
-                                            '/img/photo-placeholder.svg'} alt="" className="item-image"/>
+                                            `/resources/user-${playlist.user.id}/playlists/playlist-${playlist.id}/${playlist.imageName}` :
+                                            'https://i.ibb.co/9GFppbG/photo-placeholder.png'}
+                                             alt="playlist" className="item-image"/>
                                     </div>
 
                                     <div className="mw100 flex-c-c mt16">
@@ -278,7 +279,8 @@ class Playlist extends Component {
                                              style={{cursor: "pointer"}} onClick={this.like}
                                              title="Добавить в избранное"/>
 
-                                        <img src={'/img/share.png'} width="20px" alt="share" className="cp"
+                                        <img src={'https://i.ibb.co/rsL0r6P/share.png'}
+                                             width="20px" alt="share" className="cp"
                                              title="Поделиться"/>
                                     </div>
                                 </div>
@@ -330,7 +332,7 @@ class Playlist extends Component {
                                 <div className="grid-table">
                                     {playlist.beats.map((beat, index) => {
 
-                                        let path = `/img/user-${beat.user.id}/beats/beat-${beat.id}/`;
+                                        let path = `/resources/user-${beat.user.id}/beats/beat-${beat.id}/`;
 
                                         return (
                                             <div key={index}>
@@ -339,10 +341,10 @@ class Playlist extends Component {
                                                           style={{position: "absolute",
                                                               top: 0, left: 0, width: "100%", height: "100%",}}>
                                                         <img className="slide-img playlist-img"
-                                                             src={beat.imageName !== null && beat.imageName !== '' ?
-                                                                 `${path}${beat.imageName}`
-                                                                 : '/img/track-placeholder.svg'}
-                                                             alt="playlist"/>
+                                                             src={beat.imageName !== null && beat.imageName !== ''
+                                                                 ? `${path}${beat.imageName}`
+                                                                 : 'https://i.ibb.co/ySkyssb/track-placeholder.webp'}
+                                                             alt="track-placeholder"/>
                                                     </Link>
                                                     {this.props.playBeatId === beat.id
                                                         ? <>

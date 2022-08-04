@@ -71,10 +71,10 @@ class Beats extends Component {
                         // if (window.screen.width > 767) {
                         //     click = props.setAudio.bind(this,
                         //         beat.id,
-                        //         `/img/user-${beat.user.id}/beats/beat-${beat.id}/${beat.audio.mp3Name}`)
+                        //         `/resources/user-${beat.user.id}/beats/beat-${beat.id}/${beat.audio.mp3Name}`)
                         // }
 
-                        let path = `/img/user-${beat.user.id}/beats/beat-${beat.id}/`;
+                        let path = `/resources/user-${beat.user.id}/beats/beat-${beat.id}/`;
 
                         return (
                             <div className="qwe"
@@ -87,15 +87,16 @@ class Beats extends Component {
 
                                         {/*<button className="play" onClick={props.setAudio.bind(this,*/}
                                         {/*    beat.id,*/}
-                                        {/*    `/img/user-${beat.user.id}/beats/beat-${beat.id}/${beat.audio.mp3Name}`)}*/}
+                                        {/*    `/resources/user-${beat.user.id}/beats/beat-${beat.id}/${beat.audio.mp3Name}`)}*/}
                                         {/*        style={{transform: "translate(-50%, -50%) scale(0.7)"}}*/}
                                         {/*>*/}
                                         {/*</button>*/}
                                     </div>
                                     <div className="qwe-img" style={{position: "relative"}}>
                                         <img src={beat.imageName !== null && beat.imageName !== '' ?
-                                            `/img/user-${beat.user.id}/beats/beat-${beat.id}/${beat.imageName}` :
-                                            '/img/track-placeholder.svg'} alt=""/>
+                                            `/resources/user-${beat.user.id}/beats/beat-${beat.id}/${beat.imageName}` :
+                                            'https://i.ibb.co/ySkyssb/track-placeholder.webp'}
+                                             alt="track-placeholder"/>
 
 
                                         {this.props.playBeatId === beat.id
@@ -121,7 +122,7 @@ class Beats extends Component {
 
                                         {/*<button className="qwe-play" onClick={props.setAudio.bind(this,*/}
                                         {/*    beat.id,*/}
-                                        {/*    `/img/user-${beat.user.id}/beats/beat-${beat.id}/${beat.audio.mp3Name}`)}>*/}
+                                        {/*    `/resources/user-${beat.user.id}/beats/beat-${beat.id}/${beat.audio.mp3Name}`)}>*/}
                                         {/*</button>*/}
                                     </div>
                                     <div className="qwe-title wnohte">
