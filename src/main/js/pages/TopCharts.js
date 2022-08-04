@@ -364,7 +364,8 @@ class TopCharts extends Component {
                                     onClick={() => this.setState({filterGenres: !state.filterGenres})}>
 
                                 {state.genreName === null ? "Все жанры" : state.genreName}
-                                <img src={'/img/arrow.png'} width="8px" className="filter-arrow" alt="arrow"/>
+                                <img src={'https://i.ibb.co/1MwbwJb/arrow.png'} width="8px"
+                                     className="filter-arrow" alt="arrow"/>
                             </button>
 
                             {state.filterGenres ?
@@ -391,7 +392,8 @@ class TopCharts extends Component {
                             <button className="mr16 filter flex-c-c"
                                     onClick={() => this.setState({filterBpm: !state.filterBpm})}>
                                 BPM
-                                <img src={'/img/arrow.png'} width="8px" className="filter-arrow" alt="arrow"/>
+                                <img src={'https://i.ibb.co/1MwbwJb/arrow.png'} width="8px"
+                                     className="filter-arrow" alt="arrow"/>
                             </button>
 
                             {state.filterBpm ?
@@ -415,7 +417,8 @@ class TopCharts extends Component {
                             <button className="mr16 filter flex-c-c"
                                     onClick={() => this.setState({filterPrice: !state.filterPrice})}>
                                 Цена
-                                <img src={'/img/arrow.png'} width="8px" className="filter-arrow" alt="arrow"/>
+                                <img src={'https://i.ibb.co/1MwbwJb/arrow.png'} width="8px"
+                                     className="filter-arrow" alt="arrow"/>
                             </button>
 
                             {state.filterPrice ?
@@ -448,7 +451,8 @@ class TopCharts extends Component {
                                     onClick={() => this.setState({filterKeys: !state.filterKeys})}>
 
                                 {state.keyName === null ? "Тональность" : state.keyName}
-                                <img src={'/img/arrow.png'} width="8px" className="filter-arrow" alt="arrow"/>
+                                <img src={'https://i.ibb.co/1MwbwJb/arrow.png'} width="8px"
+                                     className="filter-arrow" alt="arrow"/>
                             </button>
 
                             {state.filterKeys ?
@@ -481,7 +485,8 @@ class TopCharts extends Component {
                                     onClick={() => this.setState({filterMoods: !state.filterMoods})}>
 
                                 {state.moodName === null ? "Настроение" : state.moodName}
-                                <img src={'/img/arrow.png'} width="8px" className="filter-arrow" alt="arrow"/>
+                                <img src={'https://i.ibb.co/1MwbwJb/arrow.png'} width="8px"
+                                     className="filter-arrow" alt="arrow"/>
                             </button>
 
                             {state.filterMoods ?

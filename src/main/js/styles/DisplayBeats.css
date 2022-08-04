@@ -150,10 +150,10 @@
     max-width: 100%;
 }
 .qwe-bpm img {
-    width: 14px;
-    height: 18px;
-    object-fit: none;
-    margin-top: 1px;
+    width: 13px;
+    height: 13px;
+    object-fit: cover;
+    margin-top: 3px;
     margin-right: 5px;
 }
 .qwe-bpm button {

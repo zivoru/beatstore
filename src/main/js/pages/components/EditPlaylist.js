@@ -9,7 +9,7 @@ const EditPlaylist = (props) => (
              }}>
             <div className="pop-up-header">
                 Изменение плейлиста
-                <img src={'/img/close.png'} alt="close" width="18px"
+                <img src={'https://i.ibb.co/FnGGGTx/close.png'} alt="close" width="18px"
                      onClick={props.closePopUp}/>
             </div>
 
@@ -56,7 +56,7 @@ const EditPlaylist = (props) => (
                                       : null}>
 
                                     {props.visibility
-                                        ? <img src={"/img/check.png"} width="10px" alt=""/>
+                                        ? <img src={"https://i.ibb.co/NxM8mHT/check.png"} width="10px" alt="check"/>
                                         : null}
                             </span>
                             <span className="free" style={{cursor: "pointer"}}

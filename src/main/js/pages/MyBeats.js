@@ -197,20 +197,20 @@ class MyBeats extends Component {
                                                             onClick={this.props.openPlaylists.bind(this, beat)}
                                                             title="Добавить в плейлист"
                                                     >
-                                                        <img src={'/img/my-beats/plus.png'} width="12px" alt="plus"/>
+                                                        <img src={'https://i.ibb.co/54DndXT/plus.png'} width="12px" alt="plus"/>
                                                     </button>
                                                 </div>
                                                 <div>
                                                     <button className="my-beats-setting-btn flex-c-c" title="Скачать"
                                                             onClick={this.props.openDownload.bind(this, beat)}>
-                                                        <img src={'/img/my-beats/download.png'} width="12px"
+                                                        <img src={'https://i.ibb.co/XVhy115/download.png'} width="12px"
                                                              alt="download"/>
                                                     </button>
                                                 </div>
                                                 <div>
                                                     <Link to={`/edit/${beat.id}`} title="Изменить"
                                                           className="my-beats-setting-btn flex-c-c">
-                                                        <img src={'/img/my-beats/pencil.png'} width="12px"
+                                                        <img src={'https://i.ibb.co/sbWQXgY/pencil.png'} width="12px"
                                                              alt="pencil"/>
                                                     </Link>
                                                 </div>
@@ -222,7 +222,7 @@ class MyBeats extends Component {
                                                                     deleteId: index
                                                                 })
                                                             }}>
-                                                        <img src={'/img/my-beats/remove.png'} width="14px"
+                                                        <img src={'https://i.ibb.co/2MHB4S1/remove.png'} width="14px"
                                                              alt="remove"/>
                                                     </button>
                                                 </div>
@@ -338,20 +338,20 @@ class MyBeats extends Component {
                                                             onClick={this.props.openPlaylists.bind(this, beat)}
                                                             title="Добавить в плейлист"
                                                     >
-                                                        <img src={'/img/my-beats/plus.png'} width="12px" alt="plus"/>
+                                                        <img src={'https://i.ibb.co/54DndXT/plus.png'} width="12px" alt="plus"/>
                                                     </button>
                                                 </div>
                                                 <div>
                                                     <button className="my-beats-setting-btn flex-c-c" title="Скачать"
                                                             onClick={this.props.openDownload.bind(this, beat)}>
-                                                        <img src={'/img/my-beats/download.png'} width="12px"
+                                                        <img src={'https://i.ibb.co/XVhy115/download.png'} width="12px"
                                                              alt="download"/>
                                                     </button>
                                                 </div>
                                                 <div>
                                                     <Link to={`/edit/${beat.id}`} title="Изменить"
                                                           className="my-beats-setting-btn flex-c-c">
-                                                        <img src={'/img/my-beats/pencil.png'} width="12px"
+                                                        <img src={'https://i.ibb.co/sbWQXgY/pencil.png'} width="12px"
                                                              alt="pencil"/>
                                                     </Link>
                                                 </div>
@@ -363,7 +363,7 @@ class MyBeats extends Component {
                                                 {/*                    deleteId: index*/}
                                                 {/*                })*/}
                                                 {/*            }}>*/}
-                                                {/*        <img src={'/img/my-beats/remove.png'} width="14px"*/}
+                                                {/*        <img src={'https://i.ibb.co/2MHB4S1/remove.png'} width="14px"*/}
                                                 {/*             alt="remove"/>*/}
                                                 {/*    </button>*/}
                                                 {/*</div>*/}
@@ -479,20 +479,20 @@ class MyBeats extends Component {
                                                 {/*            onClick={this.props.openPlaylists.bind(this, beat)}*/}
                                                 {/*            title="Добавить в плейлист"*/}
                                                 {/*    >*/}
-                                                {/*        <img src={'/img/my-beats/plus.png'} width="12px" alt="plus"/>*/}
+                                                {/*        <img src={'https://i.ibb.co/54DndXT/plus.png'} width="12px" alt="plus"/>*/}
                                                 {/*    </button>*/}
                                                 {/*</div>*/}
                                                 <div>
                                                     <button className="my-beats-setting-btn flex-c-c" title="Скачать"
                                                             onClick={this.props.openDownload.bind(this, beat)}>
-                                                        <img src={'/img/my-beats/download.png'} width="12px"
+                                                        <img src={'https://i.ibb.co/XVhy115/download.png'} width="12px"
                                                              alt="download"/>
                                                     </button>
                                                 </div>
                                                 {/*<div>*/}
                                                 {/*    <Link to={`/edit/${beat.id}`} title="Изменить"*/}
                                                 {/*          className="my-beats-setting-btn flex-c-c">*/}
-                                                {/*        <img src={'/img/my-beats/pencil.png'} width="12px"*/}
+                                                {/*        <img src={'https://i.ibb.co/sbWQXgY/pencil.png'} width="12px"*/}
                                                 {/*             alt="pencil"/>*/}
                                                 {/*    </Link>*/}
                                                 {/*</div>*/}
@@ -504,7 +504,7 @@ class MyBeats extends Component {
                                                 {/*                    deleteId: index*/}
                                                 {/*                })*/}
                                                 {/*            }}>*/}
-                                                {/*        <img src={'/img/my-beats/remove.png'} width="14px"*/}
+                                                {/*        <img src={'https://i.ibb.co/2MHB4S1/remove.png'} width="14px"*/}
                                                 {/*             alt="remove"/>*/}
                                                 {/*    </button>*/}
                                                 {/*</div>*/}
@@ -561,7 +561,7 @@ class MyBeats extends Component {
                         <div className="my-beats-header">
                             <h1>Мои биты</h1>
                             <Link to="/upload-beat" className="add-beat">
-                                <img src={'/img/my-beats/plus.png'} width="18px" alt="plus"/>
+                                <img src={'https://i.ibb.co/54DndXT/plus.png'} width="18px" alt="plus"/>
                             </Link>
                         </div>
                     </div>

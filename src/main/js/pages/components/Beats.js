@@ -141,7 +141,8 @@ class Beats extends Component {
                                             </Link>
 
                                             {beat.user.verified === true ?
-                                                <img src={'/img/account-verified.svg'} alt="verified"/> : null}
+                                                <img src={'https://i.ibb.co/T8GczJ3/account-verified.webp'}
+                                                     alt="verified"/> : null}
 
                                             {beat.bpm !== null && beat.bpm !== "" ? <span>• {beat.bpm} BPM</span> : null}
                                         </div>

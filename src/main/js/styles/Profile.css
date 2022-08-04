@@ -48,6 +48,12 @@
     border-radius: 999px;
     margin-bottom: 12px;
 }
+.img-verified {
+    width: 14px;
+    height: 14px;
+    object-fit: cover;
+    margin-right: 5px;
+}
 .item-stats {
     padding-top: 16px;
     /*background-color: #141414;*/

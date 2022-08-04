@@ -18,7 +18,7 @@ class Playlist extends Component {
             user: null,
             playlist: null,
             beats: null,
-            like: '/img/heart.png',
+            like: 'https://i.ibb.co/W086Tk3/heart.png',
             image: null,
             imageSrc: null,
             imageName: null,
@@ -78,11 +78,13 @@ class Playlist extends Component {
             const res = await axios.get('/api/v1/playlists/' + this.props.playlistId);
             this.setState({
                 playlist: res.data,
-                like: '/img/heart.png'
+                like: 'https://i.ibb.co/W086Tk3/heart.png'
             })
             if (this.props.user !== null && this.props.user !== undefined && this.props.user !== "empty") {
                 for (const like of res.data.likes) {
-                    if (like.id === this.props.user.id) this.setState({like: '/img/heart-fill.png'})
+                    if (like.id === this.props.user.id) {
+                        this.setState({like: 'https://i.ibb.co/Msx7jjb/heart-fill.png'})
+                    }
                 }
             }
         } catch (error) {
@@ -93,10 +95,10 @@ class Playlist extends Component {
     like = () => {
         let s = this.state;
         if (s.user !== null && s.user !== undefined && s.user !== "empty") {
-            if (s.like === '/img/heart.png') {
+            if (s.like === 'https://i.ibb.co/W086Tk3/heart.png') {
                 axios.post("/api/v1/playlists/addFavorite/" + s.playlist.id)
                     .then(() => {
-                        this.setState({like: '/img/heart-fill.png'});
+                        this.setState({like: 'https://i.ibb.co/Msx7jjb/heart-fill.png'});
                         setTimeout(() => this.setState({
                             update: !this.state.update
                         }), 100);
@@ -104,7 +106,7 @@ class Playlist extends Component {
             } else {
                 axios.post("/api/v1/playlists/removeFavorite/" + s.playlist.id)
                     .then(() => {
-                        this.setState({like: '/img/heart.png'})
+                        this.setState({like: 'https://i.ibb.co/W086Tk3/heart.png'})
                         setTimeout(() => this.setState({
                             update: !this.state.update
                         }), 100);
@@ -263,7 +265,8 @@ class Playlist extends Component {
                                         {playlist.user.profile.displayName}
 
                                         {playlist.user.verified === true
-                                            ? <img src={'/img/account-verified.svg'} alt="verified" className="ml5"/>
+                                            ? <img src={'https://i.ibb.co/T8GczJ3/account-verified.webp'}
+                                                   alt="verified" className="img-verified ml5"/>
                                             : null}
                                     </Link>
                                 </div>
@@ -381,7 +384,8 @@ class Playlist extends Component {
                                                             {beat.user.profile.displayName}
                                                         </Link>
                                                         {beat.user.verified === true ?
-                                                            <img src={'/img/account-verified.svg'} alt="verified"/> : null}
+                                                            <img src={'https://i.ibb.co/T8GczJ3/account-verified.webp'}
+                                                                 alt="verified"/> : null}
                                                     </div>
 
                                                     {beat.bpm !== null && beat.bpm !== ""

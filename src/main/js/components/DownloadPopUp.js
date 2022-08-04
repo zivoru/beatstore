@@ -36,7 +36,7 @@ const DownloadPopUp = (props) => (
 
         <div className="pop-up-header">
             Скачать файлы
-            <img src={'/img/close.png'} alt="close" width="18px" onClick={props.closePopUps}/>
+            <img src={'https://i.ibb.co/FnGGGTx/close.png'} alt="close" width="18px" onClick={props.closePopUps}/>
         </div>
 
         <button className="btn-primary mb16 w100" onClick={downloadMp3.bind(this, props.beat.id, props.beat.title)}>

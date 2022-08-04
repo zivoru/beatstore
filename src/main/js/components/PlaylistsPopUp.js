@@ -163,7 +163,8 @@ class PlaylistsPopUp extends Component {
             <div className="playlists pop-up trs">
                 <div className="pop-up-header">
                     Добавить в плейлист
-                    <img src={'/img/close.png'} alt="close" width="18px" onClick={this.props.closePopUps}/>
+                    <img src={'https://i.ibb.co/FnGGGTx/close.png'} alt="close"
+                         width="18px" onClick={this.props.closePopUps}/>
                 </div>
 
                 <div className="playlists-menu">
@@ -186,7 +187,7 @@ class PlaylistsPopUp extends Component {
                                 let addButton =
                                     <button className="add-playlist"
                                             onClick={this.addBeatToPlaylist.bind(this, playlist.id)}>
-                                        <img src={'/img/my-beats/plus.png'} width="12px" alt="plus"/>
+                                        <img src={'https://i.ibb.co/54DndXT/plus.png'} width="12px" alt="plus"/>
                                     </button>
 
                                 playlist.beats.map((beat, index) => {
@@ -195,7 +196,8 @@ class PlaylistsPopUp extends Component {
                                             <button key={index}
                                                     className="minus-playlist"
                                                     onClick={this.removeBeatFromPlaylist.bind(this, playlist.id)}>
-                                                <img src={'/img/check.png'} width="14px" alt="plus"/>
+                                                <img src={'https://i.ibb.co/NxM8mHT/check.png'}
+                                                     width="14px" alt="check"/>
                                                 <div className="minus"></div>
                                             </button>
                                     }
@@ -262,7 +264,8 @@ class PlaylistsPopUp extends Component {
                                           style={this.state.visibility ?
                                               {backgroundColor: "#005ff8", border: "1px solid #005ff8"} : null}>
 
-                                    {this.state.visibility ? <img src={"/img/check.png"} width="10px" alt=""/> : null}
+                                    {this.state.visibility ? <img src={"https://i.ibb.co/NxM8mHT/check.png"}
+                                                                  width="10px" alt="check"/> : null}
                                 </span>
                                 <span className="free" style={{cursor: "pointer"}}
                                       onClick={this.setVisibility}>Публичный</span>

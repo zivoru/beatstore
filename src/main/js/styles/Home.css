@@ -206,6 +206,14 @@
     width: 275px;
 }
 
+.sl-gr-it img {
+    width: 15px;
+    height: 15px;
+    object-fit: cover;
+    margin-top: 1px;
+    margin-right: 5px;
+}
+
 .footer {
     border-top: 1px solid #1a1a1a;
     padding: 48px 0;

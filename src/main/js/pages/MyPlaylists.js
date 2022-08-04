@@ -196,7 +196,7 @@ class MyPlaylists extends Component {
                         <div className="my-beats-header">
                             <h1>Мои Плейлисты</h1>
                             <button className="add-beat" onClick={() => this.setState({playlistPopUp: true})}>
-                                <img src={'/img/my-beats/plus.png'} width="18px" alt="plus"/>
+                                <img src={'https://i.ibb.co/54DndXT/plus.png'} width="18px" alt="plus"/>
                             </button>
                         </div>
 
@@ -237,7 +237,8 @@ class MyPlaylists extends Component {
                                                     </Link>
 
                                                     {playlist.user.verified === true ?
-                                                        <img src={'/img/account-verified.svg'} alt="verified"/> : null}
+                                                        <img src={'https://i.ibb.co/T8GczJ3/account-verified.webp'}
+                                                             alt="verified"/> : null}
                                                 </div>
 
                                                 <button className="btn-edit-playlist"
@@ -251,7 +252,7 @@ class MyPlaylists extends Component {
                                                             description: playlist.description === null ? "" : playlist.description,
                                                             visibility: playlist.visibility,
                                                         })}>
-                                                    <img src={'/img/my-beats/pencil.png'} width="12px"
+                                                    <img src={'https://i.ibb.co/sbWQXgY/pencil.png'} width="12px"
                                                          alt="pencil"/>
                                                 </button>
                                             </div>
@@ -275,7 +276,7 @@ class MyPlaylists extends Component {
                              }}>
                             <div className="pop-up-header">
                                 Новый плейлист
-                                <img src={'/img/close.png'} alt="close" width="18px"
+                                <img src={'https://i.ibb.co/FnGGGTx/close.png'} alt="close" width="18px"
                                      onClick={() => this.setState({playlistPopUp: false})}/>
                             </div>
 
@@ -319,7 +320,8 @@ class MyPlaylists extends Component {
                                                       ? {backgroundColor: "#005ff8", border: "1px solid #005ff8"}
                                                       : null}>
                                                 {this.state.visibility
-                                                    ? <img src={"/img/check.png"} width="10px" alt=""/>
+                                                    ? <img src={"https://i.ibb.co/NxM8mHT/check.png"}
+                                                           width="10px" alt="check"/>
                                                     : null}
                                             </span>
                                             <span className="free" style={{cursor: "pointer"}}

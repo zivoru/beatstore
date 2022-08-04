@@ -13,7 +13,7 @@ class Beat extends Component {
             beat: null,
             licenseCode: null,
             license: null,
-            like: '/img/heart.png',
+            like: 'https://i.ibb.co/W086Tk3/heart.png',
             comments: [],
             comment: null,
             warningDeleteComment: false,
@@ -65,12 +65,12 @@ class Beat extends Component {
             const res = await axios.get(`/api/v1/beats/dto/${this.props.beatId}`);
             this.setState({
                 beat: res.data,
-                like: '/img/heart.png'
+                like: 'https://i.ibb.co/W086Tk3/heart.png'
             })
 
             if (this.props.user !== null && this.props.user !== undefined && this.props.user !== "empty") {
                 for (const like of res.data.beat.likes) {
-                    if (like.id === this.props.user.id) this.setState({like: '/img/heart-fill.png'})
+                    if (like.id === this.props.user.id) this.setState({like: 'https://i.ibb.co/Msx7jjb/heart-fill.png'})
                 }
             }
         } catch (error) {
@@ -94,15 +94,15 @@ class Beat extends Component {
     like = () => {
         let s = this.state;
         if (s.user !== null && s.user !== undefined && s.user !== "empty") {
-            if (s.like === '/img/heart.png') {
-                axios.post("/api/v1/beats/addToFavorite/" + s.beat.id)
+            if (s.like === 'https://i.ibb.co/W086Tk3/heart.png') {
+                axios.post("/api/v1/beats/addToFavorite/" + s.beat.beat.id)
                     .then(() => {
-                        this.setState({like: '/img/heart-fill.png'})
+                        this.setState({like: 'https://i.ibb.co/Msx7jjb/heart-fill.png'})
                     }).catch()
             } else {
-                axios.post("/api/v1/beats/removeFromFavorite/" + s.beat.id)
+                axios.post("/api/v1/beats/removeFromFavorite/" + s.beat.beat.id)
                     .then(() => {
-                        this.setState({like: '/img/heart.png'})
+                        this.setState({like: 'https://i.ibb.co/W086Tk3/heart.png'})
                     }).catch()
             }
         } else {
@@ -263,7 +263,8 @@ class Beat extends Component {
                     <div className="comment">
                         <img src={user.profile.imageName !== null && user.profile.imageName !== "" ?
                             `/img/user-${user.id}/profile/${user.profile.imageName}`
-                            : '/img/default-avatar.svg'} className="comment-img b-r999" alt=""/>
+                            : 'https://i.ibb.co/KXhBMsx/default-avatar.webp'}
+                             className="comment-img b-r999" alt="avatar"/>
 
                         <div className="create-comment" style={{alignItems: "end"}}>
                             <input type="text" placeholder="Введите комментарий" className="comment-input"
@@ -321,7 +322,8 @@ class Beat extends Component {
                                         {beat.user.profile.displayName}
 
                                         {beat.user.verified === true
-                                            ? <img src={'/img/account-verified.svg'} alt="verified" className="ml5"/>
+                                            ? <img src={'https://i.ibb.co/T8GczJ3/account-verified.webp'}
+                                                   alt="verified" className="img-verified ml5"/>
                                             : null}
                                     </Link>
                                 </div>
@@ -642,8 +644,8 @@ class Beat extends Component {
                                                     <div style={{width: 45, height: 45}}>
                                                         <img src={profile.imageName !== null && profile.imageName !== "" ?
                                                             `/img/user-${comment.author.id}/profile/${profile.imageName}` :
-                                                            '/img/default-avatar.svg'} className="comment-img b-r999"
-                                                             alt=""/>
+                                                            'https://i.ibb.co/KXhBMsx/default-avatar.webp'}
+                                                             className="comment-img b-r999" alt="avatar"/>
                                                     </div>
 
                                                     <div className="comment-text wnohte">
@@ -768,7 +770,7 @@ class Beat extends Component {
                                                             {beat.user.profile.displayName}
                                                         </Link>
                                                         {beat.user.verified === true ?
-                                                            <img src={'/img/account-verified.svg'}
+                                                            <img src={'https://i.ibb.co/T8GczJ3/account-verified.webp'}
                                                                  alt="verified"/> : null}
                                                     </div>
 

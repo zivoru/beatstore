@@ -27,7 +27,7 @@ class RecommendedUsers extends Component {
                                     <img className="card-img"
                                          src={user.profile.imageName !== null && user.profile.imageName !== "" ?
                                              `/img/user-${user.id}/profile/${user.profile.imageName}`
-                                             : '/img/default-avatar.svg'} alt=""/>
+                                             : 'https://i.ibb.co/KXhBMsx/default-avatar.webp'} alt="avatar"/>
                                 </Link>
                                 <div className="grid-item">
                                     <div className="flex-jc mt16 w192">

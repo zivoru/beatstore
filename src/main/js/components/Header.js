@@ -121,19 +121,19 @@ class Header extends Component {
 
         let btnDropCart =
             <div className="hdr-drop-btn flex-c trs cart NONE bag" onClick={this.props.cartPopUpOpen} title="Корзина">
-                <img src={"/img/bag.png"} width="21px" alt="корзина"/>
+                <img src={"https://i.ibb.co/8M0Ch54/bag.png"} width="21px" alt="корзина"/>
                 {amountCart}
             </div>
 
         let btnDropCartMobile = user !== null && user !== undefined && user !== "empty" ?
             <Link className="hdr-drop-btn-mobile flex-c trs bag" to="/cart" title="Корзина">
-                <img src={"/img/bag.png"} width="21px" alt="корзина"/>
+                <img src={"https://i.ibb.co/8M0Ch54/bag.png"} width="21px" alt="корзина"/>
                 {amountCart}
             </Link>
             :
             <button className="hdr-drop-btn-mobile flex-c trs bag" title="Корзина"
                     style={{backgroundColor: "inherit"}} onClick={this.props.setLoginPopUp}>
-                <img src={"/img/bag.png"} width="21px" alt="корзина"/>
+                <img src={"https://i.ibb.co/8M0Ch54/bag.png"} width="21px" alt="корзина"/>
                 {amountCart}
             </button>
 
@@ -143,7 +143,7 @@ class Header extends Component {
 
             let image = user.profile.imageName !== null && user.profile.imageName !== "" ?
                 `/img/user-${user.id}/profile/${user.profile.imageName}` :
-                '/img/default-avatar.svg';
+                'https://i.ibb.co/KXhBMsx/default-avatar.webp';
 
             headerRight = <div className="flex-c header-right">
                 <Link to="/upload-beat" className="btn-primary NONE"
@@ -186,7 +186,7 @@ class Header extends Component {
             headerRight = <div className="flex-c header-right">
 
                 <a href="/oauth2/authorization/google" className="mr10" style={{whiteSpace: "nowrap"}}>
-                    <img src={"/img/google.png"} alt="google"
+                    <img src={"https://i.ibb.co/cxSmY0W/google.png"} alt="google"
                          width="18px" className="mr5"/>
                     <span className="fs14 fw300">Войти</span>
                 </a>
@@ -209,7 +209,7 @@ class Header extends Component {
                 <div className="flex-c">
 
                     <a href="/oauth2/authorization/google" className="hdr-btn" style={{padding: 0}}>
-                        <img src={"/img/google.png"} alt="google"
+                        <img src={"https://i.ibb.co/cxSmY0W/google.png"} alt="google"
                              width="18px" className="mr5"/>
                         <span>Войти через Google</span>
                     </a>
@@ -238,7 +238,7 @@ class Header extends Component {
 
                             <div className="mr16 NONE2">
                                 <Link to="/" className="header-logo">
-                                    <img src={"/img/logo.png"} width="25px" alt=""/>
+                                    <img src={"https://i.ibb.co/QM8NnLh/logo.png"} width="25px" alt="logo"/>
                                 </Link>
                             </div>
 
@@ -294,7 +294,7 @@ class Header extends Component {
 
                         <div className="btn-burger flex-c-c">
                             <Link to="/" onClick={this.burgerClose}>
-                                <img src={"/img/logo.png"} width="21px" alt=""/>
+                                <img src={"https://i.ibb.co/QM8NnLh/logo.png"} width="21px" alt="logo"/>
                             </Link>
                         </div>
                     </div>

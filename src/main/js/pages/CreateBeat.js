@@ -497,7 +497,7 @@ class CreateBeat extends Component {
                                         {this.state.genre === "POP_ROCK" ? "Поп-рок" : null}
                                         {this.state.genre === "DRILL" ? "DRILL" : null}
                                         {this.state.genre === "REGGAE" ? "Рэгги" : null}
-                                        <img src={"/img/arrow.png"} alt="" className="edit-arrow"/>
+                                        <img src={"https://i.ibb.co/1MwbwJb/arrow.png"} alt="arrow" className="edit-arrow"/>
                                         {this.state.genrePopUp ?
                                             <div className="pus-container">
                                                 <div className="pop-up-select">
@@ -587,7 +587,7 @@ class CreateBeat extends Component {
                                             {this.state.mood === "CALM" ? "Спокойствие" : null}
                                             {this.state.mood === "CONFIDENT" ? "Уверенный" : null}
                                             {this.state.mood === "CRAZY" ? "Сумасшедший" : null}
-                                            <img src={"/img/arrow.png"} alt="" className="edit-arrow"/>
+                                            <img src={"https://i.ibb.co/1MwbwJb/arrow.png"} alt="arrow" className="edit-arrow"/>
                                             {this.state.moodPopUp ?
                                                 <div className="pus-container">
                                                     <div className="pop-up-select">
@@ -658,7 +658,7 @@ class CreateBeat extends Component {
                                             {this.state.key === "BFM" ? "Bb Minor" : null}
                                             {this.state.key === "BFMJ" ? "Bb Major" : null}
                                             {this.state.key === "BM" ? "B Minor" : null}
-                                            <img src={"/img/arrow.png"} alt="" className="edit-arrow"/>
+                                            <img src={"https://i.ibb.co/1MwbwJb/arrow.png"} alt="arrow" className="edit-arrow"/>
                                             {this.state.keyPopUp ?
                                                 <div className="pus-container">
                                                     <div className="pop-up-select">
@@ -710,7 +710,8 @@ class CreateBeat extends Component {
                                   style={this.state.free ?
                                       {backgroundColor: "#005ff8", border: "1px solid #005ff8"} : null}>
 
-                                    {this.state.free ? <img src={"/img/check.png"} width="10px" alt=""/> : null}
+                                    {this.state.free ? <img src={"https://i.ibb.co/NxM8mHT/check.png"}
+                                                            width="10px" alt="check"/> : null}
                                 </span>
                             <span className="free" style={{cursor: "pointer"}}
                                   onClick={this.setFree}>Бесплатно</span>

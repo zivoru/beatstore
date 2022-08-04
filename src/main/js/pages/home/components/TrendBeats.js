@@ -94,7 +94,7 @@ class TrendBeats extends Component {
                                             {beat.user.profile.displayName}
                                         </Link>
                                         {beat.user.verified === true ?
-                                            <img src={'/img/account-verified.svg'} alt="verified"/> : null}
+                                            <img src={'https://i.ibb.co/T8GczJ3/account-verified.webp'} alt="verified"/> : null}
                                     </div>
 
                                     {beat.bpm !== null && beat.bpm !== ""

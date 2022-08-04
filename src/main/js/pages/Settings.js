@@ -227,7 +227,7 @@ class Settings extends Component {
                                     <img className="card-img" style={{pointerEvents: "initial", cursor: "pointer"}}
                                          src={this.state.imageName !== null && this.state.imageName !== "" ?
                                              `/img/user-${this.state.userId}/profile/${this.state.imageName}`
-                                             : '/img/default-avatar.svg'} alt=""/>
+                                             : 'https://i.ibb.co/KXhBMsx/default-avatar.webp'} alt="avatar"/>
                                 }
                             </label>
                             <input type="file" onChange={this.uploadImage} id="file" required style={{display: "none"}}/>

@@ -246,14 +246,15 @@ class Profile extends Component {
                                     <div style={{width: 88, height: 88}}>
                                         <img src={usr.profile.imageName !== null && usr.profile.imageName !== "" ?
                                             `/img/user-${usr.id}/profile/${usr.profile.imageName}` :
-                                            '/img/track-placeholder.svg'} alt="" className="item-image-profile"/>
+                                            'https://i.ibb.co/KXhBMsx/default-avatar.webp'}
+                                             alt="avatar" className="item-image-profile"/>
                                     </div>
 
-                                    <div className="mw100 flex-c-c">
+                                    <div className="mw100 flex-c-c mt16">
                                         <h1 className="mw100 wnohte fs20">{usr.profile.displayName}</h1>
 
                                         {usr.verified === true ?
-                                            <img src={'/img/account-verified.svg'}
+                                            <img src={'https://i.ibb.co/T8GczJ3/account-verified.webp'}
                                                  alt="verified" width="17px" className="ml5"/> : null}
                                     </div>
 
@@ -288,7 +289,7 @@ class Profile extends Component {
                                                 <a href={"https://instagram.com/" + usr.social.instagram}
                                                    target="_blank" className="item-social">
 
-                                                    <img src={'/img/profile/instagram.png'} alt="youtube" width="20px"/>
+                                                    <img src={'https://i.ibb.co/q052Zy9/instagram.png'} alt="youtube" width="20px"/>
                                                     Instagram
                                                 </a>
                                             </div>
@@ -300,7 +301,7 @@ class Profile extends Component {
                                                 <a href={"https://youtube.com/" + usr.social.youtube}
                                                    target="_blank" className="item-social">
 
-                                                    <img src={'/img/profile/youtube.png'} alt="youtube" width="20px"/>
+                                                    <img src={'https://i.ibb.co/wzttrTV/youtube.png'} alt="youtube" width="20px"/>
                                                     YouTube
                                                 </a>
                                             </div>
@@ -312,7 +313,7 @@ class Profile extends Component {
                                                 <a href={"https://www.tiktok.com/@" + usr.social.tiktok}
                                                    target="_blank" className="item-social">
 
-                                                    <img src={'/img/profile/tiktok.png'} alt="youtube" width="20px"/>
+                                                    <img src={'https://i.ibb.co/cFdJwTj/tiktok.png'} alt="youtube" width="20px"/>
                                                     Tik-Tok
                                                 </a>
                                             </div>
@@ -324,7 +325,7 @@ class Profile extends Component {
                                                 <a href={"https://vk.com/" + usr.social.vkontakte}
                                                    target="_blank" className="item-social">
 
-                                                    <img src={'/img/profile/vk.png'} alt="youtube" width="20px"/>
+                                                    <img src={'https://i.ibb.co/JdgLDkk/vk.png'} alt="youtube" width="20px"/>
                                                     VK
                                                 </a>
                                             </div>

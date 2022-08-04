@@ -59,7 +59,7 @@ class App extends React.Component {
             playerBeat: null,
             playback: false,
             playbackStop: false,
-            like: '/img/heart.png',
+            like: 'https://i.ibb.co/W086Tk3/heart.png',
             btn: null,
             licenseCode: null,
             license: null,
@@ -131,7 +131,7 @@ class App extends React.Component {
             audio: '',
             beat: null,
             playerBeat: null,
-            like: '/img/heart.png',
+            like: 'https://i.ibb.co/W086Tk3/heart.png',
             btn: null,
             licenseCode: null,
             license: null,
@@ -189,7 +189,7 @@ class App extends React.Component {
 
         this.setState({
             audio: path,
-            like: '/img/heart.png'
+            like: 'https://i.ibb.co/W086Tk3/heart.png'
         })
 
         this.getBeat(id).then(res => this.setState({beat: res.data}))
@@ -199,7 +199,9 @@ class App extends React.Component {
 
             if (this.state.user !== null && this.state.user !== undefined && this.state.user !== "empty") {
                 for (const like of res.data.beat.likes) {
-                    if (like.id === this.state.user.id) this.setState({like: '/img/heart-fill.png'})
+                    if (like.id === this.state.user.id) {
+                        this.setState({like: 'https://i.ibb.co/Msx7jjb/heart-fill.png'})
+                    }
                 }
             }
 
@@ -222,18 +224,18 @@ class App extends React.Component {
     like = () => {
         let s = this.state;
         if (s.user !== null && s.user !== undefined && s.user !== "empty") {
-            if (s.like === '/img/heart.png') {
-                axios.post("/api/v1/beats/addToFavorite/" + s.beat.id)
+            if (s.like === 'https://i.ibb.co/W086Tk3/heart.png') {
+                axios.post("/api/v1/beats/addToFavorite/" + s.beat.beat.id)
                     .then(() => {
                         this.setState({
-                            like: '/img/heart-fill.png'
+                            like: 'https://i.ibb.co/Msx7jjb/heart-fill.png'
                         })
                     })
             } else {
-                axios.post("/api/v1/beats/removeFromFavorite/" + s.beat.id)
+                axios.post("/api/v1/beats/removeFromFavorite/" + s.beat.beat.id)
                     .then(() => {
                         this.setState({
-                            like: '/img/heart.png'
+                            like: 'https://i.ibb.co/W086Tk3/heart.png'
                         })
                     })
             }
@@ -587,7 +589,7 @@ class App extends React.Component {
 
                     <div className="pop-up-header">
                         Выберите лицензию
-                        <img src={'/img/close.png'} alt="close" width="18px" onClick={this.closePopUps}/>
+                        <img src={'https://i.ibb.co/FnGGGTx/close.png'} alt="close" width="18px" onClick={this.closePopUps}/>
                     </div>
 
                     <div className="licenses">
@@ -919,12 +921,12 @@ class App extends React.Component {
                              style={{display: "initial", opacity: 1, height: 200, transform: "translate(-50%, -50%)"}}>
                             <div className="pop-up-header">
                                 Авторизация
-                                <img src={'/img/close.png'} alt="close" width="18px"
+                                <img src={'https://i.ibb.co/FnGGGTx/close.png'} alt="close" width="18px"
                                      onClick={() => this.setState({loginPopUp: false})}/>
                             </div>
 
                             <a href="/oauth2/authorization/google" className="btn-primary btn-login" target="_blank">
-                                <img src={"/img/google.png"} alt="google"
+                                <img src={"https://i.ibb.co/cxSmY0W/google.png"} alt="google"
                                      width="24px" className="mr16"/>
                                 Войти через Google
                             </a>

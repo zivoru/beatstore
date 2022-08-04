@@ -65,7 +65,7 @@ class RecommendedPlaylists extends Component {
                                         </Link>
 
                                         {playlist.user.verified === true ?
-                                            <img src={'/img/account-verified.svg'} alt="verified"/> : null}
+                                            <img src={'https://i.ibb.co/T8GczJ3/account-verified.webp'} alt="verified"/> : null}
                                     </div>
                                 </div>
                             </div>
