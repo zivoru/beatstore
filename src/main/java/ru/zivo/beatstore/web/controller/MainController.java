@@ -31,4 +31,9 @@ public class MainController {
     public String playlist() {
         return "index";
     }
+
+    @GetMapping("/genre/*")
+    public String genre() {
+        return "index";
+    }
 }

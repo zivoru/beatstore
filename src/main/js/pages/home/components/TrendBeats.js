@@ -23,6 +23,7 @@ class TrendBeats extends Component {
 
         document.getElementById(`play-play${beat.id}`).style.display = "none"
         document.getElementById(`pause-beat${beat.id}`).style.display = "initial"
+        document.getElementById(`pause-beat${beat.id}`).style.opacity = "1"
     }
     play = (beatId) => {
         this.props.btnPlay()
@@ -30,7 +31,10 @@ class TrendBeats extends Component {
         let buttonPlay = document.getElementById(`play-play${beatId}`);
         let buttonPause = document.getElementById(`pause-beat${beatId}`);
         if (buttonPlay !== null) buttonPlay.style.display = "none"
-        if (buttonPause !== null) buttonPause.style.display = "initial"
+        if (buttonPause !== null) {
+            buttonPause.style.display = "initial"
+            buttonPause.style.opacity = "1"
+        }
     }
     pause = (beatId) => {
         this.props.btnPause()
@@ -67,7 +71,7 @@ class TrendBeats extends Component {
                                                     onClick={this.play.bind(this, beat, path, beat.id)}></button>
 
                                             <button id={`pause-beat${beat.id}`} className="pause-beat" title="Пауза"
-                                                    style={!this.props.playback ? {display: "none"} : null}
+                                                    style={!this.props.playback ? {display: "none"} : {opacity: 1}}
                                                     onClick={this.pause.bind(this, beat.id)}></button>
                                         </>
                                         : <>

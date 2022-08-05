@@ -31,8 +31,10 @@ public class PlaylistController {
 
     @Operation(summary = "Получение дто плейлиста по id")
     @GetMapping("{id}")
-    public ResponseEntity<PlaylistDto> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(playlistService.findDtoById(id));
+    public ResponseEntity<PlaylistDto> findById(@AuthenticationPrincipal OAuth2User principal,
+                                                @PathVariable Long id) {
+        return ResponseEntity.ok(playlistService.findDtoById(id,
+                principal == null ? null : principal.getAttribute("sub")));
     }
 
     @Operation(summary = "Получение списка плейлистов по id пользователя")

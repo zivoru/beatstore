@@ -47,36 +47,48 @@ class Home extends Component {
                             <Link to="/top-charts" className="hu">Трендовые биты</Link>
                             <Link to="/top-charts" className="color-or hu fs12 fw400">См. все</Link>
                         </div>
-                        <TrendBeats setAudio={this.props.setAudio}
-                                    btnPause={this.props.btnPause}
-                                    btnPlay={this.props.btnPlay}
-                                    playback={this.props.playback}
-                                    playBeatId={this.props.playBeatId}/>
+                        <div style={{height: 374}}>
+
+                            <TrendBeats setAudio={this.props.setAudio}
+                                        btnPause={this.props.btnPause}
+                                        btnPlay={this.props.btnPlay}
+                                        playback={this.props.playback}
+                                        playBeatId={this.props.playBeatId}/>
+                        </div>
 
 
                         <div className="title">
-                            <Link to="/top-charts" className="hu">Рекомендуемые плейлисты</Link>
-                            <Link to="/top-charts" className="color-or hu fs12 fw400">См. все</Link>
+                            <Link to="/playlists" className="hu">Рекомендуемые плейлисты</Link>
+                            <Link to="/playlists" className="color-or hu fs12 fw400">См. все</Link>
                         </div>
-                        <RecommendedPlaylists />
+                        <div style={{height: 388}}>
+
+                            <RecommendedPlaylists />
+                        </div>
 
 
                         <div className="title">
-                            <Link to="/top-charts" className="hu">Рекомендуемые битмейкеры</Link>
-                            <Link to="/top-charts" className="color-or hu fs12 fw400">См. все</Link>
+                            <Link to="/beatmakers" className="hu">Рекомендуемые битмейкеры</Link>
+                            <Link to="/beatmakers" className="color-or hu fs12 fw400">См. все</Link>
                         </div>
-                        <RecommendedUsers/>
+                        <div style={{height: 277}}>
+
+                            <RecommendedUsers/>
+                        </div>
 
 
                         <div className="title">
-                            <Link to="/top-charts" className="hu">Бесплатные биты</Link>
-                            <Link to="/top-charts" className="color-or hu fs12 fw400">См. все</Link>
+                            <Link to="/free-beats" className="hu">Бесплатные биты</Link>
+                            <Link to="/free-beats" className="color-or hu fs12 fw400">См. все</Link>
                         </div>
-                        <TrendBeats setAudio={this.props.setAudio}
-                                    btnPause={this.props.btnPause}
-                                    btnPlay={this.props.btnPlay}
-                                    playback={this.props.playback}
-                                    playBeatId={this.props.playBeatId}/>
+                        <div style={{height: 374}}>
+
+                            <TrendBeats setAudio={this.props.setAudio}
+                                        btnPause={this.props.btnPause}
+                                        btnPlay={this.props.btnPlay}
+                                        playback={this.props.playback}
+                                        playBeatId={this.props.playBeatId}/>
+                        </div>
                     </div>
                 </div>
 

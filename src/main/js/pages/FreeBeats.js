@@ -2,27 +2,30 @@ import React, {Component} from "react";
 import axios from "axios";
 import Beats from "./components/Beats";
 
-class History extends Component {
+class FreeBeats extends Component {
     state = {
         user: null,
         beats: null,
-        page: 0,
         totalPages: null,
-        pagination: []
+        size: 12,
+        position: 100,
     }
 
     componentDidMount() {
         window.scrollTo({top: 0, behavior: 'smooth'})
         this.setState({user: this.props.user})
-        this.addBeatsToState(this.state.page)
+        this.addBeatsToState()
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.user !== this.props.user) this.setState({user: this.props.user})
+        if (prevProps.user !== this.props.user) this.setState({user: this.props.user});
+        if (prevState.size !== this.state.size) {
+            this.addBeatsToState()
+        }
     }
 
-    addBeatsToState = (page) => {
-        axios.get("/api/v1/beats/history/?page=" + page + "&size=10000").then(res => {
+    addBeatsToState = () => {
+        axios.get("/api/v1/beats/free-beats/?page=0&size=" + this.state.size).then(res => {
             this.setState({
                 beats: res.data.totalElements === 0 ? "empty" : res.data.content,
                 totalPages: res.data.totalPages
@@ -34,22 +37,31 @@ class History extends Component {
 
     render() {
 
-        if (this.state.user !== null && this.state.user !== undefined && this.state.user !== "empty") {
-            document.title = this.state.user.profile.displayName + " | История"
+        document.title = "Бесплатные биты | BeatStore"
+
+
+        window.onscroll = () => {
+            const scrollTopPosition = document.documentElement.scrollTop;
+            if (scrollTopPosition > this.state.position) {
+                this.setState({
+                    size: this.state.size + 12,
+                    position: this.state.position + 500
+                })
+            }
         }
 
-        let historyCode
+
+        let beats;
 
         if (this.state.beats !== null && this.state.beats !== "empty") {
-            historyCode =
+            beats =
                 <div>
                     <h1 className="qwe1-title">
-                        История
-                        <span className="fs14 fw300 color-g1">прослушанное мной</span>
+                        Бесплатные биты
+                        <span className="fs14 fw300 color-g1">то, что нравится всем</span>
                     </h1>
 
-                    <Beats page={this.state.page}
-                           beats={this.state.beats}
+                    <Beats beats={this.state.beats}
                            openLicenses={this.props.openLicenses}
                            setAudio={this.props.setAudio}
                            openDownload={this.props.openDownload}
@@ -61,11 +73,11 @@ class History extends Component {
                     />
                 </div>
         } else if (this.state.beats === "empty") {
-            historyCode =
+            beats =
                 <div className="qwe-null">
                     <h1 className="qwe1-title">
-                        История
-                        <span className="fs14 fw300 color-g1">пока что ничего нет )=</span>
+                        Бесплатные биты
+                        <span className="fs14 fw300 color-g1">бесплатных битов пока что нет, но ты можешь это исправить!</span>
                     </h1>
                 </div>
         }
@@ -75,7 +87,7 @@ class History extends Component {
 
                 <div className="wrapper">
                     <div className="container">
-                        {historyCode}
+                        {beats}
                     </div>
                 </div>
 
@@ -84,4 +96,4 @@ class History extends Component {
     }
 }
 
-export {History}
+export {FreeBeats}

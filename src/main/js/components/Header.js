@@ -266,11 +266,11 @@ class Header extends Component {
                                 <span>Топ Чарт</span>
                             </Link>
 
-                            <Link to="/feed" className="hdr-btn NONE">
+                            <Link to="/free-beats" className="hdr-btn NONE">
                                 <span>Бесплатные биты</span>
                             </Link>
 
-                            <Link to="/feed" className="hdr-btn NONE">
+                            <Link to="/playlists" className="hdr-btn NONE">
                                 <span>Плейлисты</span>
                             </Link>
 

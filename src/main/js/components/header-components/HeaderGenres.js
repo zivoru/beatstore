@@ -2,11 +2,11 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 
 const li = [
-    {url: 'genres', title: 'Все жанры'},
-    {url: 'genres/RAP', title: 'Рэп'},
-    {url: 'genres/HIP_HOP', title: 'Хип-хоп'},
-    {url: 'genres/POP', title: 'Поп'},
-    {url: 'genres/POP_RAP', title: 'Поп-рэп'},
+    {url: '/genres', title: 'Все жанры'},
+    {url: '/genre/RAP', title: 'Рэп'},
+    {url: '/genre/HIP_HOP', title: 'Хип-хоп'},
+    {url: '/genre/POP', title: 'Поп'},
+    {url: '/genre/POP_RAP', title: 'Поп-рэп'},
 ]
 
 const HeaderGenres = (props) => (
@@ -15,7 +15,7 @@ const HeaderGenres = (props) => (
         <ul>
             {li.map((li, index) => (
                 <li key={index}>
-                    <Link to={"/" + li.url} onClick={props.click}>
+                    <Link to={li.url} onClick={props.click}>
                         {li.title}
                     </Link>
                 </li>

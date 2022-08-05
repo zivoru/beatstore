@@ -20,7 +20,9 @@ class MyPlaylists extends Component {
             visibility: false,
             update: false,
             editPlaylistPopUpView: false,
-            editPlaylistId: null
+            editPlaylistId: null,
+            warningDelete: false,
+            deleteId: null
         };
     }
 
@@ -110,15 +112,15 @@ class MyPlaylists extends Component {
                     }).then().catch()
                 }
 
+                setTimeout(() => this.setState({update: !this.state.update}), 100);
                 setTimeout(() => this.setState({
                     playlistPopUp: false,
                     image: null,
                     imageSrc: null,
                     name: "",
                     description: "",
-                    visibility: false,
-                    update: !this.state.update
-                }), 100);
+                    visibility: false
+                }), 200);
 
             }).catch()
         }
@@ -164,6 +166,7 @@ class MyPlaylists extends Component {
                     }).then().catch()
                 }
 
+                setTimeout(() => this.setState({update: !this.state.update}), 100);
                 setTimeout(() => this.setState({
                     playlistPopUp: false,
                     image: null,
@@ -172,13 +175,19 @@ class MyPlaylists extends Component {
                     name: "",
                     description: "",
                     visibility: false,
-                    update: !this.state.update,
                     editPlaylistPopUpView: false,
                     editPlaylistId: null
-                }), 100);
+                }), 200);
 
             }).catch()
         }
+    }
+
+    deletePlaylist = () => {
+        axios.delete("/api/v1/playlists/" + this.state.deleteId).then(() => {
+            setTimeout(() => this.setState({update: !this.state.update}), 100);
+            setTimeout(() => this.setState({warningDelete: false}), 200);
+        }).catch()
     }
 
     render() {
@@ -242,7 +251,7 @@ class MyPlaylists extends Component {
                                                              alt="verified"/> : null}
                                                 </div>
 
-                                                <button className="btn-edit-playlist"
+                                                <button className="btn-edit-playlist" style={{right: 30}}
                                                         onClick={() => this.setState({
                                                             editPlaylistPopUpView: true,
                                                             editPlaylistId: playlist.id,
@@ -255,6 +264,17 @@ class MyPlaylists extends Component {
                                                         })}>
                                                     <img src={'https://i.ibb.co/sbWQXgY/pencil.png'} width="12px"
                                                          alt="pencil"/>
+                                                </button>
+
+                                                <button className="btn-edit-playlist" style={{paddingBottom: 4}}
+                                                        onClick={() => {
+                                                            this.setState({
+                                                                warningDelete: true,
+                                                                deleteId: playlist.id
+                                                            })
+                                                        }}>
+                                                    <img src={'https://i.ibb.co/2MHB4S1/remove.png'} width="15px"
+                                                         alt="remove"/>
                                                 </button>
                                             </div>
                                         </div>
@@ -363,6 +383,33 @@ class MyPlaylists extends Component {
                         setVisibility={this.setVisibility}
                         editPlaylist={this.editPlaylist}
                     /> : null}
+
+                {state.warningDelete ?
+                    <div>
+
+                        <div className="warning-delete-comment"
+                             onClick={() => {
+                                 this.setState({warningDelete: false})
+                             }}></div>
+
+                        <div className="warning-delete-comment-pop-up">
+                            <span>Вы уверены что хотите удалить этот плейлист?</span>
+
+                            <div className="flex-c-c mt32">
+                                <button className="btn-primary mr16" onClick={this.deletePlaylist}>
+                                    Удалить
+                                </button>
+
+                                <button className="btn-primary" style={{backgroundColor: "#262626"}}
+                                        onClick={() => {
+                                            this.setState({warningDelete: false})
+                                        }}>
+                                    Отмена
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    : null}
             </div>
         )
     }

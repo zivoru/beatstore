@@ -232,6 +232,7 @@ class Beat extends Component {
 
         document.getElementById(`play-play${beat.id}`).style.display = "none"
         document.getElementById(`pause-beat${beat.id}`).style.display = "initial"
+        document.getElementById(`pause-beat${beat.id}`).style.opacity = "1"
     }
     play = (beatId) => {
         this.props.btnPlay()
@@ -239,7 +240,10 @@ class Beat extends Component {
         let buttonPlay = document.getElementById(`play-play${beatId}`);
         let buttonPause = document.getElementById(`pause-beat${beatId}`);
         if (buttonPlay !== null) buttonPlay.style.display = "none"
-        if (buttonPause !== null) buttonPause.style.display = "initial"
+        if (buttonPause !== null) {
+            buttonPause.style.display = "initial"
+            buttonPause.style.opacity = "1"
+        }
     }
     pause = (beatId) => {
         this.props.btnPause()
@@ -414,7 +418,8 @@ class Beat extends Component {
 
                                     <img src={beat.imageName !== null && beat.imageName !== "" ?
                                         `/resources/user-${beat.user.id}/beats/beat-${beat.id}/${beat.imageName}` :
-                                        '/resources/track-placeholder.svg'} alt="" className="equalizer-background"/>
+                                        'https://i.ibb.co/ySkyssb/track-placeholder.webp'}
+                                         alt="track-placeholder" className="equalizer-background"/>
 
                                     <div className="mr16">
                                         {this.props.playBeatId === beat.id
@@ -739,7 +744,7 @@ class Beat extends Component {
                                                                 <button id={`pause-beat${beat.id}`}
                                                                         className="pause-beat"
                                                                         title="Пауза"
-                                                                        style={!this.props.playback ? {display: "none"} : null}
+                                                                        style={!this.props.playback ? {display: "none"} : {opacity: 1}}
                                                                         onClick={this.pause.bind(this, beat.id)}></button>
                                                             </>
                                                             : <>

@@ -75,4 +75,6 @@ public interface BeatService {
     Page<BeatDto> findAllByGenre(String userId, String genre, Pageable pageable);
 
     Page<BeatDto> findAllByTag(String userId, Long tagId, Pageable pageable);
+
+    void publication(String userId, Long beatId);
 }

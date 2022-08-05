@@ -71,6 +71,11 @@ class CreateBeat extends Component {
             document.querySelector('.add-tag').style.color = "#A3A3A3"
         }
     }
+    onKeyDown = e =>{
+        if (e.keyCode === 13) {
+            this.addTag()
+        }
+    }
     addTag = () => {
         if (this.state.tag !== "" && this.state.tags.length < 3) {
             let tagsDOM = document.getElementsByClassName('tag');
@@ -331,8 +336,6 @@ class CreateBeat extends Component {
                     price_exclusive: s.priceExclusive
                 }).then().catch()
 
-                setTimeout(() => location.href = '/beats', 1000);
-
             }).catch(() => this.setState({loading: false}))
         }
     }
@@ -356,9 +359,11 @@ class CreateBeat extends Component {
         return (
             <div>
 
-                {this.state.loading ? <div className="loading">
-                    <div className="loader"></div>
-                </div> : null}
+                {this.state.loading
+                    ? <div className="loading-container">
+                        <div className="spinner"></div>
+                    </div>
+                    : null}
 
                 <div className="wrapper">
                     <div className="container">
@@ -398,7 +403,7 @@ class CreateBeat extends Component {
                                                     <span
                                                         className="max-s-tag color-g2">{this.state.tag.length}/25</span>
                                             <input id="tag" className="edit-input" type="text" placeholder="Тэг"
-                                                   onChange={this.tag}
+                                                   onChange={this.tag} onKeyDown={this.onKeyDown}
                                             />
                                         </div>
 
@@ -774,12 +779,13 @@ class CreateBeat extends Component {
                         </div>
 
                         <div className="save-button">
-                            <button className="btn-primary"
+                            <Link to="/beats" className="btn-primary"
                                     onClick={this.saveBeat.bind(this, "PUBLISHED")}>Опубликовать
-                            </button>
-                            <button className="btn-primary ml16" onClick={this.saveBeat.bind(this, "DRAFT")}
+                            </Link>
+                            <Link to="/beats" className="btn-primary ml16"
+                                  onClick={this.saveBeat.bind(this, "DRAFT")}
                                     style={{backgroundColor: "rgb(50, 50, 50)"}}>Сохранить как черновик
-                            </button>
+                            </Link>
                         </div>
 
                         <div style={{height: 100, width: "100%"}}></div>

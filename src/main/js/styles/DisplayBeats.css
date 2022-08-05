@@ -1,7 +1,4 @@
 
-.qwe-container {
-    min-height: 740px;
-}
 .qwe1-title {
     margin-top: 46px;
     font-size: 24px;
@@ -12,7 +9,10 @@
     display: flex;
     flex-direction: column;
     text-align: center;
-    line-height: 30px;
+    line-height: 50px;
+}
+.qwe1-title span {
+    line-height: initial;
 }
 .qwe-null span {
     color: #9f9f9f;
@@ -186,7 +186,7 @@
     color: #9f9f9f;
     font-size: 12px;
     letter-spacing: 0.1px;
-    line-height: 20px;
+    /*line-height: 20px;*/
     font-weight: 400;
     white-space: nowrap;
     transition: .15s;
@@ -232,9 +232,6 @@
 }
 
 @media (max-width: 767px) {
-    .qwe-container {
-        min-height: 660px;
-    }
     .qwe {
         padding: 8px 0;
     }

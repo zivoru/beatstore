@@ -2,7 +2,6 @@ package ru.zivo.beatstore.web.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import ru.zivo.beatstore.model.Beat;
 import ru.zivo.beatstore.model.User;
 
 import java.util.List;
@@ -17,7 +16,7 @@ public class PlaylistDto {
     private String description;
     private Boolean visibility;
     private User user;
-    private List<Beat> beats;
+    private List<BeatDto> beats;
     private Set<User> likes;
     private String beatCount;
     private String likesCount;

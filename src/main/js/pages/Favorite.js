@@ -33,35 +33,11 @@ class Favorite extends Component {
         })
     }
 
-    // selectPageHistory = (id) => {
-    //     for (let i = 0; i < this.state.totalPages; i++) {
-    //         let element = document.querySelector(".page" + i);
-    //         element.style.opacity = "1"
-    //     }
-    //
-    //     let element = document.querySelector(".page" + id);
-    //     element.style.opacity = "0.5"
-    //
-    //     this.setState({
-    //         page: id
-    //     })
-    //
-    //     this.addBeatsToState(id)
-    // }
-
     render() {
 
         if (this.state.user !== null && this.state.user !== undefined && this.state.user !== "empty") {
             document.title = this.state.user.profile.displayName + " | Избранное"
         }
-
-        // if (this.state.totalPages > 1 && this.state.pagination.length === 0) {
-        //
-        //     for (let i = 0; i < this.state.totalPages; i++) {
-        //         this.state.pagination.push(<button onClick={this.selectPageHistory.bind(this, i)}
-        //                                            className={"page" + i}>{i + 1}</button>)
-        //     }
-        // }
 
         let historyCode
 
@@ -72,19 +48,6 @@ class Favorite extends Component {
                         Избранное
                         <span className="fs14 fw300 color-g1">то, что мне понравилось</span>
                     </h1>
-
-                    {/*<div className="qwe-pagination-container">*/}
-
-                    {/*    <div className="qwe-pagination">*/}
-                    {/*        {this.state.pagination.map((pageBtn, index) => {*/}
-                    {/*            return (*/}
-                    {/*                <div className="mb32" key={index}>*/}
-                    {/*                    {pageBtn}*/}
-                    {/*                </div>*/}
-                    {/*            )*/}
-                    {/*        })}*/}
-                    {/*    </div>*/}
-                    {/*</div>*/}
 
                     <Beats page={this.state.page}
                            beats={this.state.beats}
@@ -103,9 +66,8 @@ class Favorite extends Component {
                 <div className="qwe-null">
                     <h1 className="qwe1-title">
                         Избранное
-                        <span className="fs14 fw300 color-g1">то, что мне понравилось</span>
+                        <span className="fs14 fw300 color-g1">пока что ничего нет )=</span>
                     </h1>
-                    <span>Ничего нет</span>
                 </div>
         }
 
@@ -113,7 +75,7 @@ class Favorite extends Component {
             <div>
 
                 <div className="wrapper">
-                    <div className="container qwe-container" style={{maxWidth: 1440}}>
+                    <div className="container">
                         {historyCode}
                     </div>
                 </div>

@@ -39,15 +39,18 @@ const DownloadPopUp = (props) => (
             <img src={'https://i.ibb.co/FnGGGTx/close.png'} alt="close" width="18px" onClick={props.closePopUps}/>
         </div>
 
-        <button className="btn-primary mb16 w100" onClick={downloadMp3.bind(this, props.beat.id, props.beat.title)}>
+        <button className="btn-primary btn-free mb16 w100" style={{padding: 10}}
+                onClick={downloadMp3.bind(this, props.beat.id, props.beat.title)}>
             СКАЧАТЬ MP3
         </button>
 
-        <button className="btn-primary mb16 w100" onClick={downloadWav.bind(this, props.beat.id, props.beat.title)}>
+        <button className="btn-primary btn-free mb16 w100" style={{padding: 10}}
+                onClick={downloadWav.bind(this, props.beat.id, props.beat.title)}>
             СКАЧАТЬ WAV
         </button>
 
-        <button className="btn-primary w100" onClick={downloadZip.bind(this, props.beat.id, props.beat.title)}>
+        <button className="btn-primary btn-free w100" style={{padding: 10}}
+                onClick={downloadZip.bind(this, props.beat.id, props.beat.title)}>
             СКАЧАТЬ TRACK STEMS
         </button>
 

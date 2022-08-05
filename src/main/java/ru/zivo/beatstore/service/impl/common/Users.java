@@ -17,7 +17,7 @@ public class Users {
     }
 
     public static User getUser(String userId) {
-        return userRepository.findById(userId)
+        return userId == null ? null : userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с id = %s не найден".formatted(userId)));
     }
 }

@@ -13,7 +13,7 @@ public interface PlaylistService {
 
     Playlist findById(Long id);
 
-    PlaylistDto findDtoById(Long id);
+    PlaylistDto findDtoById(Long playlistId, String userId);
 
     List<Playlist> findAllByUserId(String userId);
 

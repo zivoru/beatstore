@@ -36,6 +36,11 @@ import {CreateBeat} from "./pages/CreateBeat";
 import {MyPlaylists} from "./pages/MyPlaylists";
 import Playlist1 from "./pages/Playlist1";
 import Genres from "./pages/Genres";
+import {Genre} from "./pages/Genre";
+import Genre1 from "./pages/Genre1";
+import {FreeBeats} from "./pages/FreeBeats";
+import {Playlists} from "./pages/Playlists";
+import Cart from "./pages/Cart";
 
 const React = require('react');
 
@@ -82,7 +87,7 @@ class App extends React.Component {
                 user: res.data.user === null || res.data.user === undefined ? "empty" : res.data.user
             });
 
-            setTimeout(() => this.setState({loading: false}), 2000)
+            setTimeout(() => this.setState({loading: false}), 10)
 
             if (res.data.user !== undefined && res.data.user !== null) {
                 // axios.get('/api/v1/carts/').then(response => {
@@ -110,7 +115,9 @@ class App extends React.Component {
             this.getBeat(this.state.beat.beat.id).then(res => this.setState({
                 beat: res.data,
                 playerBeat: res.data
-            })).catch(() => {this.setState({beat: "empty", playerBeat: "empty"})})
+            })).catch(() => {
+                this.setState({beat: "empty", playerBeat: "empty"})
+            })
         }
     }
 
@@ -205,14 +212,18 @@ class App extends React.Component {
 
             setTimeout(() => this.btnPlay(), 200)
 
-        }).catch(() => {this.setState({playerBeat: "empty"})})
+        }).catch(() => {
+            this.setState({playerBeat: "empty"})
+        })
 
         this.setState({play: "play"})
     }
     openLicenses = (id) => {
         if (this.state.user !== null && this.state.user !== undefined && this.state.user !== "empty") {
             this.getBeat(id).then(res => this.setState({beat: res.data}))
-                .catch(() => {this.setState({beat: "empty"})})
+                .catch(() => {
+                    this.setState({beat: "empty"})
+                })
 
             this.openLicense()
         } else {
@@ -380,7 +391,6 @@ class App extends React.Component {
         this.setState({updateCart: !this.state.updateCart})
     }
     addToCart = () => {
-
 
 
         // this.setState({
@@ -567,17 +577,16 @@ class App extends React.Component {
 
         if (this.state.beat !== null && this.state.beat !== "empty") {
 
-            if (this.state.user !== null && this.state.user !== undefined && this.state.user !== "empty") {
-                playlists = <PlaylistsPopUp user={this.state.user}
-                                            beat={this.state.beat.beat}
-                                            closePopUps={this.closePopUps}/>
-            }
-
-            download = <DownloadPopUp closePopUps={this.closePopUps} beat={this.state.beat.beat}/>
-
-            sharePopUp = <SharePopUp closePopUps={this.closePopUps} beat={this.state.beat.beat}/>
-
             if (this.state.beat.beat !== null && this.state.beat.beat !== undefined) {
+
+                if (this.state.user !== null && this.state.user !== undefined && this.state.user !== "empty") {
+                    playlists = <PlaylistsPopUp user={this.state.user}
+                                                beat={this.state.beat.beat}
+                                                closePopUps={this.closePopUps}/>
+                }
+
+                download = <DownloadPopUp closePopUps={this.closePopUps} beat={this.state.beat.beat}/>
+                sharePopUp = <SharePopUp closePopUps={this.closePopUps} beat={this.state.beat.beat}/>
 
                 let beat = this.state.beat.beat;
                 let licensing = this.state.beat.licensing;
@@ -587,7 +596,8 @@ class App extends React.Component {
 
                     <div className="pop-up-header">
                         Выберите лицензию
-                        <img src={'https://i.ibb.co/FnGGGTx/close.png'} alt="close" width="18px" onClick={this.closePopUps}/>
+                        <img src={'https://i.ibb.co/FnGGGTx/close.png'} alt="close" width="18px"
+                             onClick={this.closePopUps}/>
                     </div>
 
                     <div className="licenses">
@@ -672,6 +682,17 @@ class App extends React.Component {
 
                     {/*<button className="btn-primary btn-license" onClick={this.addToCart}>Добавить в корзину</button>*/}
                 </div>
+
+            } else {
+
+                if (this.state.user !== null && this.state.user !== undefined && this.state.user !== "empty") {
+                    playlists = <PlaylistsPopUp user={this.state.user}
+                                                beat={this.state.beat}
+                                                closePopUps={this.closePopUps}/>
+                }
+
+                download = <DownloadPopUp closePopUps={this.closePopUps} beat={this.state.beat}/>
+                sharePopUp = <SharePopUp closePopUps={this.closePopUps} beat={this.state.beat}/>
             }
         }
 
@@ -812,6 +833,30 @@ class App extends React.Component {
                         : <Settings user={this.state.user} updateUser={this.updateUser}/>}/>
 
                     <Route path="/genres" element={<Genres/>}/>
+
+                    <Route path="/genre/:genreName" element={<Genre1 user={this.state.user}
+                                                                     setAudio={this.setAudio}
+                                                                     openLicenses={this.openLicenses}
+                                                                     openDownload={this.openDownload}
+                                                                     btnPause={this.btnPause}
+                                                                     btnPlay={this.btnPlay}
+                                                                     playback={this.state.playback}
+                                                                     playBeatId={this.state.playerBeat !== null && this.state.playerBeat !== "empty"
+                                                                         ? this.state.playerBeat.beat.id : null}/>}/>
+
+                    <Route path="/free-beats" element={<FreeBeats user={this.state.user}
+                                                                  setAudio={this.setAudio}
+                                                                  openLicenses={this.openLicenses}
+                                                                  openDownload={this.openDownload}
+                                                                  btnPause={this.btnPause}
+                                                                  btnPlay={this.btnPlay}
+                                                                  playback={this.state.playback}
+                                                                  playBeatId={this.state.playerBeat !== null && this.state.playerBeat !== "empty"
+                                                                      ? this.state.playerBeat.beat.id : null}/>}/>
+
+                    <Route path="/playlists" element={<Playlists/>}/>
+
+                    <Route path="/cart" element={<Cart user={this.state.user} cart={this.state.cart}/>}/>
                 </Routes>
 
                 {/*{player}*/}
@@ -849,7 +894,7 @@ class App extends React.Component {
                                          onClick={this.openPlaylists.bind(this, null)}
                                          title="Добавить в плейлист"/>
 
-                                    <img src={'/https://i.ibb.co/rsL0r6P/share.png'}
+                                    <img src={'https://i.ibb.co/rsL0r6P/share.png'}
                                          width="14px" alt="share" className="player-icon"
                                          onClick={this.openShare.bind(this, null)} title="Поделиться"/>
                                 </div>
@@ -882,7 +927,6 @@ class App extends React.Component {
                                     {/*{this.state.btn}*/}
 
                                     {/*{this.state.playerBeat.beat.free === false && this.state.playerBeat.beat.id !== this.state.user.id && this.state.playerBeat.addedToCart*/}
-
 
 
                                     {this.state.playerBeat.beat.free
@@ -920,7 +964,10 @@ class App extends React.Component {
                 {this.state.loginPopUp ?
                     <div>
                         <div className="pop-up trs"
-                             style={{display: "initial", opacity: 1, height: 200, transform: "translate(-50%, -50%)"}}>
+                             style={{
+                                 display: "initial", opacity: 1,
+                                 transform: "translate(-50%, -50%)", width: 365
+                             }}>
                             <div className="pop-up-header">
                                 Авторизация
                                 <img src={'https://i.ibb.co/FnGGGTx/close.png'} alt="close" width="18px"
@@ -928,9 +975,9 @@ class App extends React.Component {
                             </div>
 
                             <a href="/oauth2/authorization/google" className="btn-primary btn-login" target="_blank">
-                                <img src={"https://i.ibb.co/cxSmY0W/google.png"} alt="google"
+                                <img src={"https://i.ibb.co/z27ySqh/google.png"} alt="google"
                                      width="24px" className="mr16"/>
-                                Войти через Google
+                                Продолжить с Google
                             </a>
                         </div>
 

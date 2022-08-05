@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.webjars.NotFoundException;
 import ru.zivo.beatstore.model.Beat;
+import ru.zivo.beatstore.model.Cart;
 import ru.zivo.beatstore.model.Playlist;
 import ru.zivo.beatstore.model.User;
 import ru.zivo.beatstore.repository.BeatRepository;
@@ -16,13 +17,12 @@ import ru.zivo.beatstore.repository.PlaylistRepository;
 import ru.zivo.beatstore.repository.UserRepository;
 import ru.zivo.beatstore.service.PlaylistService;
 import ru.zivo.beatstore.service.impl.common.Users;
+import ru.zivo.beatstore.web.dto.BeatDto;
 import ru.zivo.beatstore.web.dto.PlaylistDto;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class PlaylistServiceImpl implements PlaylistService {
@@ -48,8 +48,8 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     @Override
-    public PlaylistDto findDtoById(Long id) {
-        return mapToDto(findById(id));
+    public PlaylistDto findDtoById(Long playlistId, String userId) {
+        return mapToDto(findById(playlistId), Users.getUser(userId));
     }
 
     @Override
@@ -163,7 +163,7 @@ public class PlaylistServiceImpl implements PlaylistService {
         List<PlaylistDto> playlistDtoList = new ArrayList<>();
 
         for (Playlist playlist : sortedPlaylists) {
-            playlistDtoList.add(mapToDto(playlist));
+            playlistDtoList.add(mapToDto(playlist, null));
         }
 
         return playlistDtoList;
@@ -184,7 +184,7 @@ public class PlaylistServiceImpl implements PlaylistService {
         List<PlaylistDto> playlistDtoList = new ArrayList<>();
 
         for (Playlist playlist : publishedPlaylists) {
-            playlistDtoList.add(mapToDto(playlist));
+            playlistDtoList.add(mapToDto(playlist, null));
         }
 
         final int start = (int) pageable.getOffset();
@@ -192,7 +192,31 @@ public class PlaylistServiceImpl implements PlaylistService {
         return new PageImpl<>(playlistDtoList.subList(start, end), pageable, playlistDtoList.size());
     }
 
-    private PlaylistDto mapToDto(Playlist playlist) {
+    private PlaylistDto mapToDto(Playlist playlist, User user) {
+
+        List<Beat> beats = playlist.getBeats();
+        List<BeatDto> beatDtoList = new ArrayList<>();
+        Map<Long, Integer> beatsInCart = new HashMap<>();
+
+        if (user != null) {
+            for (Cart cart : user.getCart()) {
+                beatsInCart.put(cart.getBeat().getId(), 1);
+            }
+        }
+
+        for (Beat beat : beats) {
+            BeatDto beatDto = BeatDto.builder()
+                    .beat(beat)
+                    .addedToCart(false)
+                    .build();
+
+            if (user != null) {
+                if (beatsInCart.get(beat.getId()) != null) beatDto.setAddedToCart(true);
+            }
+
+            beatDtoList.add(beatDto);
+        }
+
         PlaylistDto playlistDto = PlaylistDto.builder()
                 .id(playlist.getId())
                 .name(playlist.getName())
@@ -200,7 +224,7 @@ public class PlaylistServiceImpl implements PlaylistService {
                 .description(playlist.getDescription())
                 .visibility(playlist.getVisibility())
                 .user(playlist.getUser())
-                .beats(playlist.getBeats())
+                .beats(beatDtoList)
                 .likes(playlist.getLikes())
                 .build();
 

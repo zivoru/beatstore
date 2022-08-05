@@ -13,12 +13,12 @@ const HomeGenres = () => (
 
         {genres.map((genre, index) => (
             <div className="grid-genres-item" key={index}>
-                <Link to={"/genres/" + genre.url} className="inl-blk genre-img trs ho">
+                <Link to={"/genre/" + genre.url} className="inl-blk genre-img trs ho">
                     <img className="slide-img-genre" src={genre.img} alt={genre.title}/>
                 </Link>
 
                 <div>
-                    <Link to={"/genres/" + genre.url} className="hu fw500 fs14 wnohte">
+                    <Link to={"/genre/" + genre.url} className="hu fw500 fs14 wnohte">
                         {genre.title}
                     </Link>
                 </div>

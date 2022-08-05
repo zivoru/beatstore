@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.webjars.NotFoundException;
 import ru.zivo.beatstore.model.*;
+import ru.zivo.beatstore.model.common.AbstractLongPersistable;
 import ru.zivo.beatstore.model.enums.BeatStatus;
 import ru.zivo.beatstore.model.enums.Licensing;
 import ru.zivo.beatstore.repository.*;
@@ -99,6 +100,16 @@ public class BeatServiceImpl implements BeatService {
         beat.setBpm(newBeat.getBpm());
         beat.setKey(newBeat.getKey());
         beatRepository.save(beat);
+    }
+
+    @Override
+    public void publication(String userId, Long beatId) {
+        User user = Users.getUser(userId);
+        Beat beat = findById(beatId);
+        if (user.getId().equals(beat.getUser().getId())) {
+            beat.setStatus(BeatStatus.PUBLISHED);
+            beatRepository.save(beat);
+        }
     }
 
     @Override
@@ -337,7 +348,13 @@ public class BeatServiceImpl implements BeatService {
     public Page<BeatDto> getBeats(String userId, String authUserId, Pageable pageable) {
         User authUser = authUserId != null ? Users.getUser(authUserId) : null;
 
-        return listToPage(pageable, mapToDtoList(authUser, sortedPublishedBeats(Users.getUser(userId).getBeats())));
+        List<Beat> sortedBeats = sortedPublishedBeats(Users.getUser(userId).getBeats())
+                .stream()
+                .filter(beat -> beat != null && beat.getId() != null)
+                .sorted(Comparator.comparingLong(Beat::getId))
+                .toList();
+
+        return listToPage(pageable, mapToDtoList(authUser, sortedBeats));
     }
 
     @Override

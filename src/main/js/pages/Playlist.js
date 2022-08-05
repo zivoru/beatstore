@@ -214,14 +214,18 @@ class Playlist extends Component {
 
         document.getElementById(`play-play${beat.id}`).style.display = "none"
         document.getElementById(`pause-beat${beat.id}`).style.display = "initial"
+        document.getElementById(`pause-beat${beat.id}`).style.opacity = "1"
     }
     play = (beatId) => {
         this.props.btnPlay()
 
         let buttonPlay = document.getElementById(`play-play${beatId}`);
         let buttonPause = document.getElementById(`pause-beat${beatId}`);
-        if (buttonPlay !== null) buttonPlay.style.display = "none"
-        if (buttonPause !== null) buttonPause.style.display = "initial"
+        if (buttonPlay !== null) buttonPlay.style.display = "none";
+        if (buttonPause !== null) {
+            buttonPause.style.display = "initial";
+            buttonPause.style.opacity = "1";
+        }
 
         // document.getElementById(`play-play${beatId}`).style.display = "none"
         // document.getElementById(`pause-beat${beatId}`).style.display = "initial"
@@ -329,82 +333,96 @@ class Playlist extends Component {
                             </div>
 
                             <div className="right-panel ml16">
-                                <div className="grid-table">
-                                    {playlist.beats.map((beat, index) => {
 
-                                        let path = `/resources/user-${beat.user.id}/beats/beat-${beat.id}/`;
-
-                                        return (
-                                            <div key={index}>
-                                                <div className="slide-img-container playlist-img-container">
-                                                    <Link to={"/beat/" + beat.id} className="inl-blk trs"
-                                                          style={{position: "absolute",
-                                                              top: 0, left: 0, width: "100%", height: "100%",}}>
-                                                        <img className="slide-img playlist-img"
-                                                             src={beat.imageName !== null && beat.imageName !== ''
-                                                                 ? `${path}${beat.imageName}`
-                                                                 : 'https://i.ibb.co/ySkyssb/track-placeholder.webp'}
-                                                             alt="track-placeholder"/>
-                                                    </Link>
-                                                    {this.props.playBeatId === beat.id
-                                                        ? <>
-                                                            <button id={`play-play${beat.id}`} className="play"
-                                                                    title="Воспроизвести"
-                                                                    style={this.props.playback ? {display: "none"} : null}
-                                                                    onClick={this.play.bind(this, beat, path, beat.id)}></button>
-
-                                                            <button id={`pause-beat${beat.id}`} className="pause-beat"
-                                                                    title="Пауза"
-                                                                    style={!this.props.playback ? {display: "none"} : null}
-                                                                    onClick={this.pause.bind(this, beat.id)}></button>
-                                                        </>
-                                                        : <>
-                                                            <button id={`play-play${beat.id}`} className="play"
-                                                                    title="Воспроизвести"
-                                                                    onClick={this.playPlay.bind(this, beat, path)}></button>
-
-                                                            <button id={`pause-beat${beat.id}`} className="pause-beat"
-                                                                    title="Пауза"
-                                                                    style={{display: "none"}}
-                                                                    onClick={this.pause.bind(this, beat.id)}></button>
-                                                        </>
-                                                    }
-                                                </div>
-
-                                                <div className="grid-item">
-                                                    <div className="sl-gr-it">
-                                                        <Link to={"/beat/" + beat.id} className="fs12 fw400 hu wnohte"
-                                                              title={beat.title}>
-                                                            {beat.title}
-                                                        </Link>
-                                                    </div>
-
-                                                    <div className="sl-gr-it">
-                                                        <Link to={"/" + beat.user.username}
-                                                              className="fs12 fw400 mr5 color-g1 hu wnohte"
-                                                              title={beat.user.profile.displayName}>
-                                                            {beat.user.profile.displayName}
-                                                        </Link>
-                                                        {beat.user.verified === true ?
-                                                            <img src={'https://i.ibb.co/T8GczJ3/account-verified.webp'}
-                                                                 alt="verified"/> : null}
-                                                    </div>
-
-                                                    {beat.bpm !== null && beat.bpm !== ""
-                                                        ? <h5 className="fs12 fw400 color-g1">{beat.bpm} BPM</h5>
-                                                        : null}
-                                                </div>
-                                            </div>
-                                        )
-                                    })}
+                                <div className="profile-beats-container">
+                                    <Beats beats={playlist.beats}
+                                           openLicenses={this.props.openLicenses}
+                                           setAudio={this.props.setAudio}
+                                           openDownload={this.props.openDownload}
+                                           user={this.props.user}
+                                           btnPause={this.props.btnPause}
+                                           btnPlay={this.props.btnPlay}
+                                           playback={this.props.playback}
+                                           playBeatId={this.props.playBeatId}
+                                    />
                                 </div>
+
+                                {/*<div className="grid-table">*/}
+                                {/*    {playlist.beats.map((beat, index) => {*/}
+
+                                {/*        let path = `/resources/user-${beat.user.id}/beats/beat-${beat.id}/`;*/}
+
+                                {/*        return (*/}
+                                {/*            <div key={index}>*/}
+                                {/*                <div className="slide-img-container playlist-img-container">*/}
+                                {/*                    <Link to={"/beat/" + beat.id} className="inl-blk trs"*/}
+                                {/*                          style={{position: "absolute",*/}
+                                {/*                              top: 0, left: 0, width: "100%", height: "100%",}}>*/}
+                                {/*                        <img className="slide-img playlist-img"*/}
+                                {/*                             src={beat.imageName !== null && beat.imageName !== ''*/}
+                                {/*                                 ? `${path}${beat.imageName}`*/}
+                                {/*                                 : 'https://i.ibb.co/ySkyssb/track-placeholder.webp'}*/}
+                                {/*                             alt="track-placeholder"/>*/}
+                                {/*                    </Link>*/}
+                                {/*                    {this.props.playBeatId === beat.id*/}
+                                {/*                        ? <>*/}
+                                {/*                            <button id={`play-play${beat.id}`} className="play"*/}
+                                {/*                                    title="Воспроизвести"*/}
+                                {/*                                    style={this.props.playback ? {display: "none"} : null}*/}
+                                {/*                                    onClick={this.play.bind(this, beat, path, beat.id)}></button>*/}
+
+                                {/*                            <button id={`pause-beat${beat.id}`} className="pause-beat"*/}
+                                {/*                                    title="Пауза"*/}
+                                {/*                                    style={!this.props.playback ? {display: "none"} : {opacity: 1}}*/}
+                                {/*                                    onClick={this.pause.bind(this, beat.id)}></button>*/}
+                                {/*                        </>*/}
+                                {/*                        : <>*/}
+                                {/*                            <button id={`play-play${beat.id}`} className="play"*/}
+                                {/*                                    title="Воспроизвести"*/}
+                                {/*                                    onClick={this.playPlay.bind(this, beat, path)}></button>*/}
+
+                                {/*                            <button id={`pause-beat${beat.id}`} className="pause-beat"*/}
+                                {/*                                    title="Пауза"*/}
+                                {/*                                    style={{display: "none"}}*/}
+                                {/*                                    onClick={this.pause.bind(this, beat.id)}></button>*/}
+                                {/*                        </>*/}
+                                {/*                    }*/}
+                                {/*                </div>*/}
+
+                                {/*                <div className="grid-item">*/}
+                                {/*                    <div className="sl-gr-it">*/}
+                                {/*                        <Link to={"/beat/" + beat.id} className="fs12 fw400 hu wnohte"*/}
+                                {/*                              title={beat.title}>*/}
+                                {/*                            {beat.title}*/}
+                                {/*                        </Link>*/}
+                                {/*                    </div>*/}
+
+                                {/*                    <div className="sl-gr-it">*/}
+                                {/*                        <Link to={"/" + beat.user.username}*/}
+                                {/*                              className="fs12 fw400 mr5 color-g1 hu wnohte"*/}
+                                {/*                              title={beat.user.profile.displayName}>*/}
+                                {/*                            {beat.user.profile.displayName}*/}
+                                {/*                        </Link>*/}
+                                {/*                        {beat.user.verified === true ?*/}
+                                {/*                            <img src={'https://i.ibb.co/T8GczJ3/account-verified.webp'}*/}
+                                {/*                                 alt="verified"/> : null}*/}
+                                {/*                    </div>*/}
+
+                                {/*                    {beat.bpm !== null && beat.bpm !== ""*/}
+                                {/*                        ? <h5 className="fs12 fw400 color-g1">{beat.bpm} BPM</h5>*/}
+                                {/*                        : null}*/}
+                                {/*                </div>*/}
+                                {/*            </div>*/}
+                                {/*        )*/}
+                                {/*    })}*/}
+                                {/*</div>*/}
                             </div>
                         </div>
 
                         <div className="container">
                             <div className="title">
-                                Рекомендуемые плейлисты
-                                <Link to="/top-charts" className="color-or hu fs12 fw400">См. все</Link>
+                                <Link to="/playlists" className="hu">Похожие плейлисты</Link>
+                                <Link to="/playlists" className="color-or hu fs12 fw400">См. все</Link>
                             </div>
                             <RecommendedPlaylists />
                         </div>

@@ -10,9 +10,8 @@ class TopCharts extends Component {
         this.state = {
             user: null,
             beats: null,
-            page: 0,
+            size: 12,
             totalPages: null,
-            pagination: [],
             tags: [],
             tagsNameFilter: null,
             filterGenres: false,
@@ -30,6 +29,7 @@ class TopCharts extends Component {
             filterPrice: false,
             priceMin: 0,
             priceMax: 9999,
+            position: 100,
         };
     }
 
@@ -39,55 +39,33 @@ class TopCharts extends Component {
         this.setState({user: this.props.user})
 
         axios.get("/api/v1/tags?page=0&size=28").then(res => {
-            this.setState({tags: res.data.totalElements === 0 ? "empty" :  res.data.content})
+            this.setState({tags: res.data.totalElements === 0 ? "empty" : res.data.content})
         }).catch(() => {
             this.setState({tags: "empty"})
         })
 
-        this.addBeatsToState(this.state.page, "")
+        this.addBeatsToState("")
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.user !== this.props.user) this.setState({user: this.props.user})
+
+        if (prevState.size !== this.state.size) {
+            this.addBeatsToState("")
+        }
     }
 
-    addBeatsToState = (page, filters) => {
-        axios.get("/api/v1/beats/top-charts?" + filters + "&page=" + page + "&size=10000").then(res => {
+    addBeatsToState = (filters) => {
+        axios.get("/api/v1/beats/top-charts?" + filters + "&page=0&size=" + this.state.size).then(res => {
             this.setState({
                 beats: res.data.totalElements === 0 ? "empty" : res.data.content,
-                totalPages: res.data.totalPages
+                totalPages: res.data.totalPages,
             })
-
-            // if (data.totalPages > 1 && this.state.pagination.length === 0) {
-            //
-            //     let newPagination = []
-            //     for (let i = 0; i < data.totalPages; i++) {
-            //         newPagination.push(<button onClick={this.selectPageHistory.bind(this, i)}
-            //                                    className={"page" + i}>{i + 1}</button>)
-            //     }
-            //     this.setState({pagination: newPagination})
-            // }
 
         }).catch(() => {
             this.setState({beats: "empty"})
         })
     }
-
-    // selectPageHistory = (id) => {
-    //     for (let i = 0; i < this.state.totalPages; i++) {
-    //         let element = document.querySelector(".page" + i);
-    //         element.style.opacity = "1"
-    //     }
-    //
-    //     let element = document.querySelector(".page" + id);
-    //     element.style.opacity = "0.5"
-    //
-    //     this.setState({
-    //         page: id
-    //     })
-    //
-    //     this.addBeatsToState(id, "")
-    // }
 
     searchTags = (event) => {
         if (event.target.value !== null) {
@@ -95,13 +73,6 @@ class TopCharts extends Component {
                 this.setState({
                     tags: response.data.totalElements === 0 ? "empty" : response.data.content
                 })
-                // if (response.data.content.length === 0) {
-                //     axios.get("/api/v1/tags?page=0&size=28").then(response => {
-                //         this.setState({
-                //             tags: response.data.content
-                //         })
-                //     })
-                // }
             })
         } else {
             axios.get("/api/v1/tags?page=0&size=28").then(response => {
@@ -135,12 +106,11 @@ class TopCharts extends Component {
         filters = filters + "bpmMin=" + this.state.bpmMin + "&bpmMax=" + this.state.bpmMax + "&"
 
         this.setState({
-            page: 0,
             totalPages: null,
             pagination: []
         })
 
-        this.addBeatsToState(0, filters)
+        this.addBeatsToState(filters)
     }
 
     filterMood = (mood, name) => {
@@ -166,12 +136,11 @@ class TopCharts extends Component {
         filters = filters + "bpmMin=" + this.state.bpmMin + "&bpmMax=" + this.state.bpmMax + "&"
 
         this.setState({
-            page: 0,
             totalPages: null,
             pagination: []
         })
 
-        this.addBeatsToState(0, filters)
+        this.addBeatsToState(filters)
     }
 
     filterKey = (key, name) => {
@@ -196,12 +165,11 @@ class TopCharts extends Component {
         filters = filters + "bpmMin=" + this.state.bpmMin + "&bpmMax=" + this.state.bpmMax + "&"
 
         this.setState({
-            page: 0,
             totalPages: null,
             pagination: []
         })
 
-        this.addBeatsToState(0, filters)
+        this.addBeatsToState(filters)
     }
 
     filterMinBpm = (event) => {
@@ -224,12 +192,11 @@ class TopCharts extends Component {
         filters = filters + "bpmMin=" + event.target.value + "&bpmMax=" + this.state.bpmMax + "&"
 
         this.setState({
-            page: 0,
             totalPages: null,
             pagination: []
         })
 
-        this.addBeatsToState(0, filters)
+        this.addBeatsToState(filters)
     }
 
     filterMaxBpm = (event) => {
@@ -252,36 +219,37 @@ class TopCharts extends Component {
         filters = filters + "bpmMin=" + this.state.bpmMin + "&bpmMax=" + event.target.value + "&"
 
         this.setState({
-            page: 0,
             totalPages: null,
             pagination: []
         })
 
-        this.addBeatsToState(0, filters)
+        this.addBeatsToState(filters)
     }
 
     render() {
+
+        window.onscroll = () => {
+            const scrollTopPosition = document.documentElement.scrollTop;
+            if (scrollTopPosition > this.state.position) {
+                this.setState({
+                    size: this.state.size + 12,
+                    position: this.state.position + 500
+                })
+            }
+        }
+
         let state = this.state;
 
         document.title = "Топ чарт | BeatStore"
 
         let beats;
+
         if (state.beats !== null && state.beats !== "empty") {
             beats =
                 <div className="wrapper" style={{paddingTop: 32}}>
-                    <div className="container qwe-container">
+                    <div className="container">
 
-                        {/*<div className="qwe-pagination-container">*/}
-
-                        {/*    <div className="qwe-pagination">*/}
-                        {/*        {state.pagination.map((pageBtn, index) => {*/}
-                        {/*            return (<div className="mb32" key={index}>{pageBtn}</div>)*/}
-                        {/*        })}*/}
-                        {/*    </div>*/}
-                        {/*</div>*/}
-
-                        <Beats page={state.page}
-                               beats={state.beats}
+                        <Beats beats={state.beats}
                                openLicenses={this.props.openLicenses}
                                setAudio={this.props.setAudio}
                                openDownload={this.props.openDownload}
@@ -345,16 +313,26 @@ class TopCharts extends Component {
                             {state.filterGenres ?
                                 <div className="pop-up-container">
                                     <div className="pop-up-filter">
-                                        <button onClick={this.filterGenre.bind(this, "", "Все жанры")}>Все жанры</button>
+                                        <button onClick={this.filterGenre.bind(this, "", "Все жанры")}>Все жанры
+                                        </button>
                                         <button onClick={this.filterGenre.bind(this, "RAP", "Рэп")}>Рэп</button>
-                                        <button onClick={this.filterGenre.bind(this, "HIP_HOP", "Хип-хоп")}>Хип-хоп</button>
+                                        <button onClick={this.filterGenre.bind(this, "HIP_HOP", "Хип-хоп")}>Хип-хоп
+                                        </button>
                                         <button onClick={this.filterGenre.bind(this, "POP", "Поп")}>Поп</button>
-                                        <button onClick={this.filterGenre.bind(this, "POP_RAP", "Поп-рэп")}>Поп-рэп</button>
-                                        <button onClick={this.filterGenre.bind(this, "HOOKAH_RAP", "Кальянный рэп")}>Кальянный рэп</button>
-                                        <button onClick={this.filterGenre.bind(this, "HYPERPOP", "HYPERPOP")}>Hyperpop</button>
-                                        <button onClick={this.filterGenre.bind(this, "DETROIT_RAP", "DETROIT_RAP")}>Detroit</button>
+                                        <button onClick={this.filterGenre.bind(this, "POP_RAP", "Поп-рэп")}>Поп-рэп
+                                        </button>
+                                        <button
+                                            onClick={this.filterGenre.bind(this, "HOOKAH_RAP", "Кальянный рэп")}>Кальянный
+                                            рэп
+                                        </button>
+                                        <button onClick={this.filterGenre.bind(this, "HYPERPOP", "HYPERPOP")}>Hyperpop
+                                        </button>
+                                        <button
+                                            onClick={this.filterGenre.bind(this, "DETROIT_RAP", "DETROIT_RAP")}>Detroit
+                                        </button>
                                         <button onClick={this.filterGenre.bind(this, "ROCK", "Рок")}>Рок</button>
-                                        <button onClick={this.filterGenre.bind(this, "POP_ROCK", "Поп-рок")}>Поп-рок</button>
+                                        <button onClick={this.filterGenre.bind(this, "POP_ROCK", "Поп-рок")}>Поп-рок
+                                        </button>
                                         <button onClick={this.filterGenre.bind(this, "DRILL", "DRILL")}>DRILL</button>
                                         <button onClick={this.filterGenre.bind(this, "REGGAE", "Рэгги")}>Рэгги</button>
                                     </div>

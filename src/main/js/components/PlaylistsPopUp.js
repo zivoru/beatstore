@@ -154,6 +154,11 @@ class PlaylistsPopUp extends Component {
                     })
                 }, 100);
 
+
+                let button = document.getElementById('save');
+                button.style.pointerEvents = "none"
+                button.style.opacity = "0.3"
+
             }).catch()
         }
     }

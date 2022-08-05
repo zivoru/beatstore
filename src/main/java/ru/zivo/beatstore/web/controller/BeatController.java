@@ -64,6 +64,12 @@ public class BeatController {
         return ResponseEntity.ok(id);
     }
 
+    @Operation(summary = "Публикация бита")
+    @PutMapping("publication/{id}")
+    public void publication(@AuthenticationPrincipal OAuth2User principal, @PathVariable Long id) {
+        if (principal != null) beatService.publication(principal.getAttribute("sub"), id);
+    }
+
     @Operation(summary = "Удаление бита")
     @DeleteMapping("{id}")
     public void delete(@AuthenticationPrincipal OAuth2User principal, @PathVariable Long id) {
@@ -174,7 +180,7 @@ public class BeatController {
         if (principal != null) beatService.addToHistory(principal.getAttribute("sub"), beatId);
     }
 
-    @Operation(summary = "Избранные биты пользователя по его id")
+    @Operation(summary = "Избранные биты пользователя")
     @GetMapping("favorite")
     public ResponseEntity<Page<BeatDto>> getFavorite(@AuthenticationPrincipal OAuth2User principal,
                                                      Pageable pageable) {
@@ -182,7 +188,7 @@ public class BeatController {
                 ResponseEntity.ok(beatService.getFavoriteBeats(principal.getAttribute("sub"), pageable));
     }
 
-    @Operation(summary = "История битов пользователя по его id")
+    @Operation(summary = "История битов пользователя")
     @GetMapping("history")
     public ResponseEntity<Page<BeatDto>> getHistory(@AuthenticationPrincipal OAuth2User principal,
                                                     Pageable pageable) {
@@ -190,7 +196,7 @@ public class BeatController {
                 ResponseEntity.ok(beatService.getHistoryBeats(principal.getAttribute("sub"), pageable));
     }
 
-    @Operation(summary = "Опубликованные биты пользователя по его id")
+    @Operation(summary = "Опубликованные биты пользователя")
     @GetMapping("user/{userId}")
     public ResponseEntity<Page<BeatDto>> getBeats(@AuthenticationPrincipal OAuth2User principal,
                                                   @PathVariable String userId,
