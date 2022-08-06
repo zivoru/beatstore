@@ -228,6 +228,12 @@ class TopCharts extends Component {
 
     render() {
 
+        let header = document.querySelector("header");
+        if (header !== null && header !== undefined) {
+            header.style.backgroundColor = "rgba(0, 0, 0, 0.80)";
+            header.style.backdropFilter = "saturate(180%) blur(6px)";
+        }
+
         window.onscroll = () => {
             const scrollTopPosition = document.documentElement.scrollTop;
             if (scrollTopPosition > this.state.position) {

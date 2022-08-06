@@ -65,7 +65,7 @@ class History extends Component {
                 <div className="qwe-null">
                     <h1 className="qwe1-title">
                         История
-                        <span className="fs14 fw300 color-g1">пока что ничего нет )=</span>
+                        <span className="fs14 fw300 color-g1">вы ещё ничего не слушали</span>
                         <div className="empty" style={{paddingTop: 32}}>
                             <img src={"https://i.ibb.co/X81cS7L/inbox.png"}
                                  alt="inbox" width="70"/>

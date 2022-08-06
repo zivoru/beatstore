@@ -44,8 +44,10 @@ class MyPlaylists extends Component {
 
     async getPlaylists() {
         try {
-            const response = await axios.get('/api/v1/playlists/user/' + this.state.user.id);
-            this.setState({playlists: response.data.length !== 0 ? response.data : "empty"})
+            const response = await axios.get('/api/v1/playlists/');
+            if (response.data !== null) {
+                this.setState({playlists: response.data.length !== 0 ? response.data : "empty"})
+            } else this.setState({playlists: "empty"})
         } catch (error) {
             this.setState({playlists: "empty"})
         }

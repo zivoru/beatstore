@@ -30,11 +30,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 )
                 .oauth2Login();
     }
-
-//    @Bean
-//    public PrincipalExtractor principalExtractor(UserRepository userRepository) {
-//        return map -> {
-//            return new User();
-//        };
-//    }
 }

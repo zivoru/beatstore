@@ -27,7 +27,8 @@ class Playlist extends Component {
             visibility: false,
             update: false,
             editPlaylistPopUpView: false,
-            editPlaylistId: null
+            editPlaylistId: null,
+            viewSharePopUp: false
         };
     }
 
@@ -190,6 +191,8 @@ class Playlist extends Component {
     render() {
         if (this.state.playlist !== null && this.state.playlist !== "empty") {
 
+            let shareLink = document.location.protocol + "//" + document.location.host + "/playlist/"
+
             let playlist = this.state.playlist
             let returnValue =
                 <div>
@@ -238,8 +241,8 @@ class Playlist extends Component {
                                              title="Добавить в избранное"/>
 
                                         <img src={'https://i.ibb.co/rsL0r6P/share.png'}
-                                             width="20px" alt="share" className="mr16 cp"
-                                             title="Поделиться"/>
+                                             onClick={() => this.setState({viewSharePopUp: true})}
+                                             width="20px" alt="share" className="mr16 cp" title="Поделиться"/>
 
                                         {this.props.user !== null
                                         && this.props.user !== undefined
@@ -279,7 +282,6 @@ class Playlist extends Component {
 
                             <div className="title">
                                 <p>Похожие плейлисты</p>
-                                {/*<Link to="/playlists" className="color-or hu fs12 fw400">См. все</Link>*/}
                             </div>
                             {this.props.homeRecommendedPlaylists !== null
                             && this.props.homeRecommendedPlaylists.length !== 0
@@ -306,6 +308,27 @@ class Playlist extends Component {
                             setVisibility={this.setVisibility}
                             editPlaylist={this.editPlaylist}
                         /> : null}
+
+                    {this.state.viewSharePopUp
+                        ? <>
+                            <div className="back trs" onClick={() => this.setState({viewSharePopUp: false})}
+                                 style={{display: "initial", opacity: 1}}></div>
+
+                            <div className="sharePopUp pop-up trs"
+                                 style={{display: "initial", opacity: 1, transform: "translate(-50%, -50%)"}}>
+                                <div className="pop-up-header">
+                                    Поделиться
+                                    <img src={'https://i.ibb.co/FnGGGTx/close.png'} alt="close"
+                                         width="18px" onClick={() => this.setState({viewSharePopUp: false})}/>
+                                </div>
+                                <div className="share-link flex-c">
+                                    <img src={'https://i.ibb.co/rsL0r6P/share.png'} width="14px" alt="share"/>
+
+                                    <input value={shareLink + playlist.id} readOnly/>
+                                </div>
+                            </div>
+                        </>
+                        : null}
 
                 </div>
 

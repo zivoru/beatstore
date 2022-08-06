@@ -7,4 +7,8 @@ import java.util.List;
 public interface CartService {
 
     List<CartDto> findCartByUserId(String userId);
+
+    void delete(String authUserId, Long cartId);
+
+    void deleteByUserId(String authUserId, String userId);
 }

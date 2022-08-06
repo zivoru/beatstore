@@ -58,6 +58,39 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     @Override
+    public Page<PlaylistDto> findPageByUserId(String userId, Pageable pageable) {
+        List<Playlist> playlists = Users.getUser(userId).getPlaylists();
+        List<Playlist> publishedPlaylists = sortByVisibility(playlists);
+        List<PlaylistDto> playlistDtoList = mapToDtoList(publishedPlaylists);
+
+        return mapToPage(pageable, playlistDtoList);
+    }
+
+    private PageImpl<PlaylistDto> mapToPage(Pageable pageable, List<PlaylistDto> playlistDtoList) {
+        final int start = (int) pageable.getOffset();
+        final int end = Math.min((start + pageable.getPageSize()), playlistDtoList.size());
+        return new PageImpl<>(playlistDtoList.subList(start, end), pageable, playlistDtoList.size());
+    }
+
+    private List<PlaylistDto> mapToDtoList(List<Playlist> publishedPlaylists) {
+        List<PlaylistDto> playlistDtoList = new ArrayList<>();
+
+        for (Playlist playlist : publishedPlaylists) {
+            playlistDtoList.add(mapToDto(playlist, null));
+        }
+        return playlistDtoList;
+    }
+
+    private List<Playlist> sortByVisibility(List<Playlist> playlists) {
+        List<Playlist> publishedPlaylists = new ArrayList<>();
+
+        for (Playlist playlist : playlists) {
+            if (playlist.getVisibility()) publishedPlaylists.add(playlist);
+        }
+        return publishedPlaylists;
+    }
+
+    @Override
     public Playlist create(String userId, Playlist playlist) {
         playlist.setUser(Users.getUser(userId));
         return playlistRepository.save(playlist);
@@ -148,48 +181,36 @@ public class PlaylistServiceImpl implements PlaylistService {
         userRepository.save(user);
     }
 
-    @Override
-    public List<PlaylistDto> getRecommended(Integer limit) {
-        List<Playlist> publishedPlaylists = new ArrayList<>();
-
-        for (Playlist playlist : playlistRepository.findAll()) {
-            if (playlist.getVisibility()) publishedPlaylists.add(playlist);
-        }
-
-        List<Playlist> sortedPlaylists = publishedPlaylists.stream()
-                .sorted((o1, o2) -> Integer.compare(o2.getLikes().size(), o1.getLikes().size()))
-                .limit(limit).toList();
-
-        List<PlaylistDto> playlistDtoList = new ArrayList<>();
-
-        for (Playlist playlist : sortedPlaylists) {
-            playlistDtoList.add(mapToDto(playlist, null));
-        }
-
-        return playlistDtoList;
-    }
+//    @Override
+//    public List<PlaylistDto> getRecommended(Integer limit) {
+//        List<Playlist> publishedPlaylists = new ArrayList<>();
+//
+//        for (Playlist playlist : playlistRepository.findAll()) {
+//            if (playlist.getVisibility()) publishedPlaylists.add(playlist);
+//        }
+//
+//        List<Playlist> sortedPlaylists = publishedPlaylists.stream()
+//                .sorted((o1, o2) -> Integer.compare(o2.getLikes().size(), o1.getLikes().size()))
+//                .limit(limit).toList();
+//
+//        List<PlaylistDto> playlistDtoList = new ArrayList<>();
+//
+//        for (Playlist playlist : sortedPlaylists) {
+//            playlistDtoList.add(mapToDto(playlist, null));
+//        }
+//
+//        return playlistDtoList;
+//    }
 
     @Override
     public Page<PlaylistDto> findAll(Pageable pageable, String nameFilter) {
-        List<Playlist> publishedPlaylists = new ArrayList<>();
-
         List<Playlist> playlists = nameFilter != null
                 ? playlistRepository.findAllByNameContainsIgnoreCase(nameFilter)
                 : playlistRepository.findAll();
+        List<Playlist> publishedPlaylists = sortByVisibility(playlists);
+        List<PlaylistDto> playlistDtoList = mapToDtoList(publishedPlaylists);
 
-        for (Playlist playlist : playlists) {
-            if (playlist.getVisibility()) publishedPlaylists.add(playlist);
-        }
-
-        List<PlaylistDto> playlistDtoList = new ArrayList<>();
-
-        for (Playlist playlist : publishedPlaylists) {
-            playlistDtoList.add(mapToDto(playlist, null));
-        }
-
-        final int start = (int) pageable.getOffset();
-        final int end = Math.min((start + pageable.getPageSize()), playlistDtoList.size());
-        return new PageImpl<>(playlistDtoList.subList(start, end), pageable, playlistDtoList.size());
+        return mapToPage(pageable, playlistDtoList);
     }
 
     private PlaylistDto mapToDto(Playlist playlist, User user) {

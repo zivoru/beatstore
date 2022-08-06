@@ -139,10 +139,9 @@
 }
 .selectLicenseBtn {
     position: absolute;
-    bottom: 50%;
-    right: 16px;
-    transform: translateY(50%);
-    background-color: #005ff8;
+    top: 10px;
+    right: 10px;
+    background-color: transparent;
     border-radius: 999px;
     padding: 3px 6px;
     font-size: 10px;

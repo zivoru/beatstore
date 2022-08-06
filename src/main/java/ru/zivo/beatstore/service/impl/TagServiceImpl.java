@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 import ru.zivo.beatstore.model.Tag;
 import ru.zivo.beatstore.repository.TagRepository;
 import ru.zivo.beatstore.service.TagService;
@@ -26,6 +27,12 @@ public class TagServiceImpl implements TagService {
         Tag tagByRepository = tagRepository.findByNameIgnoreCase(tag.getName());
 
         return tagByRepository != null ? tagByRepository : tagRepository.save(tag);
+    }
+
+    @Override
+    public Tag findById(Long id) {
+        return tagRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Тэг с id = %d не найден".formatted(id)));
     }
 
     @Override

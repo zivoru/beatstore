@@ -13,4 +13,6 @@ public interface TagService {
     List<Tag> getTrendTags(Integer limit);
 
     Page<Tag> getPageTags(String nameFilter, Pageable pageable);
+
+    Tag findById(Long id);
 }

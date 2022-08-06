@@ -364,6 +364,8 @@ class EditBeat extends Component {
                     price_exclusive: s.priceExclusive
                 }).then().catch()
 
+                setTimeout(() => window.location.href = "/beats", 300)
+
             }).catch(() => this.setState({loading: false}))
         }
     }
@@ -824,7 +826,7 @@ class EditBeat extends Component {
                                     </div>
 
                                     <div className="save-button">
-                                        <Link to="/beats" className="btn-primary" onClick={this.updateBeat}>Сохранить</Link>
+                                        <button className="btn-primary" onClick={this.updateBeat}>Сохранить</button>
                                     </div>
 
                                     <div style={{height: 100, width: "100%"}}></div>

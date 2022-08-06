@@ -27,7 +27,14 @@ class Beatmakers extends Component {
     }
 
     render() {
+
         document.title = "Битмейкеры | BeatStore"
+
+        let header = document.querySelector("header");
+        if (header !== null && header !== undefined) {
+            header.style.backgroundColor = "rgba(0, 0, 0, 0.80)";
+            header.style.backdropFilter = "saturate(180%) blur(6px)";
+        }
 
         window.onscroll = () => {
             const scrollTopPosition = document.documentElement.scrollTop;

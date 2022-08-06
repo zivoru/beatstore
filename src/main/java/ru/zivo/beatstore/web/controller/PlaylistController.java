@@ -38,9 +38,17 @@ public class PlaylistController {
     }
 
     @Operation(summary = "Получение списка плейлистов по id пользователя")
-    @GetMapping("user/{userId}")
-    public ResponseEntity<List<Playlist>> findAllByUserId(@PathVariable String userId) {
-        return ResponseEntity.ok(playlistService.findAllByUserId(userId));
+    @GetMapping()
+    public ResponseEntity<List<Playlist>> findAllByUserId(@AuthenticationPrincipal OAuth2User principal) {
+        return principal == null
+                ? null
+                : ResponseEntity.ok(playlistService.findAllByUserId(principal.getAttribute("sub")));
+    }
+
+    @Operation(summary = "Получение страницы дто плейлистов по id пользователя")
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Page<PlaylistDto>> findAllByUserId(@PathVariable String userId, Pageable pageable) {
+        return ResponseEntity.ok(playlistService.findPageByUserId(userId, pageable));
     }
 
     @Operation(summary = "Создание плейлиста")

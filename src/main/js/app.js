@@ -44,6 +44,7 @@ import {FreeBeats} from "./pages/FreeBeats";
 import {Playlists} from "./pages/Playlists";
 import Cart from "./pages/Cart";
 import {Beatmakers} from "./pages/Beatmakers";
+import Tag1 from "./pages/Tag1";
 
 const React = require('react');
 
@@ -689,7 +690,6 @@ class App extends React.Component {
                     <Route path="/genres" element={<Genres/>}/>
                     <Route path="/playlists" element={<Playlists/>}/>
                     <Route path="/beatmakers" element={<Beatmakers/>}/>
-                    <Route path="/cart" element={<Cart user={s.user} cart={s.cart}/>}/>
 
 
                     <Route path="/" element={<Home homeTrendBeats={s.homeTrendBeats}
@@ -740,12 +740,20 @@ class App extends React.Component {
                                 playback={s.playback} playBeatId={s.playerBeat !== null && s.playerBeat !== "empty"
                             ? s.playerBeat.beat.id : null}/>}/>
 
+                    <Route path="/tag/:tagId" element={
+                        <Tag1 user={s.user} setAudio={this.setAudio} openLicenses={this.openLicenses}
+                                openDownload={this.openDownload} btnPause={this.btnPause} btnPlay={this.btnPlay}
+                                playback={s.playback} playBeatId={s.playerBeat !== null && s.playerBeat !== "empty"
+                            ? s.playerBeat.beat.id : null}/>}/>
+
                     <Route path="/free-beats" element={
                         <FreeBeats user={s.user} setAudio={this.setAudio} openLicenses={this.openLicenses}
                                    openDownload={this.openDownload} btnPause={this.btnPause} btnPlay={this.btnPlay}
                                    playback={s.playback} playBeatId={s.playerBeat !== null && s.playerBeat !== "empty"
                             ? s.playerBeat.beat.id : null}/>}/>
 
+                    <Route path="/cart" element={userIsPresent ? <Navigate to="/" replace={true}/>
+                        : <Cart user={s.user} cart={s.cart} updateCart={this.updateCart}/>}/>
 
                     <Route path="/edit/:beatId" element={userIsPresent ? <Navigate to="/" replace={true}/>
                         : <Edit1 user={s.user}/>}/>
@@ -816,7 +824,7 @@ class App extends React.Component {
                                     <audio id="audio" src={s.audio} controls></audio>
 
                                     <div id="controls" style={{display: "flex"}}>
-                                        <div className="audio-track" onClick={this.getPosition}>
+                                        <div className="audio-track">
                                             <div className="time"></div>
                                         </div>
 

@@ -3,7 +3,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 300px;
+    height: 500px;
     object-fit: cover;
     object-position: top;
     opacity: 0.5;
@@ -180,6 +180,9 @@
 /*}*/
 
 @media (max-width: 935px) {
+    .user-image-profile {
+        height: 400px;
+    }
     .content-profile-p {
         padding-top: 360px;
     }
@@ -217,6 +220,9 @@
 }
 
 @media (max-width: 615px) {
+    .user-image-profile {
+        height: 330px;
+    }
     .content-profile-p {
         padding-top: 290px;
     }

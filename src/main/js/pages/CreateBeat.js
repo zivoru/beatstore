@@ -336,6 +336,8 @@ class CreateBeat extends Component {
                     price_exclusive: s.priceExclusive
                 }).then().catch()
 
+                setTimeout(() => window.location.href = "/beats", 300)
+
             }).catch(() => this.setState({loading: false}))
         }
     }
@@ -779,13 +781,13 @@ class CreateBeat extends Component {
                         </div>
 
                         <div className="save-button">
-                            <Link to="/beats" className="btn-primary"
+                            <button className="btn-primary"
                                     onClick={this.saveBeat.bind(this, "PUBLISHED")}>Опубликовать
-                            </Link>
-                            <Link to="/beats" className="btn-primary ml16"
+                            </button>
+                            <button className="btn-primary ml16"
                                   onClick={this.saveBeat.bind(this, "DRAFT")}
                                     style={{backgroundColor: "rgb(50, 50, 50)"}}>Сохранить как черновик
-                            </Link>
+                            </button>
                         </div>
 
                         <div style={{height: 100, width: "100%"}}></div>

@@ -43,8 +43,10 @@ class PlaylistsPopUp extends Component {
     async getPlaylists() {
         if (this.props.user !== null && this.props.user !== undefined && this.props.user !== "empty") {
             try {
-                const res = await axios.get(`/api/v1/playlists/user/${this.props.user.id}`);
-                this.setState({playlists: res.data.length !== 0 ? res.data : "empty"})
+                const res = await axios.get(`/api/v1/playlists/`);
+                if (res.data !== null) {
+                    this.setState({playlists: res.data.length !== 0 ? res.data : "empty"})
+                } else this.setState({playlists: "empty"})
             } catch (error) {
                 this.setState({playlists: "empty"})
             }

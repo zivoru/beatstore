@@ -27,7 +27,8 @@ class Profile extends Component {
             update: false,
             homeView: true,
             beatsView: false,
-            playlistsView: false
+            playlistsView: false,
+            viewSharePopUp: false
         };
     }
 
@@ -141,8 +142,8 @@ class Profile extends Component {
                 this.setState({homeBeats: "empty"})
             })
 
-            axios.get(`/api/v1/playlists/user/${usr.id}`).then(response => {
-                this.setState({playlists: response.data.length === 0 ? "empty" : response.data})
+            axios.get(`/api/v1/playlists/user/${usr.id}?page=0&size=10000`).then(response => {
+                this.setState({playlists: response.data.totalElements === 0 ? "empty" : response.data.content})
             }).catch(() => {
                 this.setState({playlists: "empty"})
             })
@@ -196,7 +197,6 @@ class Profile extends Component {
         document.getElementById("home").classList.add('menu-active')
         document.getElementById("beats").classList.remove('menu-active')
         document.getElementById("playlists").classList.remove('menu-active')
-        document.getElementById("aboutView").classList.remove('menu-active')
     }
     beatsView = () => {
         this.getBeats();
@@ -210,7 +210,6 @@ class Profile extends Component {
         document.getElementById("home").classList.remove('menu-active')
         document.getElementById("beats").classList.add('menu-active')
         document.getElementById("playlists").classList.remove('menu-active')
-        document.getElementById("aboutView").classList.remove('menu-active')
     }
     playlistsView = () => {
         this.setState({
@@ -222,7 +221,6 @@ class Profile extends Component {
         document.getElementById("home").classList.remove('menu-active')
         document.getElementById("beats").classList.remove('menu-active')
         document.getElementById("playlists").classList.add('menu-active')
-        document.getElementById("aboutView").classList.remove('menu-active')
     }
 
     render() {
@@ -263,13 +261,13 @@ class Profile extends Component {
         }
 
         if (this.state.userProfile !== null && this.state.userProfile !== "empty") {
-            document.title = this.props.username + " | BeatStore Профиль"
+            document.title = this.state.userProfile.profile.displayName + " | BeatStore Профиль"
 
             let userBeats;
 
             if (this.state.beats !== null && this.state.beats !== "empty") {
                 userBeats =
-                    <div style={{marginTop: 80}}>
+                    <div style={{marginTop: 40}}>
                         <Beats beats={this.state.beats}
                                openLicenses={this.props.openLicenses}
                                setAudio={this.props.setAudio}
@@ -291,6 +289,8 @@ class Profile extends Component {
 
             let usr = this.state.userProfile
 
+            let shareLink = document.location.protocol + "//" + document.location.host + "/"
+
             return (
                 <div>
 
@@ -300,9 +300,6 @@ class Profile extends Component {
                             'https://i.ibb.co/KXhBMsx/default-avatar.webp'}
                              alt="avatar" className="user-image-profile"/>
                     </div>
-
-
-                    <div></div>
 
                     <div className="wrapper" style={{paddingBottom: 0, position: "absolute", zIndex: 2}}>
                         <div className="container">
@@ -345,20 +342,11 @@ class Profile extends Component {
 
                                         {usr.social.instagram !== null || usr.social.youtube !== null || usr.social.tiktok !== null || usr.social.vkontakte !== null ?
                                             <div className="flex-c mt16">
-                                                {usr.social.instagram !== null && usr.social.instagram !== ""
+                                                {usr.social.vkontakte !== null && usr.social.vkontakte !== ""
                                                     ?
-                                                    <a href={"https://instagram.com/" + usr.social.instagram}
+                                                    <a href={"https://vk.com/" + usr.social.vkontakte}
                                                        target="_blank" className="item-social">
-                                                        <img src={'https://i.ibb.co/q052Zy9/instagram.png'}
-                                                             alt="youtube" width="20px"/>
-                                                    </a>
-                                                    : null
-                                                }
-                                                {usr.social.youtube !== null && usr.social.youtube !== ""
-                                                    ?
-                                                    <a href={"https://youtube.com/" + usr.social.youtube}
-                                                       target="_blank" className="item-social">
-                                                        <img src={'https://i.ibb.co/wzttrTV/youtube.png'}
+                                                        <img src={'https://i.ibb.co/JdgLDkk/vk.png'}
                                                              alt="youtube" width="20px"/>
                                                     </a>
                                                     : null
@@ -368,16 +356,25 @@ class Profile extends Component {
                                                     <a href={"https://www.tiktok.com/@" + usr.social.tiktok}
                                                        target="_blank" className="item-social">
                                                         <img src={'https://i.ibb.co/cFdJwTj/tiktok.png'}
-                                                             alt="youtube" width="20px"/>
+                                                             alt="youtube" width="18px"/>
                                                     </a>
                                                     : null
                                                 }
-                                                {usr.social.vkontakte !== null && usr.social.vkontakte !== ""
+                                                {usr.social.youtube !== null && usr.social.youtube !== ""
                                                     ?
-                                                    <a href={"https://vk.com/" + usr.social.vkontakte}
+                                                    <a href={"https://youtube.com/" + usr.social.youtube}
                                                        target="_blank" className="item-social">
-                                                        <img src={'https://i.ibb.co/JdgLDkk/vk.png'}
-                                                             alt="youtube" width="20px"/>
+                                                        <img src={'https://i.ibb.co/wzttrTV/youtube.png'}
+                                                             alt="youtube" width="18px"/>
+                                                    </a>
+                                                    : null
+                                                }
+                                                {usr.social.instagram !== null && usr.social.instagram !== ""
+                                                    ?
+                                                    <a href={"https://instagram.com/" + usr.social.instagram}
+                                                       target="_blank" className="item-social">
+                                                        <img src={'https://i.ibb.co/q052Zy9/instagram.png'}
+                                                             alt="youtube" width="16px"/>
                                                     </a>
                                                     : null
                                                 }
@@ -389,8 +386,8 @@ class Profile extends Component {
                                         {this.state.btnFollow}
 
                                         <img src={'https://i.ibb.co/rsL0r6P/share.png'}
-                                             width="20px" alt="share" className="ml16 cp"
-                                             title="Поделиться"/>
+                                             onClick={() => this.setState({viewSharePopUp: true})}
+                                             width="20px" alt="share" className="ml16 cp" title="Поделиться"/>
                                     </div>
                                 </div>
                             </div>
@@ -495,7 +492,7 @@ class Profile extends Component {
                                 {!this.state.playlistsView ? null
                                     : <div>
                                         {this.state.playlists !== null && this.state.playlists.length !== 0 && this.state.playlists !== "empty"
-                                            ? <div className="grid-table" style={{marginTop: 80}}>
+                                            ? <div className="grid-table" style={{marginTop: 40}}>
                                                 {this.state.playlists.map((playlist, index) => {
                                                     return (
                                                         <div key={index}>
@@ -560,6 +557,26 @@ class Profile extends Component {
                         </div>
                     </div>
 
+                    {this.state.viewSharePopUp
+                        ? <>
+                            <div className="back trs" onClick={() => this.setState({viewSharePopUp: false})}
+                                 style={{display: "initial", opacity: 1}}></div>
+
+                            <div className="sharePopUp pop-up trs"
+                                 style={{display: "initial", opacity: 1, transform: "translate(-50%, -50%)"}}>
+                                <div className="pop-up-header">
+                                    Поделиться
+                                    <img src={'https://i.ibb.co/FnGGGTx/close.png'} alt="close"
+                                         width="18px" onClick={() => this.setState({viewSharePopUp: false})}/>
+                                </div>
+                                <div className="share-link flex-c">
+                                    <img src={'https://i.ibb.co/rsL0r6P/share.png'} width="14px" alt="share"/>
+
+                                    <input value={shareLink + usr.username} readOnly/>
+                                </div>
+                            </div>
+                        </>
+                        : null}
 
                 </div>
             );

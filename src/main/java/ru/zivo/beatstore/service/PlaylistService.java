@@ -17,6 +17,8 @@ public interface PlaylistService {
 
     List<Playlist> findAllByUserId(String userId);
 
+    Page<PlaylistDto> findPageByUserId(String userId, Pageable pageable);
+
     Playlist create(String userId, Playlist playlist);
 
     void update(String userId, Long playlistId, Playlist playlist);
@@ -32,8 +34,6 @@ public interface PlaylistService {
     void addFavorite(Long playlistId, String userId);
 
     void removeFavorite(Long playlistId, String userId);
-
-    List<PlaylistDto> getRecommended(Integer limit);
 
     Page<PlaylistDto> findAll(Pageable pageable, String nameFilter);
 }

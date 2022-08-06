@@ -36,4 +36,9 @@ public class MainController {
     public String genre() {
         return "index";
     }
+
+    @GetMapping("/tag/*")
+    public String tag() {
+        return "index";
+    }
 }

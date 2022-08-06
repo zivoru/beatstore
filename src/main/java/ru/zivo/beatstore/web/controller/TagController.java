@@ -5,10 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.zivo.beatstore.model.Tag;
 import ru.zivo.beatstore.service.TagService;
 
@@ -23,6 +20,12 @@ public class TagController {
     @Autowired
     public TagController(TagService tagService) {
         this.tagService = tagService;
+    }
+
+    @Operation(summary = "Получение тега по id")
+    @GetMapping("/{id}")
+    public ResponseEntity<Tag> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(tagService.findById(id));
     }
 
     @Operation(summary = "Получение трендовых тегов")

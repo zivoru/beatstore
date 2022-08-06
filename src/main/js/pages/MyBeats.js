@@ -300,9 +300,9 @@ class MyBeats extends Component {
                                                 </div>
 
                                                 <div className="qwe-title wnohte">
-                                                    <Link to={"/beat/" + beat.id} className="qwe-name wnohte hu">
+                                                    <span className="qwe-name wnohte" style={{textDecoration: "none"}}>
                                                         {beat.title}
-                                                    </Link>
+                                                    </span>
                                                 </div>
                                             </div>
 
@@ -432,9 +432,9 @@ class MyBeats extends Component {
                                                 </div>
 
                                                 <div className="qwe-title wnohte">
-                                                    <Link to={"/beat/" + beat.id} className="qwe-name wnohte hu">
+                                                    <span className="qwe-name wnohte" style={{textDecoration: "none"}}>
                                                         {beat.title}
-                                                    </Link>
+                                                    </span>
                                                 </div>
                                             </div>
 
