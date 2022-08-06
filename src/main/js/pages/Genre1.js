@@ -13,6 +13,6 @@ export default function Genre1(props) {
                      btnPause={props.btnPause}
                      btnPlay={props.btnPlay}
                      playback={props.playback}
-                     playBeatId={props.playerBeat}
+                     playBeatId={props.playBeatId}
                      genreName={params.genreName}/>;
 }

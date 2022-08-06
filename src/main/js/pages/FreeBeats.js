@@ -78,6 +78,10 @@ class FreeBeats extends Component {
                     <h1 className="qwe1-title">
                         Бесплатные биты
                         <span className="fs14 fw300 color-g1">бесплатных битов пока что нет, но ты можешь это исправить!</span>
+                        <div className="empty" style={{paddingTop: 32}}>
+                            <img src={"https://i.ibb.co/X81cS7L/inbox.png"}
+                                 alt="inbox" width="70"/>
+                        </div>
                     </h1>
                 </div>
         }

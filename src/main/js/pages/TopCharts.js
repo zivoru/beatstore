@@ -29,7 +29,7 @@ class TopCharts extends Component {
             filterPrice: false,
             priceMin: 0,
             priceMax: 9999,
-            position: 100,
+            position: 200,
         };
     }
 
@@ -264,8 +264,10 @@ class TopCharts extends Component {
         } else if (state.beats === "empty") {
             beats =
                 <div className="wrapper" style={{paddingTop: 32}}>
-                    <div className="container qwe-container" style={{textAlign: "center"}}>
-                        Ничего не найдено
+                    <div className="container">
+                        <div className="empty">
+                            <img src={"https://i.ibb.co/X81cS7L/inbox.png"} alt="inbox" width="70"/>
+                        </div>
                     </div>
                 </div>
         }

@@ -113,7 +113,9 @@ class Header extends Component {
             dropCart =
                 <div className={dropCartClass}>
                     <div className="cart-empty flex-c-c">
-                        <span className="fw200">В корзине пусто =(</span>
+                        <div className="empty" style={{paddingTop: 0}}>
+                            <img src={"https://i.ibb.co/X81cS7L/inbox.png"} alt="inbox" width="70"/>
+                        </div>
                     </div>
                 </div>
         }
@@ -142,9 +144,13 @@ class Header extends Component {
 
         if (user !== null && user !== undefined  && user !== "empty") {
 
-            let image = user.profile.imageName !== null && user.profile.imageName !== "" ?
-                `/resources/user-${user.id}/profile/${user.profile.imageName}` :
-                'https://i.ibb.co/KXhBMsx/default-avatar.webp';
+            let image = 'https://i.ibb.co/KXhBMsx/default-avatar.webp';
+
+            if (user.profile !== null && user.profile !== undefined) {
+                if (user.profile.imageName !== null && user.profile.imageName !== "") {
+                    image = `/resources/user-${user.id}/profile/${user.profile.imageName}`;
+                }
+            }
 
             headerRight = <div className="flex-c header-right">
                 <Link to="/upload-beat" className="btn-primary NONE"
@@ -261,7 +267,7 @@ class Header extends Component {
                             {/*</div>*/}
                         </div>
 
-                        <div className="flex-c-c header-center">
+                        <div className="flex-c-c header-center NONE">
                             <Link to="/top-charts" className="hdr-btn NONE">
                                 <span>Топ Чарт</span>
                             </Link>
@@ -274,7 +280,7 @@ class Header extends Component {
                                 <span>Плейлисты</span>
                             </Link>
 
-                            <Link to="/feed" className="hdr-btn NONE">
+                            <Link to="/beatmakers" className="hdr-btn NONE">
                                 <span>Битмейкеры</span>
                             </Link>
                         </div>

@@ -160,25 +160,12 @@ class MyBeats extends Component {
 
                                     publishedBeatId = publishedBeatId + 1
 
-                                    // let click;
-
-                                    // let path = `/resources/user-${beat.user.id}/beats/beat-${beat.id}/${beat.audio.mp3Name}`;
-                                    // if (window.screen.width > 767) {
-                                    //     click = props.setAudio.bind(this, beat.id, path)
-                                    // }
-
                                     return (
                                         <div className="qwe" key={index} style={{cursor: "initial"}}>
 
                                             <div className="qwe-left">
                                                 <div className="qwe-id">
                                                     <span>{publishedBeatId}</span>
-
-                                                    {/*<button className="my-beats-play"*/}
-                                                    {/*        onClick={props.setAudio.bind(this, beat.id, path)}*/}
-                                                    {/*        style={{transform: "translate(-50%, -50%) scale(0.7)"}}*/}
-                                                    {/*>*/}
-                                                    {/*</button>*/}
                                                 </div>
 
                                                 <div className="qwe-img" style={{position: "relative"}}>
@@ -186,11 +173,6 @@ class MyBeats extends Component {
                                                         `/resources/user-${beat.user.id}/beats/beat-${beat.id}/${beat.imageName}` :
                                                         'https://i.ibb.co/ySkyssb/track-placeholder.webp'}
                                                          alt="track-placeholder"/>
-
-                                                    {/*<button className="my-beats-play"*/}
-                                                    {/*        onClick={props.setAudio.bind(this, beat.id, path)}*/}
-                                                    {/*        style={{transform: "translate(-50%, -50%) scale(0.7)"}}*/}
-                                                    {/*></button>*/}
                                                 </div>
 
                                                 <Link to={"/beat/" + beat.id} className="qwe-name wnohte hu">
@@ -246,7 +228,6 @@ class MyBeats extends Component {
 
                                 {state.warningPublishedDelete ?
                                     <div>
-
                                         <div className="warning-delete-comment"
                                              onClick={() => {
                                                  this.setState({warningPublishedDelete: false})
@@ -278,8 +259,9 @@ class MyBeats extends Component {
             publishedBeats =
                 <div className="wrapper" style={state.publishedView ? null : {display: "none"}}>
                     <div className="container">
-                        <div className="qwe-null">
-                            <span>Ничего нет</span>
+                        <div className="empty">
+                            <img src={"https://i.ibb.co/X81cS7L/inbox.png"}
+                                 alt="inbox" width="70"/>
                         </div>
                     </div>
                 </div>
@@ -302,27 +284,12 @@ class MyBeats extends Component {
 
                                     draftBeatId = draftBeatId + 1
 
-                                    // let click;
-                                    //
-                                    // let path = `/resources/user-${beat.user.id}/beats/beat-${beat.id}/${beat.audio.mp3Name}`;
-                                    // if (window.screen.width > 767) {
-                                    //     click = props.setAudio.bind(this, beat.id, path)
-                                    // }
-
                                     return (
-                                        <div className="qwe"
-                                             // onClick={click}
-                                             key={index}>
+                                        <div className="qwe" key={index}>
 
                                             <div className="qwe-left">
                                                 <div className="qwe-id">
                                                     <span>{draftBeatId}</span>
-
-                                                    {/*<button className="my-beats-play"*/}
-                                                    {/*        onClick={props.setAudio.bind(this, beat.id, path)}*/}
-                                                    {/*        style={{transform: "translate(-50%, -50%) scale(0.7)"}}*/}
-                                                    {/*>*/}
-                                                    {/*</button>*/}
                                                 </div>
 
                                                 <div className="qwe-img" style={{position: "relative"}}>
@@ -330,16 +297,12 @@ class MyBeats extends Component {
                                                         `/resources/user-${beat.user.id}/beats/beat-${beat.id}/${beat.imageName}` :
                                                         'https://i.ibb.co/ySkyssb/track-placeholder.webp'}
                                                          alt="track-placeholder"/>
-
-                                                    {/*<button className="my-beats-play"*/}
-                                                    {/*        onClick={props.setAudio.bind(this, beat.id, path)}*/}
-                                                    {/*        style={{transform: "translate(-50%, -50%) scale(0.7)"}}*/}
-                                                    {/*></button>*/}
                                                 </div>
 
                                                 <div className="qwe-title wnohte">
-                                                    <p className="qwe-name wnohte"
-                                                       style={{textDecoration: "none"}}>{beat.title}</p>
+                                                    <Link to={"/beat/" + beat.id} className="qwe-name wnohte hu">
+                                                        {beat.title}
+                                                    </Link>
                                                 </div>
                                             </div>
 
@@ -429,8 +392,9 @@ class MyBeats extends Component {
             draftBeats =
                 <div className="wrapper" style={state.draftView ? null : {display: "none"}}>
                     <div className="container">
-                        <div className="qwe-null">
-                            <span>Ничего нет</span>
+                        <div className="empty">
+                            <img src={"https://i.ibb.co/X81cS7L/inbox.png"}
+                                 alt="inbox" width="70"/>
                         </div>
                     </div>
                 </div>
@@ -452,27 +416,12 @@ class MyBeats extends Component {
 
                                     soldBeatId = soldBeatId + 1
 
-                                    // let click;
-                                    //
-                                    // let path = `/resources/user-${beat.user.id}/beats/beat-${beat.id}/${beat.audio.mp3Name}`;
-                                    // if (window.screen.width > 767) {
-                                    //     click = props.setAudio.bind(this, beat.id, path)
-                                    // }
-
                                     return (
-                                        <div className="qwe"
-                                             // onClick={click}
-                                             key={index}>
+                                        <div className="qwe" key={index}>
 
                                             <div className="qwe-left">
                                                 <div className="qwe-id">
                                                     <span>{soldBeatId}</span>
-
-                                                    {/*<button className="my-beats-play"*/}
-                                                    {/*        onClick={props.setAudio.bind(this, beat.id, path)}*/}
-                                                    {/*        style={{transform: "translate(-50%, -50%) scale(0.7)"}}*/}
-                                                    {/*>*/}
-                                                    {/*</button>*/}
                                                 </div>
 
                                                 <div className="qwe-img" style={{position: "relative"}}>
@@ -480,16 +429,12 @@ class MyBeats extends Component {
                                                         ? `/resources/user-${beat.user.id}/beats/beat-${beat.id}/${beat.imageName}`
                                                         : 'https://i.ibb.co/ySkyssb/track-placeholder.webp'}
                                                          alt="track-placeholder"/>
-
-                                                    {/*<button className="my-beats-play"*/}
-                                                    {/*        onClick={props.setAudio.bind(this, beat.id, path)}*/}
-                                                    {/*        style={{transform: "translate(-50%, -50%) scale(0.7)"}}*/}
-                                                    {/*></button>*/}
                                                 </div>
 
                                                 <div className="qwe-title wnohte">
-                                                    <p className="qwe-name wnohte"
-                                                       style={{textDecoration: "none"}}>{beat.title}</p>
+                                                    <Link to={"/beat/" + beat.id} className="qwe-name wnohte hu">
+                                                        {beat.title}
+                                                    </Link>
                                                 </div>
                                             </div>
 
@@ -513,8 +458,9 @@ class MyBeats extends Component {
             soldBeats =
                 <div className="wrapper" style={state.soldView ? null : {display: "none"}}>
                     <div className="container">
-                        <div className="qwe-null">
-                            <span>Ничего нет</span>
+                        <div className="empty">
+                            <img src={"https://i.ibb.co/X81cS7L/inbox.png"}
+                                 alt="inbox" width="70"/>
                         </div>
                     </div>
                 </div>
@@ -535,7 +481,7 @@ class MyBeats extends Component {
 
                 <div className="my-beats-menu">
                     <div className="wrapper" style={{paddingTop: 0, paddingBottom: 0}}>
-                        <div className="container">
+                        <div className="container menu-container">
                             <button id="published" className="my-beats-menu-btn menu-active"
                                     onClick={this.publishedView}>
                                 Опубликованные

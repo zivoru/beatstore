@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -117,11 +118,11 @@ public class BeatController {
         beatService.addLicense(beatId, license);
     }
 
-    @Operation(summary = "Получение трендовых битов")
-    @GetMapping("trend-beats")
-    public ResponseEntity<List<Beat>> getTrendBeats(@RequestParam Integer limit) {
-        return ResponseEntity.ok(beatService.getTrendBeats(limit));
-    }
+//    @Operation(summary = "Получение трендовых битов")
+//    @GetMapping("trend-beats")
+//    public ResponseEntity<List<Beat>> getTrendBeats(@RequestParam Integer limit) {
+//        return ResponseEntity.ok(beatService.getTrendBeats(limit));
+//    }
 
     @Operation(summary = "Получение топ чарт")
     @GetMapping("top-charts")
@@ -200,7 +201,7 @@ public class BeatController {
     @GetMapping("user/{userId}")
     public ResponseEntity<Page<BeatDto>> getBeats(@AuthenticationPrincipal OAuth2User principal,
                                                   @PathVariable String userId,
-                                                  Pageable pageable) {
+                                                  @SortDefault(sort = {"beat.title"}) Pageable pageable) {
         return ResponseEntity.ok(beatService.getBeats(userId, principal == null ? null :
                 principal.getAttribute("sub"), pageable));
     }

@@ -37,35 +37,13 @@ class Playlist extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.user !== this.props.user) {
-            this.setState({user: this.props.user})
-
-            if (this.props.user !== null && this.props.user !== undefined && this.props.user !== "empty" && this.state.playlist !== null && this.state.playlist !== "empty") {
-
-                if (this.state.playlist.user.id === this.props.user.id) {
-                    this.setState({
-                        btnFollow:
-                            <div className="item-stats flex-c-c">
-                                <Link to="/settings" className="btn-primary" style={{backgroundColor: "#262626"}}>
-                                    Редактировать
-                                </Link>
-                            </div>
-                    })
-                }
-            }
-        }
+        if (prevProps.user !== this.props.user) this.setState({user: this.props.user})
 
         if (prevProps.playlistId !== this.props.playlistId) {
-            // this.setState({
-            //     playlist: null,
-            //     user: null,
-            //     beats: null
-            // })
-            window.scrollTo({top: 0, behavior: 'smooth'})
-
             this.setState({user: this.props.user})
-
             this.getPlaylist().then();
+
+            setTimeout(() => window.scrollTo({top: 0, behavior: 'smooth'}), 400)
         }
 
         if (prevState.update !== this.state.update) {
@@ -157,7 +135,7 @@ class Playlist extends Component {
             playlistPopUp: false,
             image: null,
             imageSrc: null,
-            imageName:null,
+            imageName: null,
             name: "",
             description: "",
             visibility: false,
@@ -196,7 +174,7 @@ class Playlist extends Component {
                     playlistPopUp: false,
                     image: null,
                     imageSrc: null,
-                    imageName:null,
+                    imageName: null,
                     name: "",
                     description: "",
                     visibility: false,
@@ -209,39 +187,6 @@ class Playlist extends Component {
         }
     }
 
-    playPlay = (beat, path) => {
-        this.props.setAudio(beat.id, beat.audio.mp3Name !== null ? `${path}${beat.audio.mp3Name}` : null)
-
-        document.getElementById(`play-play${beat.id}`).style.display = "none"
-        document.getElementById(`pause-beat${beat.id}`).style.display = "initial"
-        document.getElementById(`pause-beat${beat.id}`).style.opacity = "1"
-    }
-    play = (beatId) => {
-        this.props.btnPlay()
-
-        let buttonPlay = document.getElementById(`play-play${beatId}`);
-        let buttonPause = document.getElementById(`pause-beat${beatId}`);
-        if (buttonPlay !== null) buttonPlay.style.display = "none";
-        if (buttonPause !== null) {
-            buttonPause.style.display = "initial";
-            buttonPause.style.opacity = "1";
-        }
-
-        // document.getElementById(`play-play${beatId}`).style.display = "none"
-        // document.getElementById(`pause-beat${beatId}`).style.display = "initial"
-    }
-    pause = (beatId) => {
-        this.props.btnPause()
-
-        let buttonPlay = document.getElementById(`play-play${beatId}`);
-        let buttonPause = document.getElementById(`pause-beat${beatId}`);
-        if (buttonPlay !== null) buttonPlay.style.display = "initial"
-        if (buttonPause !== null) buttonPause.style.display = "none"
-
-        // document.getElementById(`play-play${beatId}`).style.display = "initial"
-        // document.getElementById(`pause-beat${beatId}`).style.display = "none"
-    }
-
     render() {
         if (this.state.playlist !== null && this.state.playlist !== "empty") {
 
@@ -249,182 +194,99 @@ class Playlist extends Component {
             let returnValue =
                 <div>
                     <div className="wrapper">
-                        <div className="container__main-info">
-                            <div className="main-info">
-                                <div className="main-info-header">
+                        <div className="container">
 
-                                    <div style={{width: 234, height: 234}}>
+                            <div className="content">
+                                <div className="content-container">
+                                    <div className="content-image-container">
                                         <img src={playlist.imageName !== null && playlist.imageName !== "" ?
                                             `/resources/user-${playlist.user.id}/playlists/playlist-${playlist.id}/${playlist.imageName}` :
                                             'https://i.ibb.co/9GFppbG/photo-placeholder.png'}
-                                             alt="playlist" className="item-image"/>
+                                             alt="playlist" className="content-image"/>
                                     </div>
+                                    <div className="content-details">
+                                        <h2 className="wnohte fs30 fw700 mb16">{playlist.name}</h2>
 
-                                    <div className="mw100 flex-c-c mt16">
-                                        <h1 className="mw100 wnohte fs20">{playlist.name}</h1>
+                                        <div className="flex-c color-g1 wnohte fs14 fw400">
+                                            <span>Плейлист</span>
+                                            <span style={{padding: "0 5px"}}> • </span>
+                                            <Link to={"/" + playlist.user.username}
+                                                  className="color-g1 hu"
+                                                  title={playlist.user.profile.displayName}>
+                                                {playlist.user.profile.displayName}
+                                            </Link>
+                                            {playlist.user.verified === true
+                                                ? <img src={'https://i.ibb.co/T8GczJ3/account-verified.webp'}
+                                                       alt="verified" className="img-verified ml5"/>
+                                                : null}
+                                        </div>
+
+                                        <div className="color-g1 wnohte fs14 fw400 mt5">
+                                            <span>{playlist.beatCount}</span>
+                                            <span style={{padding: "0 5px"}}> • </span>
+                                            <span>{playlist.likesCount}</span>
+                                        </div>
+
+                                        <div className="content-description color-g1">
+                                            {playlist.description}
+                                        </div>
+
                                     </div>
-
-                                    <Link to={"/" + playlist.user.username}
-                                          className="color-g1 mw100 wnohte fs14 fw300 hu flex-c-c"
-                                          title={playlist.user.profile.displayName}>
-                                        {playlist.user.profile.displayName}
-
-                                        {playlist.user.verified === true
-                                            ? <img src={'https://i.ibb.co/T8GczJ3/account-verified.webp'}
-                                                   alt="verified" className="img-verified ml5"/>
-                                            : null}
-                                    </Link>
-                                </div>
-
-                                <div className="item-stats" style={{height: 46}}>
-                                    <div className="stats" style={{justifyContent: "center"}}>
-
-                                        <img src={this.state.like} width="20px" alt="heart" className="mr32 cp"
-                                             style={{cursor: "pointer"}} onClick={this.like}
+                                    <div className="content-actions">
+                                        <img src={this.state.like} width="20px" alt="heart" className="mr16 cp"
+                                             onClick={this.like}
                                              title="Добавить в избранное"/>
 
                                         <img src={'https://i.ibb.co/rsL0r6P/share.png'}
-                                             width="20px" alt="share" className="cp"
+                                             width="20px" alt="share" className="mr16 cp"
                                              title="Поделиться"/>
-                                    </div>
-                                </div>
 
-                                {this.props.user !== null && this.props.user !== undefined && this.props.user !== "empty"
-                                    ? this.state.playlist.user.id === this.props.user.id ?
-                                            <div className="item-stats flex-c-c">
-                                                <button className="btn-primary"
-                                                        style={{backgroundColor: "#262626"}}
-                                                        onClick={() => this.setState({
-                                                            editPlaylistPopUpView: true,
-                                                            editPlaylistId: playlist.id,
-                                                            image: null,
-                                                            imageSrc: null,
-                                                            imageName: playlist.imageName,
-                                                            name: playlist.name,
-                                                            description: playlist.description === null ? "" : playlist.description,
-                                                            visibility: playlist.visibility,
-                                                        })}>
+                                        {this.props.user !== null
+                                        && this.props.user !== undefined
+                                        && this.props.user !== "empty"
+                                            ? this.state.playlist.user.id === this.props.user.id
+                                                ? <button className="hu"
+                                                          style={{backgroundColor: "inherit", color: "white"}}
+                                                          onClick={() => this.setState({
+                                                              editPlaylistPopUpView: true,
+                                                              editPlaylistId: playlist.id,
+                                                              image: null,
+                                                              imageSrc: null,
+                                                              imageName: playlist.imageName,
+                                                              name: playlist.name,
+                                                              description: playlist.description === null
+                                                                  ? "" : playlist.description,
+                                                              visibility: playlist.visibility,
+                                                          })}>
                                                     Редактировать
                                                 </button>
-                                            </div>
-                                        : null
-                                    : null}
-
-                                <div className="item-stats" style={{padding: 0}}>
-                                    <div className="stats-line"></div>
-                                    <span className="stats-title">СТАТИСТИКА</span>
-                                    <div className="stats">
-                                        <span>Биты</span><span>{playlist.beatCount}</span>
-                                    </div>
-                                    <div className="stats">
-                                        <span>Лайков</span><span>{playlist.likesCount}</span>
+                                                : null
+                                            : null}
                                     </div>
                                 </div>
-
-                                {playlist.description === null ? null :
-                                    <div className="item-stats" style={{borderRadius: "0 0 10px 10px"}}>
-                                        <div className="stats-line"></div>
-                                        <span className="stats-title">ОПИСАНИЕ</span>
-                                        <div className="stats">
-                                            {playlist.description}
-                                        </div>
-                                    </div>
-                                }
                             </div>
 
-                            <div className="right-panel ml16">
+                            <Beats beats={playlist.beats}
+                                   openLicenses={this.props.openLicenses}
+                                   setAudio={this.props.setAudio}
+                                   openDownload={this.props.openDownload}
+                                   user={this.props.user}
+                                   btnPause={this.props.btnPause}
+                                   btnPlay={this.props.btnPlay}
+                                   playback={this.props.playback}
+                                   playBeatId={this.props.playBeatId}
+                            />
 
-                                <div className="profile-beats-container">
-                                    <Beats beats={playlist.beats}
-                                           openLicenses={this.props.openLicenses}
-                                           setAudio={this.props.setAudio}
-                                           openDownload={this.props.openDownload}
-                                           user={this.props.user}
-                                           btnPause={this.props.btnPause}
-                                           btnPlay={this.props.btnPlay}
-                                           playback={this.props.playback}
-                                           playBeatId={this.props.playBeatId}
-                                    />
-                                </div>
-
-                                {/*<div className="grid-table">*/}
-                                {/*    {playlist.beats.map((beat, index) => {*/}
-
-                                {/*        let path = `/resources/user-${beat.user.id}/beats/beat-${beat.id}/`;*/}
-
-                                {/*        return (*/}
-                                {/*            <div key={index}>*/}
-                                {/*                <div className="slide-img-container playlist-img-container">*/}
-                                {/*                    <Link to={"/beat/" + beat.id} className="inl-blk trs"*/}
-                                {/*                          style={{position: "absolute",*/}
-                                {/*                              top: 0, left: 0, width: "100%", height: "100%",}}>*/}
-                                {/*                        <img className="slide-img playlist-img"*/}
-                                {/*                             src={beat.imageName !== null && beat.imageName !== ''*/}
-                                {/*                                 ? `${path}${beat.imageName}`*/}
-                                {/*                                 : 'https://i.ibb.co/ySkyssb/track-placeholder.webp'}*/}
-                                {/*                             alt="track-placeholder"/>*/}
-                                {/*                    </Link>*/}
-                                {/*                    {this.props.playBeatId === beat.id*/}
-                                {/*                        ? <>*/}
-                                {/*                            <button id={`play-play${beat.id}`} className="play"*/}
-                                {/*                                    title="Воспроизвести"*/}
-                                {/*                                    style={this.props.playback ? {display: "none"} : null}*/}
-                                {/*                                    onClick={this.play.bind(this, beat, path, beat.id)}></button>*/}
-
-                                {/*                            <button id={`pause-beat${beat.id}`} className="pause-beat"*/}
-                                {/*                                    title="Пауза"*/}
-                                {/*                                    style={!this.props.playback ? {display: "none"} : {opacity: 1}}*/}
-                                {/*                                    onClick={this.pause.bind(this, beat.id)}></button>*/}
-                                {/*                        </>*/}
-                                {/*                        : <>*/}
-                                {/*                            <button id={`play-play${beat.id}`} className="play"*/}
-                                {/*                                    title="Воспроизвести"*/}
-                                {/*                                    onClick={this.playPlay.bind(this, beat, path)}></button>*/}
-
-                                {/*                            <button id={`pause-beat${beat.id}`} className="pause-beat"*/}
-                                {/*                                    title="Пауза"*/}
-                                {/*                                    style={{display: "none"}}*/}
-                                {/*                                    onClick={this.pause.bind(this, beat.id)}></button>*/}
-                                {/*                        </>*/}
-                                {/*                    }*/}
-                                {/*                </div>*/}
-
-                                {/*                <div className="grid-item">*/}
-                                {/*                    <div className="sl-gr-it">*/}
-                                {/*                        <Link to={"/beat/" + beat.id} className="fs12 fw400 hu wnohte"*/}
-                                {/*                              title={beat.title}>*/}
-                                {/*                            {beat.title}*/}
-                                {/*                        </Link>*/}
-                                {/*                    </div>*/}
-
-                                {/*                    <div className="sl-gr-it">*/}
-                                {/*                        <Link to={"/" + beat.user.username}*/}
-                                {/*                              className="fs12 fw400 mr5 color-g1 hu wnohte"*/}
-                                {/*                              title={beat.user.profile.displayName}>*/}
-                                {/*                            {beat.user.profile.displayName}*/}
-                                {/*                        </Link>*/}
-                                {/*                        {beat.user.verified === true ?*/}
-                                {/*                            <img src={'https://i.ibb.co/T8GczJ3/account-verified.webp'}*/}
-                                {/*                                 alt="verified"/> : null}*/}
-                                {/*                    </div>*/}
-
-                                {/*                    {beat.bpm !== null && beat.bpm !== ""*/}
-                                {/*                        ? <h5 className="fs12 fw400 color-g1">{beat.bpm} BPM</h5>*/}
-                                {/*                        : null}*/}
-                                {/*                </div>*/}
-                                {/*            </div>*/}
-                                {/*        )*/}
-                                {/*    })}*/}
-                                {/*</div>*/}
-                            </div>
-                        </div>
-
-                        <div className="container">
                             <div className="title">
-                                <Link to="/playlists" className="hu">Похожие плейлисты</Link>
-                                <Link to="/playlists" className="color-or hu fs12 fw400">См. все</Link>
+                                <p>Похожие плейлисты</p>
+                                {/*<Link to="/playlists" className="color-or hu fs12 fw400">См. все</Link>*/}
                             </div>
-                            <RecommendedPlaylists />
+                            {this.props.homeRecommendedPlaylists !== null
+                            && this.props.homeRecommendedPlaylists.length !== 0
+                            && this.props.homeRecommendedPlaylists !== "empty"
+                                ? <RecommendedPlaylists homeRecommendedPlaylists={this.props.homeRecommendedPlaylists}/>
+                                : <div className="empty"><img src={"https://i.ibb.co/X81cS7L/inbox.png"}
+                                     alt="inbox" width="70"/></div>}
                         </div>
                     </div>
 

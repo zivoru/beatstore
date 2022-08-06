@@ -228,7 +228,10 @@ class PlaylistsPopUp extends Component {
                             })}
                         </div>
                     </div>
-                    : null}
+                    : <div className="empty" style={this.state.createPlaylistView ? {display: "none"} : null}>
+                        <img src={"https://i.ibb.co/X81cS7L/inbox.png"}
+                             alt="inbox" width="70"/>
+                    </div>}
 
                 <div className="list-playlists" style={this.state.createPlaylistView ? null : {display: "none"}}>
                     <div style={{height: "100%", overflow: "auto", paddingRight: 10, marginRight: -10}}>

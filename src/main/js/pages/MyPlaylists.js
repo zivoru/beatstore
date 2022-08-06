@@ -283,7 +283,10 @@ class MyPlaylists extends Component {
                             </div>
                             : null
                         }
-                        {this.state.playlists === "empty" ? "Ничего нет" : null}
+                        {this.state.playlists === "empty" ? <div className="empty">
+                            <img src={"https://i.ibb.co/X81cS7L/inbox.png"}
+                                 alt="inbox" width="70"/>
+                        </div> : null}
 
                     </div>
                 </div>

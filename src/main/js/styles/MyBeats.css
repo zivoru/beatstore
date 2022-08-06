@@ -23,6 +23,12 @@
     width: 100%;
     border-bottom: 2px solid #4a4a4a;
 }
+
+.menu-container {
+    display: flex;
+    column-gap: 32px;
+}
+
 .my-beats-menu-btn {
     background-color: inherit;
     font-size: 14px;
@@ -30,10 +36,15 @@
     letter-spacing: .8px;
     padding-bottom: 16px;
     color: #9f9f9f;
-    margin-right: 32px;
+    /*margin-right: 32px;*/
     text-transform: uppercase;
     transform: translateY(2px);
 }
+
+.my-beats-menu-btn:hover {
+    color: white;
+}
+
 .menu-active {
     color: white;
     border-bottom: 2px solid white;
@@ -97,9 +108,12 @@
 }
 
 @media (max-width: 767px) {
+    .menu-container {
+        display: flex;
+        column-gap: 16px;
+    }
     .my-beats-menu-btn {
         font-size: 12px;
-        margin-right: 16px;
     }
     .qwe-img:hover .play {
         display: initial;

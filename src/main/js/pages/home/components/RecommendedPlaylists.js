@@ -1,51 +1,34 @@
 import React, {Component} from 'react';
-import axios from 'axios';
 import {Link} from 'react-router-dom';
 
 class RecommendedPlaylists extends Component {
     beatCount;
     likesCount;
 
-    constructor(props) {
-        super(props);
-        this.state = {playlists: []};
-    }
-
-    componentDidMount() {
-        axios.get('/api/v1/playlists/recommended?limit=10').then(res => {
-            this.setState({playlists: res.data.length !== 0 ? res.data : null})
-        }).catch(() => {
-            this.setState({playlists: null})
-        })
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-
-    }
-
     render() {
-        if (this.state.playlists !== null && this.state.playlists.length !== 0 && this.state.playlists !== "empty") {
+        let playlists = this.props.homeRecommendedPlaylists;
+
+        if (playlists !== null && playlists.length !== 0 && playlists !== "empty") {
             return (
                 <div className="slider">
-                    {this.state.playlists.map((playlist, index) => {
+                    {playlists.map((playlist, index) => {
                         return (
-                            <div className="slide" key={index} style={{width: 275}}>
+                            <div className="slide" key={index}>
 
                                 <span className="back-layer"></span>
 
                                 <span className="front-layer"></span>
 
-                                <div className="slide-img-container" style={{width: 275, height: 275}}>
-                                    <Link to={"/playlist/" + playlist.id} className="inl-blk trs"
-                                          style={{width: 275, height: 275}}>
-                                        <img className="slide-img" style={{width: 275, height: 275}}
+                                <div className="slide-img-container">
+                                    <Link to={"/playlist/" + playlist.id} className="inl-blk trs">
+                                        <img className="slide-img"
                                              src={playlist.imageName !== null && playlist.imageName !== "" ?
                                                  `/resources/user-${playlist.user.id}/playlists/playlist-${playlist.id}/${playlist.imageName}`
                                                  : 'https://i.ibb.co/9GFppbG/photo-placeholder.png'} alt="playlist"/>
                                     </Link>
                                 </div>
 
-                                <div className="grid-item" style={{width: 275}}>
+                                <div className="grid-item">
                                     <h5 className="fs14 fw400 color-g1">
                                         {playlist.beatCount} • {playlist.likesCount}
                                     </h5>

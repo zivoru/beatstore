@@ -3,7 +3,7 @@
     display: flex;
     justify-content: left;
     align-items: center;
-    margin: 0 auto 16px auto;
+    /*margin: 0 auto 16px auto;*/
     /*background-color: #141414;*/
     border: 1px solid #545454;
     border-radius: 999px;

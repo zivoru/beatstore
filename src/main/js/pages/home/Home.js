@@ -5,7 +5,6 @@ import {RecommendedUsers} from './components/RecommendedUsers';
 import {TrendBeats} from './components/TrendBeats';
 import {RecommendedPlaylists} from './components/RecommendedPlaylists';
 import {Link} from "react-router-dom";
-import axios from "axios";
 
 class Home extends Component {
 
@@ -19,14 +18,6 @@ class Home extends Component {
 
         return (
             <div>
-
-                {/*<div>*/}
-                {/*    <div className="header flex-c-c home-header">*/}
-                {/*        <h1>BEATSTORE</h1>*/}
-                        {/*<Tags/>*/}
-                {/*    </div>*/}
-                {/*</div>*/}
-
                 <div className="wrapper">
                     <div className="container">
 
@@ -47,9 +38,10 @@ class Home extends Component {
                             <Link to="/top-charts" className="hu">Трендовые биты</Link>
                             <Link to="/top-charts" className="color-or hu fs12 fw400">См. все</Link>
                         </div>
-                        <div style={{height: 374}}>
+                        <div style={{height: 296}}>
 
-                            <TrendBeats setAudio={this.props.setAudio}
+                            <TrendBeats homeTrendBeats={this.props.homeTrendBeats}
+                                        setAudio={this.props.setAudio}
                                         btnPause={this.props.btnPause}
                                         btnPlay={this.props.btnPlay}
                                         playback={this.props.playback}
@@ -61,9 +53,9 @@ class Home extends Component {
                             <Link to="/playlists" className="hu">Рекомендуемые плейлисты</Link>
                             <Link to="/playlists" className="color-or hu fs12 fw400">См. все</Link>
                         </div>
-                        <div style={{height: 388}}>
+                        <div style={{height: 310}}>
 
-                            <RecommendedPlaylists />
+                            <RecommendedPlaylists homeRecommendedPlaylists={this.props.homeRecommendedPlaylists}/>
                         </div>
 
 
@@ -71,9 +63,9 @@ class Home extends Component {
                             <Link to="/beatmakers" className="hu">Рекомендуемые битмейкеры</Link>
                             <Link to="/beatmakers" className="color-or hu fs12 fw400">См. все</Link>
                         </div>
-                        <div style={{height: 277}}>
+                        <div style={{height: 210}}>
 
-                            <RecommendedUsers/>
+                            <RecommendedUsers homeRecommendedUsers={this.props.homeRecommendedUsers}/>
                         </div>
 
 
@@ -81,9 +73,10 @@ class Home extends Component {
                             <Link to="/free-beats" className="hu">Бесплатные биты</Link>
                             <Link to="/free-beats" className="color-or hu fs12 fw400">См. все</Link>
                         </div>
-                        <div style={{height: 374}}>
+                        <div style={{height: 296}}>
 
-                            <TrendBeats setAudio={this.props.setAudio}
+                            <TrendBeats homeTrendBeats={this.props.homeFreeBeats}
+                                        setAudio={this.props.setAudio}
                                         btnPause={this.props.btnPause}
                                         btnPlay={this.props.btnPlay}
                                         playback={this.props.playback}

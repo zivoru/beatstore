@@ -1,6 +1,6 @@
 body {
     background-color: black;
-    color:  rgba(255,255,255,0.93);
+    color:  white;
     overflow-y: scroll;
 }
 
@@ -14,8 +14,8 @@ a {
 }
 
 .container {
-    max-width: 1440px;
-    background-color: black;
+    max-width: 1264px;
+    /*background-color: black;*/
     margin: auto;
 }
 
@@ -107,9 +107,10 @@ a {
 .fs8 { font-size: 8px }
 .fs12 { font-size: 12px }
 .fs14 { font-size: 14px }
+.fs16 { font-size: 16px }
 .fs20 { font-size: 20px }
 .fs24 { font-size: 24px }
-.fs32 { font-size: 32px }
+.fs30 { font-size: 30px }
 .fs40 { font-size: 40px }
 .fs64 { font-size: 64px }
 .fs96 { font-size: 96px }
@@ -174,6 +175,8 @@ a {
 
 @media (max-width: 767px) {
     .wrapper {
-        padding: 44px 16px;
+        padding: 64px 16px;
     }
+
+    .fs30 { font-size: 24px }
 }

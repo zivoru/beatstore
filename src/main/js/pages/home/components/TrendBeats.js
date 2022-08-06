@@ -1,22 +1,8 @@
 import React, {Component} from 'react';
-import axios from 'axios';
 import {Link} from 'react-router-dom';
 
 class TrendBeats extends Component {
     verified;
-
-    constructor(props) {
-        super(props);
-        this.state = {beats: []};
-    }
-
-    componentDidMount() {
-        axios.get('/api/v1/beats/trend-beats?limit=10').then(res => {
-            this.setState({beats: res.data.length !== 0 ? res.data : null})
-        }).catch(() => {
-            this.setState({beats: null})
-        })
-    }
 
     playPlay = (beat, path) => {
         this.props.setAudio(beat.id, beat.audio.mp3Name !== null ? `${path}${beat.audio.mp3Name}` : null)
@@ -46,10 +32,21 @@ class TrendBeats extends Component {
     }
 
     render() {
-        if (this.state.beats !== null && this.state.beats.length !== 0) {
+        if (this.props.homeTrendBeats !== null
+            && this.props.homeTrendBeats.length !== 0
+            && this.props.homeTrendBeats !== "empty") {
             return (
                 <div className="slider">
-                    {this.state.beats.map((beat, index) => {
+                    {this.props.homeTrendBeats.map((bt, index) => {
+
+
+                        let beat;
+
+                        if (bt.beat !== undefined && bt.beat !== null) {
+                            beat = bt.beat;
+                        } else {
+                            beat = bt;
+                        }
 
                         let path = `/resources/user-${beat.user.id}/beats/beat-${beat.id}/`;
 

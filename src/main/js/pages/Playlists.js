@@ -4,7 +4,6 @@ import {Link} from "react-router-dom";
 
 class Playlists extends Component {
     state = {
-        // user: null,
         playlists: null,
         size: 12,
         position: 100,
@@ -12,15 +11,11 @@ class Playlists extends Component {
 
     componentDidMount() {
         window.scrollTo({top: 0, behavior: 'smooth'})
-        // this.setState({user: this.props.user})
         this.getPlaylists()
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        // if (prevProps.user !== this.props.user) this.setState({user: this.props.user});
-        if (prevState.size !== this.state.size) {
-            this.getPlaylists()
-        }
+        if (prevState.size !== this.state.size) this.getPlaylists()
     }
 
     getPlaylists = () => {
@@ -34,9 +29,7 @@ class Playlists extends Component {
     }
 
     render() {
-
         document.title = "Плейлисты | BeatStore"
-
 
         window.onscroll = () => {
             const scrollTopPosition = document.documentElement.scrollTop;
@@ -48,20 +41,15 @@ class Playlists extends Component {
             }
         }
 
-
         let beats;
 
         if (this.state.playlists !== null && this.state.playlists !== "empty") {
             beats =
                 <div>
-                    <h1 className="qwe1-title">
+                    <h1 className="qwe1-title" style={{marginBottom: 46}}>
                         Все плейлисты
-                        <span className="fs14 fw300 color-g1 mb16">в них может тебе что-нибудь понравится</span>
+                        <span className="fs14 fw300 color-g1 mb16">то, что сохранили другие</span>
                     </h1>
-
-                    <div className="title">
-                        <h2>Плейлисты</h2>
-                    </div>
 
                     <div className="grid-table">
                         {this.state.playlists.map((playlist, index) => {
@@ -118,7 +106,10 @@ class Playlists extends Component {
                 <div className="qwe-null">
                     <h1 className="qwe1-title">
                         Все плейлисты
-                        <span className="fs14 fw300 color-g1">бесплатных битов пока что нет, но ты можешь это исправить!</span>
+                        <span className="fs14 fw300 color-g1">плейлистов пока что нет, но ты можешь это исправить!</span>
+                        <div className="empty" style={{paddingTop: 32}}>
+                            <img src={"https://i.ibb.co/X81cS7L/inbox.png"} alt="inbox" width="70"/>
+                        </div>
                     </h1>
                 </div>
         }

@@ -8,8 +8,8 @@ class Genre extends Component {
         beats: null,
         page: 0,
         totalPages: null,
-        size: 12,
-        position: 100,
+        size: 14,
+        position: 50,
     }
 
     componentDidMount() {
@@ -92,6 +92,10 @@ class Genre extends Component {
                     <h1 className="qwe1-title">
                         {nameGenre}
                         <span className="fs14 fw300 color-g1">битов этого жанра пока что нет, но ты можешь это исправить!</span>
+                        <div className="empty" style={{paddingTop: 32}}>
+                            <img src={"https://i.ibb.co/X81cS7L/inbox.png"}
+                                 alt="inbox" width="70"/>
+                        </div>
                     </h1>
                 </div>
         }

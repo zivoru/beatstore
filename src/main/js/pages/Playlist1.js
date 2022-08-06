@@ -6,7 +6,7 @@ export default function Playlist1(props) {
 
     let params = useParams();
 
-    return <Playlist user={props.user} resourceUrl={props.resourceUrl}
+    return <Playlist user={props.user}
                      setAudio={props.setAudio}
                      openLicenses={props.openLicenses}
                      openDownload={props.openDownload}
@@ -15,6 +15,7 @@ export default function Playlist1(props) {
                      btnPlay={props.btnPlay}
                      playback={props.playback}
                      playBeatId={props.playBeatId}
+                     homeRecommendedPlaylists={props.homeRecommendedPlaylists}
                      playlistId={params.playlistId}
     />;
 }

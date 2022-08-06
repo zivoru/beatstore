@@ -348,13 +348,7 @@ public class BeatServiceImpl implements BeatService {
     public Page<BeatDto> getBeats(String userId, String authUserId, Pageable pageable) {
         User authUser = authUserId != null ? Users.getUser(authUserId) : null;
 
-        List<Beat> sortedBeats = sortedPublishedBeats(Users.getUser(userId).getBeats())
-                .stream()
-                .filter(beat -> beat != null && beat.getId() != null)
-                .sorted(Comparator.comparingLong(Beat::getId))
-                .toList();
-
-        return listToPage(pageable, mapToDtoList(authUser, sortedBeats));
+        return listToPage(pageable, mapToDtoList(authUser, sortedPublishedBeats(Users.getUser(userId).getBeats())));
     }
 
     @Override

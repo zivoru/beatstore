@@ -217,7 +217,7 @@ class Settings extends Component {
 
             return (
                 <div className="wrapper">
-                    <div className="settings">
+                    <div className="container flex-c-sb">
 
                         <div>
                             <label htmlFor="file">

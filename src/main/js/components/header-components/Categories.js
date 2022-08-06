@@ -2,9 +2,10 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 
 const li = [
-    {url: 'top-charts', title: 'Топ Чарт'},
-    {url: 'free-beats', title: 'Бесплатные биты'},
-    {url: 'playlists', title: 'Плейлисты'}
+    {url: '/top-charts', title: 'Топ Чарт'},
+    {url: '/free-beats', title: 'Бесплатные биты'},
+    {url: '/playlists', title: 'Плейлисты'},
+    {url: '/beatmakers', title: 'Битмейкеры'},
 ]
 
 const Categories = (props) => (
