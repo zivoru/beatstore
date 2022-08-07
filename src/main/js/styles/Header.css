@@ -237,7 +237,7 @@ header {
 .dropdown {
     font-size: 18px;
     position: absolute;
-    top: 75px;
+    top: 63px;
     border-radius: 15px;
     z-index: 999999;
     background-color: #1f1f1f;
@@ -289,7 +289,7 @@ header {
 
 .dropdown__profile {
     flex-direction: column;
-    padding: 16px;
+    padding: 19px 16px 16px 16px;
     max-width: 250px;
     min-width: 200px;
 }

@@ -54,7 +54,9 @@ public class PlaylistServiceImpl implements PlaylistService {
 
     @Override
     public List<Playlist> findAllByUserId(String userId) {
-        return Users.getUser(userId).getPlaylists();
+        List<Playlist> playlists = Users.getUser(userId).getPlaylists();
+        Collections.reverse(playlists);
+        return playlists;
     }
 
     @Override
@@ -62,6 +64,8 @@ public class PlaylistServiceImpl implements PlaylistService {
         List<Playlist> playlists = Users.getUser(userId).getPlaylists();
         List<Playlist> publishedPlaylists = sortByVisibility(playlists);
         List<PlaylistDto> playlistDtoList = mapToDtoList(publishedPlaylists);
+
+        Collections.reverse(playlistDtoList);
 
         return mapToPage(pageable, playlistDtoList);
     }

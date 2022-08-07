@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 const genres = [
     {url: "RAP", img: 'https://i.ibb.co/ngwQwqm/rap.jpg', title: "Рэп"},
     {url: "HIP_HOP", img: 'https://i.ibb.co/q5nf1G2/hip-hop.jpg', title: 'Хип-хоп'},
-    {url: "POP", img: 'https://i.ibb.co/QkrMYx3/pop.jpg', title: "Поп"},
+    {url: "HYPERPOP", img: 'https://i.ibb.co/SVJDwJk/hyperpop.jpg', title: "Hyperpop"},
     {url: "POP_RAP", img: 'https://i.ibb.co/ZVDnBvq/pop-rap.jpg', title: "Поп-Рэп"},
 ]
 

@@ -206,18 +206,17 @@ class Beat extends Component {
     createComment = () => {
         axios.post(`/api/v1/comments/${this.state.beat.beat.id}`,
             {"comment": this.state.comment}).then(res => {
-            this.setState({comment: null})
+            this.setState({comment: ""})
 
             let newComments = this.state.comments
             if (this.state.comments === null) newComments = []
             newComments.unshift(res.data)
             this.setState({comments: newComments})
 
-            document.querySelector(".comment-input").value = ""
             document.querySelector(".comment-input").style.borderBottom = "1px solid #707070"
             document.querySelector(".comment-button").style.backgroundColor = "rgba(38,38,38,0.91)"
             document.querySelector(".comment-button").style.pointerEvents = "none"
-            document.querySelector(".comment-button-img").style.opacity = 0.2
+            document.querySelector(".comment-button").style.opacity = 0.2
         }).catch()
     }
     deleteComment = () => {
@@ -285,7 +284,7 @@ class Beat extends Component {
 
                             <div className="create-comment" style={{alignItems: "end"}}>
                                 <input type="text" placeholder="Введите комментарий" className="comment-input"
-                                       onChange={this.commentChange}/>
+                                       value={this.state.comment} onChange={this.commentChange}/>
                             </div>
 
                             <button className="comment-button" onClick={this.createComment} title="Оставить комментарий">
@@ -455,7 +454,7 @@ class Beat extends Component {
                                                      style={{columnGap: 10, rowGap: 10, flexWrap: "wrap"}}>
                                                     {beat.tags.map((tag, index) => {
                                                         return (
-                                                            <Link to={"/top-charts?tag=" + tag.id} key={index}
+                                                            <Link to={"/tag/" + tag.id} key={index}
                                                                   className="qwe-tag">#{tag.name}</Link>
                                                         )
                                                     })}

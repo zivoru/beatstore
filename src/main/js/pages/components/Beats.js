@@ -69,14 +69,6 @@ class Beats extends Component {
                             }
                         }
 
-                        // let click;
-                        //
-                        // if (window.screen.width > 767) {
-                        //     click = props.setAudio.bind(this,
-                        //         beat.id,
-                        //         `/resources/user-${beat.user.id}/beats/beat-${beat.id}/${beat.audio.mp3Name}`)
-                        // }
-
                         let path = `/resources/user-${beat.user.id}/beats/beat-${beat.id}/`;
 
                         return (
@@ -88,12 +80,6 @@ class Beats extends Component {
 
                                         <span>{beatId}</span>
 
-                                        {/*<button className="play" onClick={props.setAudio.bind(this,*/}
-                                        {/*    beat.id,*/}
-                                        {/*    `/resources/user-${beat.user.id}/beats/beat-${beat.id}/${beat.audio.mp3Name}`)}*/}
-                                        {/*        style={{transform: "translate(-50%, -50%) scale(0.7)"}}*/}
-                                        {/*>*/}
-                                        {/*</button>*/}
                                     </div>
                                     <div className="qwe-img" style={{position: "relative"}}>
                                         <img src={beat.imageName !== null && beat.imageName !== '' ?
@@ -122,11 +108,6 @@ class Beats extends Component {
                                             </>
                                         }
 
-
-                                        {/*<button className="qwe-play" onClick={props.setAudio.bind(this,*/}
-                                        {/*    beat.id,*/}
-                                        {/*    `/resources/user-${beat.user.id}/beats/beat-${beat.id}/${beat.audio.mp3Name}`)}>*/}
-                                        {/*</button>*/}
                                     </div>
                                     <div className="qwe-title wnohte">
                                         <Link to={"/beat/" + beat.id} className="qwe-name wnohte"
@@ -155,7 +136,7 @@ class Beats extends Component {
 
                                 <div className="qwe-right">
                                     {beat.tags.map((tag, index) => {
-                                        return (<Link to={"/top-charts?tag=" + tag.id} key={index}
+                                        return (<Link to={"/tag/" + tag.id} key={index}
                                                       className="qwe-tag">#{tag.name}</Link>)
                                     })}
 

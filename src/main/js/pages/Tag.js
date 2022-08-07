@@ -69,7 +69,7 @@ class Tag extends Component {
             beats =
                 <div>
                     <h1 className="qwe1-title">
-                        {nameGenre}
+                        #{nameGenre}
                         <span className="fs14 fw300 color-g1">все биты с этим тегом</span>
                     </h1>
 

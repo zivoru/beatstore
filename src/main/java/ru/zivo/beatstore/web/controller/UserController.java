@@ -33,6 +33,12 @@ public class UserController {
         return ResponseEntity.ok(userService.findById(id));
     }
 
+    @Operation(summary = "Проверка пользователя по username")
+    @GetMapping("/findByUsername")
+    public ResponseEntity<Boolean> findByUsername(@RequestParam String username) {
+        return ResponseEntity.ok(userService.findByUsername(username));
+    }
+
     @Operation(summary = "Изменение username и email")
     @PutMapping()
     public ResponseEntity<User> findById(@AuthenticationPrincipal OAuth2User principal,

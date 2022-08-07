@@ -58,7 +58,7 @@
     z-index: 600;
     left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%) scale(0.7);
+    transform: translate(-50%, -50%) ;
     width: 600px;
     padding: 30px;
     border-radius: 15px;
@@ -76,7 +76,7 @@
     z-index: 100;
     display: none;
     background: rgba(0, 0, 0, 0.8);
-    -webkit-backdrop-filter: saturate(180%) blur(3px);
+    /*-webkit-backdrop-filter: saturate(180%) blur(3px);*/
     backdrop-filter: saturate(180%) blur(3px);
     opacity: 0;
 }

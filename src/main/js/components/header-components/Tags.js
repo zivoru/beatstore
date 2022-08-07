@@ -25,7 +25,7 @@ class Tags extends Component {
                         {this.state.tags.map((tag, index) => {
                             return (
                                 <li key={index}>
-                                    <Link to={"/top-charts?tag=" + tag.id} onClick={this.props.click}>
+                                    <Link to={"/tag/" + tag.id} onClick={this.props.click}>
                                         {tag.name}
                                     </Link>
                                 </li>

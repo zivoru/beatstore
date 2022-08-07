@@ -244,7 +244,8 @@ class App extends React.Component {
                     this.setState({beat: "empty"})
                 })
 
-            this.openLicense()
+
+            setTimeout(() => this.openLicense(), 100)
         } else {
             this.setState({loginPopUp: true})
         }
@@ -281,7 +282,7 @@ class App extends React.Component {
         if (popup !== null) {
             popup.style.display = "initial"
             setTimeout(() => popup.style.opacity = "1", 10)
-            setTimeout(() => popup.style.transform = "translate(-50%, -50%)")
+            setTimeout(() => popup.style.transform = "translate(-50%, -50%)", 11)
         }
     }
     openPlaylists = (beat) => {
@@ -293,7 +294,7 @@ class App extends React.Component {
             }
 
             setTimeout(this.openBack, 100)
-            setTimeout(this.openPopUp.bind(this, "playlists"), 100)
+            setTimeout(() => this.openPopUp("playlists"), 100)
         } else {
             this.setState({loginPopUp: true})
         }
@@ -306,7 +307,7 @@ class App extends React.Component {
         }
 
         setTimeout(this.openBack, 100)
-        setTimeout(this.openPopUp.bind(this, "download"), 100)
+        setTimeout(() => this.openPopUp("download"), 100)
     }
     openShare = (beat) => {
         if (beat !== null) {
@@ -316,7 +317,7 @@ class App extends React.Component {
         }
 
         setTimeout(this.openBack, 100)
-        setTimeout(this.openPopUp.bind(this, "sharePopUp"), 100)
+        setTimeout(() => this.openPopUp("sharePopUp"), 100)
     }
     openLicense = () => {
         if (this.state.user !== null && this.state.user !== undefined && this.state.user !== "empty") {

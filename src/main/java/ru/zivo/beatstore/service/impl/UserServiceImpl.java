@@ -52,6 +52,24 @@ public class UserServiceImpl implements UserService {
             }
         }
 
+        String name = String.valueOf(newUsername).toLowerCase();
+
+        boolean check = name.equals("feed") || name.equals("genres") || name.equals("playlists")
+                        || name.equals("beatmakers") || name.equals("beat") || name.equals("top-charts")
+                        || name.equals("playlist") || name.equals("genre") || name.equals("tag")
+                        || name.equals("free-beats") || name.equals("cart") || name.equals("edit")
+                        || name.equals("upload-beat") || name.equals("beats") || name.equals("my-playlists")
+                        || name.equals("history") || name.equals("favorites") || name.equals("settings");
+
+        if (findByUsername(name) || check) {
+            for (int i = 1; i < 20; i++) {
+                if (!findByUsername(name + i)) {
+                    newUsername.append(i);
+                    break;
+                }
+            }
+        }
+
         User user = User.builder()
                 .id(id)
                 .username(String.valueOf(newUsername).toLowerCase())
@@ -87,6 +105,11 @@ public class UserServiceImpl implements UserService {
     public User findById(String id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Пользователь с id = %s не найден".formatted(id)));
+    }
+
+    @Override
+    public Boolean findByUsername(String username) {
+        return userRepository.findByUsername(username).isPresent();
     }
 
     @Override

@@ -24,4 +24,6 @@ public interface UserService {
     boolean subscribeAndUnsubscribe(String userId, String channelId);
 
     Page<User> findAll(Pageable pageable, String nameFilter);
+
+    Boolean findByUsername(String username);
 }

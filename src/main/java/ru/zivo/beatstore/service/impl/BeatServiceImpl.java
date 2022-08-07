@@ -276,14 +276,14 @@ public class BeatServiceImpl implements BeatService {
         userRepository.save(user);
     }
 
-    @Override
-    public List<Beat> getTrendBeats(Integer limit) {
-        return sortedPublishedBeats(beatRepository.findAll())
-                .stream()
-                .sorted((o1, o2) -> Integer.compare(o2.getPlays(), o1.getPlays()))
-                .limit(limit)
-                .collect(Collectors.toList());
-    }
+//    @Override
+//    public List<Beat> getTrendBeats(Integer limit) {
+//        return sortedPublishedBeats(beatRepository.findAll())
+//                .stream()
+//                .sorted((o1, o2) -> Integer.compare(o2.getPlays(), o1.getPlays()))
+//                .limit(limit)
+//                .collect(Collectors.toList());
+//    }
 
     @Override
     public Page<BeatDto> getTopChart(String nameFilter, Long tag, String genre, Integer priceMin,
@@ -292,10 +292,12 @@ public class BeatServiceImpl implements BeatService {
     ) {
         User user = userId != null ? Users.getUser(userId) : null;
 
-        List<Beat> sortedBeats = sortedPublishedBeats(beatRepository.findAll())
+        List<Beat> sortedBeats = new ArrayList<>(sortedPublishedBeats(beatRepository.findAll())
                 .stream()
                 .sorted((o1, o2) -> Integer.compare(o2.getPlays(), o1.getPlays()))
-                .toList();
+                .toList());
+
+        Collections.reverse(sortedBeats);
 
         if (nameFilter == null && tag == null && genre == null
             && priceMin == null && priceMax == null && key == null
@@ -357,6 +359,7 @@ public class BeatServiceImpl implements BeatService {
         for (Beat beat : Users.getUser(userId).getBeats()) {
             if (beat.getStatus() == BeatStatus.DRAFT) drafts.add(beat);
         }
+        Collections.reverse(drafts);
         return drafts;
     }
 
@@ -366,6 +369,7 @@ public class BeatServiceImpl implements BeatService {
         for (Beat beat : Users.getUser(userId).getBeats()) {
             if (beat.getStatus() == BeatStatus.SOLD) sold.add(beat);
         }
+        Collections.reverse(sold);
         return sold;
     }
 
@@ -473,13 +477,6 @@ public class BeatServiceImpl implements BeatService {
 
     private List<BeatDto> mapToDtoList(User user, List<Beat> sortedBeats) {
         List<BeatDto> beatDtoList = new ArrayList<>();
-        Map<Long, Integer> beatsInCart = new HashMap<>();
-
-        if (user != null) {
-            for (Cart cart : user.getCart()) {
-                beatsInCart.put(cart.getBeat().getId(), 1);
-            }
-        }
 
         for (Beat sortedBeat : sortedBeats) {
             BeatDto beatDto = BeatDto.builder()
@@ -488,15 +485,14 @@ public class BeatServiceImpl implements BeatService {
                     .build();
 
             if (user != null) {
-                if (beatsInCart.get(sortedBeat.getId()) != null) beatDto.setAddedToCart(true);
-
-//                if (user.getCart().stream()
-//                        .anyMatch(c -> c.getBeat() == sortedBeat)) beatDto.setAddedToCart(true);
+                if (user.getCart().stream()
+                        .anyMatch(c -> c.getBeat() == sortedBeat)) beatDto.setAddedToCart(true);
             }
 
             beatDtoList.add(beatDto);
         }
 
+        Collections.reverse(beatDtoList);
         return beatDtoList;
     }
 }
