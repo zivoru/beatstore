@@ -14,7 +14,7 @@ class Home extends Component {
     }
 
     render() {
-        document.title = 'BeatStore | Музыкальный маркетплейс для покупки и продажи битов';
+        document.title = 'BeatStore жопка | Музыкальный маркетплейс для покупки и продажи битов';
 
         return (
             <div>

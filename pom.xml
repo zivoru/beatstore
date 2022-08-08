@@ -131,6 +131,12 @@
             <artifactId>spring-session-jdbc</artifactId>
         </dependency>
 
+
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>9.3</version> <!-- Use newer version of ASM -->
+        </dependency>
     </dependencies>
 
     <build>
@@ -143,6 +149,8 @@
                         <exclude>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
+                            <version>1.18.24</version>
+                            <scope>provided</scope>
                         </exclude>
                     </excludes>
                 </configuration>
@@ -151,6 +159,13 @@
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.9.1</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
             </plugin>
         </plugins>
     </build>

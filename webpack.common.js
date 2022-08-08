@@ -1,14 +1,7 @@
 let path = require('path');
 
 module.exports = {
-    entry: './src/main/js/app.js',
-    devtool: 'sourcemaps',
-    cache: true,
-    mode: 'development',
-    output: {
-        path: __dirname,
-        filename: './src/main/resources/static/built/bundle.js'
-    },
+    entry: path.join(__dirname, 'src', 'main', 'resources', 'js', 'app.js'),
     module: {
         rules: [
             {
@@ -26,5 +19,12 @@ module.exports = {
                 use: ["style-loader", "css-loader"],
             },
         ]
+    },
+    resolve: {
+        modules: [
+            path.join(__dirname, 'src', 'main', 'resources', 'js'),
+            path.join(__dirname, 'node_modules'),
+        ],
+        extensions: ['.js', '.jsx']
     }
 };
