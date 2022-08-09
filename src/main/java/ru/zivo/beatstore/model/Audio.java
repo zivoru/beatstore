@@ -8,7 +8,6 @@ import lombok.Setter;
 import ru.zivo.beatstore.model.common.AbstractLongPersistable;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 
 @NoArgsConstructor
 @AllArgsConstructor

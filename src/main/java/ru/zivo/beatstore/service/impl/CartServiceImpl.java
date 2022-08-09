@@ -2,7 +2,6 @@ package ru.zivo.beatstore.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
 import ru.zivo.beatstore.model.Cart;
 import ru.zivo.beatstore.model.License;
 import ru.zivo.beatstore.model.enums.BeatStatus;

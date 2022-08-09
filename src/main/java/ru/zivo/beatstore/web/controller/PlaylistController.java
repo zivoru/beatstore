@@ -110,12 +110,6 @@ public class PlaylistController {
         if (principal != null) playlistService.removeFavorite(playlistId, principal.getAttribute("sub"));
     }
 
-//    @Operation(summary = "Получение рекомендуемых плейлистов")
-//    @GetMapping("/recommended")
-//    public ResponseEntity<List<PlaylistDto>> getRecommended(@RequestParam Integer limit) {
-//        return ResponseEntity.ok(playlistService.getRecommended(limit));
-//    }
-
     @Operation(summary = "Получение страницы плейлистов")
     @GetMapping("/findAll")
     public ResponseEntity<Page<PlaylistDto>> findAll(@RequestParam(required = false) String nameFilter,

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.webjars.NotFoundException;
 import ru.zivo.beatstore.model.*;
-import ru.zivo.beatstore.model.common.AbstractLongPersistable;
 import ru.zivo.beatstore.model.enums.BeatStatus;
 import ru.zivo.beatstore.model.enums.Licensing;
 import ru.zivo.beatstore.repository.*;
@@ -276,15 +275,6 @@ public class BeatServiceImpl implements BeatService {
         userRepository.save(user);
     }
 
-//    @Override
-//    public List<Beat> getTrendBeats(Integer limit) {
-//        return sortedPublishedBeats(beatRepository.findAll())
-//                .stream()
-//                .sorted((o1, o2) -> Integer.compare(o2.getPlays(), o1.getPlays()))
-//                .limit(limit)
-//                .collect(Collectors.toList());
-//    }
-
     @Override
     public Page<BeatDto> getTopChart(String nameFilter, Long tag, String genre, Integer priceMin,
                                      Integer priceMax, String key, String mood, Integer bpmMin,
@@ -432,8 +422,6 @@ public class BeatServiceImpl implements BeatService {
 
         return listToPage(pageable, mapToDtoList(Users.getUser(userId), findAllByTag));
     }
-
-    /* not Override */
 
     private void makeDirectory(Beat beat, String pathname) {
         List<File> files = List.of(

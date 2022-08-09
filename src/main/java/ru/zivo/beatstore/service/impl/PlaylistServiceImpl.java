@@ -185,27 +185,6 @@ public class PlaylistServiceImpl implements PlaylistService {
         userRepository.save(user);
     }
 
-//    @Override
-//    public List<PlaylistDto> getRecommended(Integer limit) {
-//        List<Playlist> publishedPlaylists = new ArrayList<>();
-//
-//        for (Playlist playlist : playlistRepository.findAll()) {
-//            if (playlist.getVisibility()) publishedPlaylists.add(playlist);
-//        }
-//
-//        List<Playlist> sortedPlaylists = publishedPlaylists.stream()
-//                .sorted((o1, o2) -> Integer.compare(o2.getLikes().size(), o1.getLikes().size()))
-//                .limit(limit).toList();
-//
-//        List<PlaylistDto> playlistDtoList = new ArrayList<>();
-//
-//        for (Playlist playlist : sortedPlaylists) {
-//            playlistDtoList.add(mapToDto(playlist, null));
-//        }
-//
-//        return playlistDtoList;
-//    }
-
     @Override
     public Page<PlaylistDto> findAll(Pageable pageable, String nameFilter) {
         List<Playlist> playlists = nameFilter != null

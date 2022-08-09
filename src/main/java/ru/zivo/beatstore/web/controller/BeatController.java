@@ -118,12 +118,6 @@ public class BeatController {
         beatService.addLicense(beatId, license);
     }
 
-//    @Operation(summary = "Получение трендовых битов")
-//    @GetMapping("trend-beats")
-//    public ResponseEntity<List<Beat>> getTrendBeats(@RequestParam Integer limit) {
-//        return ResponseEntity.ok(beatService.getTrendBeats(limit));
-//    }
-
     @Operation(summary = "Получение топ чарт")
     @GetMapping("top-charts")
     public ResponseEntity<Page<BeatDto>> getTopChart(@RequestParam(required = false) String nameFilter,
