@@ -116,7 +116,16 @@ public class PlaylistServiceImpl implements PlaylistService {
     public void delete(String userId, Long playlistId) {
         Playlist playlist = findById(playlistId);
 
-        if (playlist.getUser().getId().equals(userId)) playlistRepository.delete(playlist);
+        if (playlist.getUser().getId().equals(userId)) {
+            if (playlist.getImageName() != null && !Objects.equals(playlist.getImageName(), "")) {
+                String pathname = uploadPath + "/user-" + playlist.getUser().getId()
+                                  + "/playlists/playlist-" + playlist.getId();
+
+                System.out.println(new File(pathname + "/" + playlist.getImageName()).delete());
+                System.out.println(new File(pathname).delete());
+            }
+            playlistRepository.delete(playlist);
+        }
     }
 
     @Override

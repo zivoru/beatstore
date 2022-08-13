@@ -282,7 +282,9 @@ public class BeatServiceImpl implements BeatService {
     ) {
         User user = userId != null ? Users.getUser(userId) : null;
 
-        List<Beat> sortedBeats = new ArrayList<>(sortedPublishedBeats(beatRepository.findAll())
+        List<Beat> sortedBeats = new ArrayList<>(sortedPublishedBeats(nameFilter != null
+                ? beatRepository.findAllByTitleContainsIgnoreCase(nameFilter)
+                : beatRepository.findAll())
                 .stream()
                 .sorted((o1, o2) -> Integer.compare(o2.getPlays(), o1.getPlays()))
                 .toList());
@@ -294,29 +296,44 @@ public class BeatServiceImpl implements BeatService {
             && mood == null && bpmMin == null && bpmMax == null
         ) return listToPage(pageable, mapToDtoList(user, sortedBeats));
 
-        List<Beat> filteredBeats = nameFilter != null
-                ? beatRepository.findAllByTitleContainsIgnoreCase(nameFilter)
-                : new ArrayList<>();
+        List<Beat> filteredBeats = new ArrayList<>();
 
         for (Beat sortedBeat : sortedBeats) {
             boolean add = tag == null || sortedBeat.getTags()
                     .stream()
                     .anyMatch(tag1 -> Objects.equals(tag1.getId(), tag));
 
-            if (add && genre != null && !sortedBeat.getGenre().name().equals(genre)) add = false;
+            if (add && genre != null && !sortedBeat.getGenre().name().equals(genre)) {
+                add = false;
+            }
 
-            if (add && priceMin != null && priceMax != null
-                && (sortedBeat.getLicense().getPrice_mp3() < priceMin
-                    || sortedBeat.getLicense().getPrice_mp3() > priceMax)) add = false;
+            if (add && priceMin != null && priceMax != null) {
+                if (sortedBeat.getLicense().getPrice_mp3() < priceMin || sortedBeat.getLicense().getPrice_mp3() > priceMax) {
+                    add = false;
+                }
+                if (sortedBeat.getFree()) {
+                    add = true;
+                }
+            }
 
-            if (add && key != null && !sortedBeat.getKey().name().equals(key)) add = false;
+            if (add && key != null && !sortedBeat.getKey().name().equals(key)) {
+                add = false;
+            }
 
-            if (add && mood != null && !sortedBeat.getMood().name().equals(mood)) add = false;
+            if (add && mood != null && !sortedBeat.getMood().name().equals(mood)) {
+                add = false;
+            }
 
-            if (add && bpmMin != null && bpmMax != null
-                && (sortedBeat.getBpm() < bpmMin || sortedBeat.getBpm() > bpmMax)) add = false;
+            if (sortedBeat.getBpm() != null) {
+                if (add && bpmMin != null && bpmMax != null
+                    && (sortedBeat.getBpm() < bpmMin || sortedBeat.getBpm() > bpmMax)) {
+                    add = false;
+                }
+            }
 
-            if (add) filteredBeats.add(sortedBeat);
+            if (add) {
+                filteredBeats.add(sortedBeat);
+            }
         }
 
         return listToPage(pageable, mapToDtoList(user, filteredBeats));

@@ -44,8 +44,6 @@ public interface BeatService {
 
     void addToHistory(String userId, Long beatId);
 
-//    List<Beat> getTrendBeats(Integer limit);
-
     Page<BeatDto> getTopChart(String nameFilter,
                               Long tag,
                               String genre,
