@@ -7,38 +7,40 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/")
 public class MainController {
+    private static final String PAGE = "index";
+
     @GetMapping
     public String main() {
-        return "index";
+        return PAGE;
     }
 
     @GetMapping("*")
     public String feed() {
-        return "index";
+        return PAGE;
     }
 
-    @GetMapping("/beat/*")
+    @GetMapping("beat/*")
     public String beat() {
-        return "index";
+        return PAGE;
     }
 
-    @GetMapping("/edit/*")
+    @GetMapping("edit/*")
     public String edit() {
-        return "index";
+        return PAGE;
     }
 
-    @GetMapping("/playlist/*")
+    @GetMapping("playlist/*")
     public String playlist() {
-        return "index";
+        return PAGE;
     }
 
-    @GetMapping("/genre/*")
+    @GetMapping("genre/*")
     public String genre() {
-        return "index";
+        return PAGE;
     }
 
-    @GetMapping("/tag/*")
+    @GetMapping("tag/*")
     public String tag() {
-        return "index";
+        return PAGE;
     }
 }

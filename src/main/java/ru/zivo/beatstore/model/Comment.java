@@ -1,6 +1,7 @@
 package ru.zivo.beatstore.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,8 @@ public class Comment extends AbstractLongPersistable {
 
     @NotBlank
     @Column(name = "comment")
-    private String comment;
+    @JsonProperty("comment")
+    private String text;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)

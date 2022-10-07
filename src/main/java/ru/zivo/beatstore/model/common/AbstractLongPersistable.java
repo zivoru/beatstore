@@ -10,7 +10,7 @@ public abstract class AbstractLongPersistable implements Persistable<Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
 
-    public AbstractLongPersistable() {
+    protected AbstractLongPersistable() {
     }
 
     public Long getId() {

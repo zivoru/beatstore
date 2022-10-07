@@ -34,13 +34,13 @@ public class UserController {
     }
 
     @Operation(summary = "Проверка пользователя по username")
-    @GetMapping("/findByUsername")
+    @GetMapping("findByUsername")
     public ResponseEntity<Boolean> findByUsername(@RequestParam String username) {
         return ResponseEntity.ok(userService.findByUsername(username));
     }
 
     @Operation(summary = "Изменение username и email")
-    @PutMapping()
+    @PutMapping
     public ResponseEntity<User> findById(@AuthenticationPrincipal OAuth2User principal,
                                          @RequestParam String username, @RequestParam String email) {
         String id = principal != null ? principal.getAttribute("sub") : null;
@@ -54,7 +54,7 @@ public class UserController {
     }
 
     @Operation(summary = "Получение рекомендуемых пользователей")
-    @GetMapping("/recommended")
+    @GetMapping("recommended")
     public ResponseEntity<List<User>> getRecommended(@RequestParam Integer limit) {
         return ResponseEntity.ok(userService.getRecommended(limit));
     }
@@ -68,7 +68,7 @@ public class UserController {
     }
 
     @Operation(summary = "Подписка и отписка")
-    @PostMapping("/subscribe/channel/{channelId}")
+    @PostMapping("subscribe/channel/{channelId}")
     public boolean subscribeAndUnsubscribe(@AuthenticationPrincipal OAuth2User principal,
                                            @PathVariable String channelId) {
         String userId = principal == null ? null : principal.getAttribute("sub");
@@ -76,7 +76,7 @@ public class UserController {
     }
 
     @Operation(summary = "Получение страницы пользователей")
-    @GetMapping("/findAll")
+    @GetMapping("findAll")
     public ResponseEntity<Page<User>> findAll(@RequestParam(required = false) String nameFilter, Pageable pageable) {
         return ResponseEntity.ok(userService.findAll(pageable, nameFilter));
     }

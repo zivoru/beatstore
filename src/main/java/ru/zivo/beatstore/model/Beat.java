@@ -13,10 +13,7 @@ import ru.zivo.beatstore.model.enums.Mood;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,16 +23,9 @@ import java.util.Set;
 @Table(name = "beat")
 public class Beat extends AbstractLongPersistable {
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    private User user;
-
     @NotBlank
     @Column(name = "title")
     private String title;
-
-    @OneToOne(mappedBy = "beat", cascade = CascadeType.ALL)
-    private Audio audio;
 
     @Column(name = "image_name")
     private String imageName;
@@ -69,7 +59,14 @@ public class Beat extends AbstractLongPersistable {
     private BeatStatus status;
 
     @OneToOne(mappedBy = "beat", cascade = CascadeType.ALL)
+    private Audio audio;
+
+    @OneToOne(mappedBy = "beat", cascade = CascadeType.ALL)
     private License license;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToMany
     @JoinTable(
@@ -111,4 +108,13 @@ public class Beat extends AbstractLongPersistable {
             inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
     private List<User> history = new ArrayList<>();
+
+    @JsonIgnore
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "playlist_beat",
+            joinColumns = {@JoinColumn(name = "beat_id")},
+            inverseJoinColumns = {@JoinColumn(name = "playlists_id")}
+    )
+    private List<Playlist> playlists = new ArrayList<>();
 }

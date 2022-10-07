@@ -6,7 +6,6 @@ import ru.zivo.beatstore.model.enums.Status;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -19,7 +18,7 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "users")
-public class User implements Serializable {
+public class User {
 
     @Id
     @Column(name = "id")
@@ -36,15 +35,15 @@ public class User implements Serializable {
     @Column(name = "verified")
     private Boolean verified;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private Status status;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Profile profile;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Social social;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status")
-    private Status status;
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

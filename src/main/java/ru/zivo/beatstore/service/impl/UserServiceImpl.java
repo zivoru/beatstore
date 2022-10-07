@@ -1,12 +1,12 @@
 package ru.zivo.beatstore.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.webjars.NotFoundException;
+import ru.zivo.beatstore.config.properties.BeatstoreProperties;
 import ru.zivo.beatstore.model.Beat;
 import ru.zivo.beatstore.model.Profile;
 import ru.zivo.beatstore.model.Social;
@@ -16,33 +16,32 @@ import ru.zivo.beatstore.repository.ProfileRepository;
 import ru.zivo.beatstore.repository.SocialRepository;
 import ru.zivo.beatstore.repository.UserRepository;
 import ru.zivo.beatstore.service.UserService;
-import ru.zivo.beatstore.service.impl.common.DeleteAudioFiles;
+import ru.zivo.beatstore.service.impl.common.DeleteFiles;
 import ru.zivo.beatstore.web.dto.DisplayUserDto;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Value("${upload.path}")
-    private String uploadPath;
+    private final String uploadPath;
 
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
     private final SocialRepository socialRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, ProfileRepository profileRepository, SocialRepository socialRepository) {
+    public UserServiceImpl(UserRepository userRepository, ProfileRepository profileRepository,
+                           SocialRepository socialRepository, BeatstoreProperties beatstoreProperties) {
         this.userRepository = userRepository;
         this.profileRepository = profileRepository;
         this.socialRepository = socialRepository;
+        this.uploadPath = beatstoreProperties.getUploadPath();
     }
 
     @Override
     public User register(String id, String username, String email) {
-
         StringBuilder newUsername = new StringBuilder();
 
         for (int i = 0; i < username.length(); i++) {
@@ -107,7 +106,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean findByUsername(String username) {
+    public boolean findByUsername(String username) {
         return userRepository.findByUsername(username).isPresent();
     }
 
@@ -117,18 +116,19 @@ public class UserServiceImpl implements UserService {
 
         List<Beat> beats = user.getBeats();
 
+        String s = "/user-" + id;
+
         if (!CollectionUtils.isEmpty(beats)) {
             for (Beat beat : beats) {
-                String pathname = uploadPath + "/user-" + id + "/beats" + "/beat-" + beat.getId();
+                String pathname = uploadPath + s + "/beats" + "/beat-" + beat.getId();
 
-                DeleteAudioFiles.delete(beat, pathname);
-
-                System.out.println(new File(pathname).delete());
+                DeleteFiles.delete(beat, pathname);
+                DeleteFiles.deleteFile(Path.of(pathname));
             }
         }
 
-        System.out.println(new File(uploadPath + "/user-" + id + "/beats").delete());
-        System.out.println(new File(uploadPath + "/user-" + id).delete());
+        DeleteFiles.deleteFile(Path.of(uploadPath + s + "/beats"));
+        DeleteFiles.deleteFile(Path.of(uploadPath + s));
 
         userRepository.delete(user);
     }
@@ -139,12 +139,11 @@ public class UserServiceImpl implements UserService {
                 .stream()
                 .sorted((o1, o2) -> Integer.compare(o2.getSubscribers().size(), o1.getSubscribers().size()))
                 .limit(limit)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public DisplayUserDto getDisplayUserDto(String username, String authUserId) {
-
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("Пользователь с username = %s не найден".formatted(username)));
 
@@ -162,10 +161,13 @@ public class UserServiceImpl implements UserService {
                 .subscriptionStatus(false)
                 .build();
 
-        if (authUserId == null) return displayUserDto;
+        if (authUserId == null) {
+            return displayUserDto;
+        }
 
-        if (findById(authUserId).getSubscriptions().stream()
-                .anyMatch(u -> u == user)) displayUserDto.setSubscriptionStatus(true);
+        if (findById(authUserId).getSubscriptions().stream().anyMatch(u -> u == user)) {
+            displayUserDto.setSubscriptionStatus(true);
+        }
 
         return displayUserDto;
     }

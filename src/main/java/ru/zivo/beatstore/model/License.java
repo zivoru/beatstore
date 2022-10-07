@@ -17,20 +17,20 @@ import javax.persistence.*;
 @Table(name = "license")
 public class License extends AbstractLongPersistable {
 
+    @Column(name = "price_mp3")
+    private Integer priceMp3;
+
+    @Column(name = "price_wav")
+    private Integer priceWav;
+
+    @Column(name = "price_unlimited")
+    private Integer priceUnlimited;
+
+    @Column(name = "price_exclusive")
+    private Integer priceExclusive;
+
     @JsonIgnore
     @OneToOne
     @JoinColumn(name = "beat_id")
     private Beat beat;
-
-    @Column(name = "price_mp3")
-    private Integer price_mp3;
-
-    @Column(name = "price_wav")
-    private Integer price_wav;
-
-    @Column(name = "price_unlimited")
-    private Integer price_unlimited;
-
-    @Column(name = "price_exclusive")
-    private Integer price_exclusive;
 }

@@ -1,11 +1,18 @@
 package ru.zivo.beatstore.service.impl.common;
 
+import lombok.extern.slf4j.Slf4j;
 import ru.zivo.beatstore.model.Beat;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashSet;
 
-public class DeleteAudioFiles {
+@Slf4j
+public class DeleteFiles {
+
+    private DeleteFiles() {
+    }
 
     public static void delete(Beat beat, String pathname) {
         if (beat.getAudio() != null) {
@@ -17,9 +24,17 @@ public class DeleteAudioFiles {
 
             for (String name : names) {
                 if (name != null && !name.equals("")) {
-                    System.out.println(new File(pathname + "/" + name).delete());
+                    deleteFile(Path.of(pathname, name));
                 }
             }
+        }
+    }
+
+    public static void deleteFile(Path path) {
+        try {
+            Files.delete(path);
+        } catch (IOException e) {
+            log.debug("Не удалось удалить файл: {}, ошибка: {}", path.getFileName(), e);
         }
     }
 }

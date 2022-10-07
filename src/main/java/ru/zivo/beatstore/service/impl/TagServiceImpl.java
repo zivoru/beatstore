@@ -9,8 +9,9 @@ import ru.zivo.beatstore.model.Tag;
 import ru.zivo.beatstore.repository.TagRepository;
 import ru.zivo.beatstore.service.TagService;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TagServiceImpl implements TagService {
@@ -20,6 +21,13 @@ public class TagServiceImpl implements TagService {
     @Autowired
     public TagServiceImpl(TagRepository tagRepository) {
         this.tagRepository = tagRepository;
+    }
+
+    @Override
+    public List<Tag> create(Tag... tags) {
+        return new ArrayList<>(Arrays.stream(tags)
+                .map(this::create)
+                .toList());
     }
 
     @Override
@@ -41,7 +49,7 @@ public class TagServiceImpl implements TagService {
                 .stream()
                 .sorted((o1, o2) -> Integer.compare(o2.getBeats().size(), o1.getBeats().size()))
                 .limit(limit)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

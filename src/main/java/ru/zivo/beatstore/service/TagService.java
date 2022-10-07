@@ -10,6 +10,8 @@ public interface TagService {
 
     Tag create(Tag tag);
 
+    List<Tag> create(Tag... tag);
+
     List<Tag> getTrendTags(Integer limit);
 
     Page<Tag> getPageTags(String nameFilter, Pageable pageable);

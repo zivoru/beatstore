@@ -2,11 +2,11 @@ package ru.zivo.beatstore.web.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.zivo.beatstore.config.properties.BeatstoreProperties;
 import ru.zivo.beatstore.model.Beat;
 import ru.zivo.beatstore.service.BeatService;
 
@@ -20,34 +20,34 @@ import java.nio.file.Files;
 @RestController
 public class AudioController {
 
-    @Value("${upload.path}")
-    private String uploadPath;
+    private final String uploadPath;
 
     private final BeatService beatService;
 
     @Autowired
-    public AudioController(BeatService beatService) {
+    public AudioController(BeatService beatService, BeatstoreProperties beatstoreProperties) {
         this.beatService = beatService;
+        this.uploadPath = beatstoreProperties.getUploadPath();
     }
 
-    @GetMapping(value = "/downloadMp3/{beatId}", produces = "audio/mpeg")
-    public byte[] downloadMp3(@PathVariable Long beatId, HttpServletResponse response) throws IOException {
+    @GetMapping(value = "downloadMp3/{beatId}", produces = "audio/mpeg")
+    public byte[] downloadMp3(@PathVariable("beatId") Long beatId, HttpServletResponse response) throws IOException {
         return returnBytes(beatId, response, "mp3", "audio/mpeg");
     }
 
-    @GetMapping(value = "/downloadWav/{beatId}", produces = "audio/wav")
-    public byte[] downloadWav(@PathVariable Long beatId, HttpServletResponse response) throws IOException {
+    @GetMapping(value = "downloadWav/{beatId}", produces = "audio/wav")
+    public byte[] downloadWav(@PathVariable("beatId") Long beatId, HttpServletResponse response) throws IOException {
         return returnBytes(beatId, response, "wav", "audio/wav");
     }
 
-    @GetMapping(value = "/downloadZip/{beatId}", produces = "application/zip")
-    public byte[] downloadZip(@PathVariable Long beatId, HttpServletResponse response) throws IOException {
+    @GetMapping(value = "downloadZip/{beatId}", produces = "application/zip")
+    public byte[] downloadZip(@PathVariable("beatId") Long beatId, HttpServletResponse response) throws IOException {
         return returnBytes(beatId, response, "zip", "application/zip");
     }
 
     public byte[] returnBytes(Long beatId, HttpServletResponse response, String type, String contentType) throws IOException {
         Beat beat = beatService.findById(beatId);
-        String path = uploadPath + "/user-" + beat.getUser().getId() + "/beats/beat-" + beat.getId() + "/";
+        String path = "%s/user-%s/beats/beat-%d/".formatted(uploadPath, beat.getUser().getId(), beat.getId());
         File file = switch (type) {
             case "mp3" -> new File(path + beat.getAudio().getMp3Name());
             case "wav" -> new File(path + beat.getAudio().getWavName());
@@ -62,5 +62,4 @@ public class AudioController {
         assert file != null;
         return Files.readAllBytes(file.toPath());
     }
-
 }

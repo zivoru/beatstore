@@ -8,6 +8,7 @@ import ru.zivo.beatstore.model.Tag;
 
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
+
     Tag findByNameIgnoreCase(String tag);
 
     Page<Tag> findAllByNameContainsIgnoreCase(String nameFilter, Pageable pageable);

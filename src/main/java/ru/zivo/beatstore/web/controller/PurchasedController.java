@@ -27,7 +27,7 @@ public class PurchasedController {
     }
 
     @Operation(summary = "Купленные биты пользователя")
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<List<Purchased>> getPurchased(@AuthenticationPrincipal OAuth2User principal) {
         return principal == null ? null :
                 ResponseEntity.ok(purchasedService.getPurchasedBeats(principal.getAttribute("sub")));
