@@ -7,7 +7,7 @@ import ru.zivo.beatstore.model.License;
 import ru.zivo.beatstore.model.enums.BeatStatus;
 import ru.zivo.beatstore.repository.CartRepository;
 import ru.zivo.beatstore.service.CartService;
-import ru.zivo.beatstore.service.impl.common.Users;
+import ru.zivo.beatstore.service.UserService;
 import ru.zivo.beatstore.web.dto.CartDto;
 
 import java.util.ArrayList;
@@ -19,18 +19,20 @@ public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;
 
+    private final UserService userService;
+
     @Autowired
-    public CartServiceImpl(CartRepository cartRepository) {
+    public CartServiceImpl(CartRepository cartRepository, UserService userService) {
         this.cartRepository = cartRepository;
+        this.userService = userService;
     }
 
     @Override
     public List<CartDto> findCartByUserId(String userId) {
-        List<Cart> publishedBeats = new ArrayList<>();
-
-        for (Cart cart : Users.getUser(userId).getCart()) {
-            if (cart.getBeat().getStatus() == BeatStatus.PUBLISHED) publishedBeats.add(cart);
-        }
+        List<Cart> publishedBeats = userService.findById(userId).getCart()
+                .stream()
+                .filter(cart -> cart.getBeat().getStatus() == BeatStatus.PUBLISHED)
+                .toList();
 
         List<CartDto> cartDtoList = new ArrayList<>();
 
@@ -42,10 +44,10 @@ public class CartServiceImpl implements CartService {
 
             final License license = cart.getBeat().getLicense();
             int price = switch (cart.getLicensing()) {
-                case MP3 -> license.getPrice_mp3();
-                case WAV -> license.getPrice_wav();
-                case UNLIMITED -> license.getPrice_unlimited();
-                case EXCLUSIVE -> license.getPrice_exclusive();
+                case MP3 -> license.getPriceMp3();
+                case WAV -> license.getPriceWav();
+                case UNLIMITED -> license.getPriceUnlimited();
+                case EXCLUSIVE -> license.getPriceExclusive();
             };
 
             cartDto.setPrice(price);

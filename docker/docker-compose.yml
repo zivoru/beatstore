@@ -3,10 +3,18 @@ version: '3.3'
 services:
   postgres:
     image: postgres:14-alpine
-    container_name: postgres-fo
+    container_name: postgres-bs
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
       POSTGRES_DB: "beatstore"
     ports:
-      - "5455:5432"
+      - "5477:5432"
+  sonarqube:
+    platform: linux/amd64
+    image: sonarqube:latest
+    container_name: sonarqube-bs
+    environment:
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true"
+    ports:
+      - "9000:9000"

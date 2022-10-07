@@ -25,5 +25,5 @@ public interface UserService {
 
     Page<User> findAll(Pageable pageable, String nameFilter);
 
-    Boolean findByUsername(String username);
+    boolean findByUsername(String username);
 }

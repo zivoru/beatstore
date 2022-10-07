@@ -12,6 +12,8 @@ import ru.zivo.beatstore.model.Profile;
 import ru.zivo.beatstore.model.User;
 import ru.zivo.beatstore.service.ProfileService;
 import ru.zivo.beatstore.service.UserService;
+import ru.zivo.beatstore.web.dto.ProfileDto;
+import ru.zivo.beatstore.web.mapper.ProfileMapper;
 
 import java.io.IOException;
 
@@ -22,11 +24,13 @@ public class ProfilesController {
 
     private final UserService userService;
     private final ProfileService profileService;
+    private final ProfileMapper mapper;
 
     @Autowired
-    public ProfilesController(UserService userService, ProfileService profileService) {
+    public ProfilesController(UserService userService, ProfileService profileService, ProfileMapper mapper) {
         this.userService = userService;
         this.profileService = profileService;
+        this.mapper = mapper;
     }
 
     @Operation(summary = "Получение профиля по id пользователя")
@@ -37,10 +41,10 @@ public class ProfilesController {
     }
 
     @Operation(summary = "Изменение профиля")
-    @PutMapping()
-    public ResponseEntity<Long> updateProfile(@AuthenticationPrincipal OAuth2User principal, @RequestBody Profile profile) {
+    @PutMapping
+    public ResponseEntity<Long> updateProfile(@AuthenticationPrincipal OAuth2User principal, @RequestBody ProfileDto profileDto) {
         if (principal != null) {
-            Profile updatedProfile = profileService.updateProfile(principal.getAttribute("sub"), profile);
+            Profile updatedProfile = profileService.updateProfile(principal.getAttribute("sub"), mapper.toEntity(profileDto));
             return ResponseEntity.ok(updatedProfile.getId());
         }
         return null;

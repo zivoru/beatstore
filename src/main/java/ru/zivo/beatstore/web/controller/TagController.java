@@ -23,13 +23,13 @@ public class TagController {
     }
 
     @Operation(summary = "Получение тега по id")
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<Tag> findById(@PathVariable Long id) {
         return ResponseEntity.ok(tagService.findById(id));
     }
 
     @Operation(summary = "Получение трендовых тегов")
-    @GetMapping("/trend-tags")
+    @GetMapping("trend-tags")
     public ResponseEntity<List<Tag>> getTrendTags(@RequestParam Integer limit) {
         return ResponseEntity.ok(tagService.getTrendTags(limit));
     }

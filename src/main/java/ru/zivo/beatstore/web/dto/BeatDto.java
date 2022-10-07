@@ -1,14 +1,33 @@
 package ru.zivo.beatstore.web.dto;
 
-import lombok.Builder;
 import lombok.Data;
-import ru.zivo.beatstore.model.Beat;
-import ru.zivo.beatstore.model.enums.Licensing;
+import ru.zivo.beatstore.model.*;
+import ru.zivo.beatstore.model.enums.BeatStatus;
+import ru.zivo.beatstore.model.enums.Genre;
+import ru.zivo.beatstore.model.enums.Key;
+import ru.zivo.beatstore.model.enums.Mood;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Data
-@Builder
 public class BeatDto {
-    private Beat beat;
-    private boolean addedToCart;
-    private Licensing licensing;
+    private String title;
+    private String imageName;
+    private Boolean free;
+    private Genre genre;
+    private Mood mood;
+    private String description;
+    private Integer bpm;
+    private Key key;
+    private Integer plays;
+    private BeatStatus status;
+    private Audio audio;
+    private License license;
+    private User user;
+    private List<Tag> tags = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
+    private Set<User> likes = new HashSet<>();
 }

@@ -30,4 +30,10 @@ public class Tag extends AbstractLongPersistable {
             inverseJoinColumns = {@JoinColumn(name = "beat_id")}
     )
     private Set<Beat> beats = new LinkedHashSet<>();
+
+    public static Tag ofName(String name) {
+        return Tag.builder()
+                .name(name)
+                .build();
+    }
 }

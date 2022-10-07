@@ -17,11 +17,6 @@ import javax.persistence.*;
 @Table(name = "social")
 public class Social extends AbstractLongPersistable {
 
-    @JsonIgnore
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
     @Column(name = "instagram")
     private String instagram;
 
@@ -33,4 +28,9 @@ public class Social extends AbstractLongPersistable {
 
     @Column(name = "vkontakte")
     private String vkontakte;
+
+    @JsonIgnore
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

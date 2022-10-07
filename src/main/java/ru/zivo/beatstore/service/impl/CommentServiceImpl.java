@@ -8,7 +8,7 @@ import ru.zivo.beatstore.model.Comment;
 import ru.zivo.beatstore.repository.BeatRepository;
 import ru.zivo.beatstore.repository.CommentRepository;
 import ru.zivo.beatstore.service.CommentService;
-import ru.zivo.beatstore.service.impl.common.Users;
+import ru.zivo.beatstore.service.UserService;
 
 import java.util.Collections;
 import java.util.List;
@@ -17,12 +17,16 @@ import java.util.List;
 public class CommentServiceImpl implements CommentService {
 
     private final BeatRepository beatRepository;
+
     private final CommentRepository commentRepository;
 
+    private final UserService userService;
+
     @Autowired
-    public CommentServiceImpl(BeatRepository beatRepository, CommentRepository commentRepository) {
+    public CommentServiceImpl(BeatRepository beatRepository, CommentRepository commentRepository, UserService userService) {
         this.beatRepository = beatRepository;
         this.commentRepository = commentRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -40,7 +44,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Comment addComment(Long beatId, String userId, Comment comment) {
-        comment.setAuthor(Users.getUser(userId));
+        comment.setAuthor(userService.findById(userId));
         comment.setBeat(getBeat(beatId));
 
         return commentRepository.save(comment);
@@ -49,7 +53,9 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void delete(String userId, Long id) {
         Comment comment = findById(id);
-        if (comment.getAuthor().getId().equals(userId)) commentRepository.delete(comment);
+        if (comment.getAuthor().getId().equals(userId)) {
+            commentRepository.delete(comment);
+        }
     }
 
     private Beat getBeat(Long beatId) {

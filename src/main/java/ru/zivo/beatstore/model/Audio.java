@@ -17,11 +17,6 @@ import javax.persistence.*;
 @Table(name = "audio")
 public class Audio extends AbstractLongPersistable {
 
-    @JsonIgnore
-    @OneToOne
-    @JoinColumn(name = "beat_id")
-    private Beat beat;
-
     @Column(name = "mp3_name")
     private String mp3Name;
 
@@ -39,4 +34,9 @@ public class Audio extends AbstractLongPersistable {
 
     @Column(name = "zip_original_name")
     private String zipOriginalName;
+
+    @JsonIgnore
+    @OneToOne
+    @JoinColumn(name = "beat_id")
+    private Beat beat;
 }

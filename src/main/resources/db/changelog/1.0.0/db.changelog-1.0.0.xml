@@ -31,6 +31,7 @@
             </column>
         </createTable>
     </changeSet>
+
     <!--profile-->
     <changeSet id="1.0.1" author="zivo">
         <preConditions>
@@ -67,6 +68,7 @@
             </column>
         </createTable>
     </changeSet>
+
     <!--social-->
     <changeSet id="1.0.2" author="zivo">
         <preConditions>
@@ -97,6 +99,7 @@
             </column>
         </createTable>
     </changeSet>
+
     <!--beat-->
     <changeSet id="1.0.3" author="zivo">
         <preConditions>
@@ -145,6 +148,7 @@
             </column>
         </createTable>
     </changeSet>
+
     <!--roles-->
     <changeSet id="1.0.4" author="zivo">
         <createTable tableName="roles">
@@ -157,6 +161,7 @@
             </column>
         </createTable>
     </changeSet>
+
     <!--user_roles-->
     <changeSet id="1.0.5" author="zivo">
         <createTable tableName="user_roles">
@@ -167,6 +172,7 @@
             </column>
         </createTable>
     </changeSet>
+
     <!--roles addForeignKey-->
     <changeSet id="1.0.6" author="zivo">
         <addForeignKeyConstraint baseColumnNames="user_id"
@@ -177,6 +183,7 @@
                                  referencedColumnNames="id"
                                  referencedTableName="users"/>
     </changeSet>
+
     <!--roles addForeignKey-->
     <changeSet id="1.0.7" author="zivo">
         <addForeignKeyConstraint baseColumnNames="role_id"
@@ -187,6 +194,7 @@
                                  referencedColumnNames="id"
                                  referencedTableName="roles"/>
     </changeSet>
+
     <!--roles insert-->
     <changeSet id="1.0.8" author="zivo">
         <insert tableName="roles">
@@ -197,6 +205,7 @@
             <column name="name" value="ROLE_ADMIN"/>
         </insert>
     </changeSet>
+
     <!--user_subscriptions-->
     <changeSet id="1.0.9" author="zivo">
         <preConditions>
@@ -216,6 +225,7 @@
             </column>
         </createTable>
     </changeSet>
+
     <!--license-->
     <changeSet id="1.1.0" author="zivo">
         <preConditions>
@@ -246,6 +256,7 @@
             </column>
         </createTable>
     </changeSet>
+
     <!--playlist-->
     <changeSet id="1.1.1" author="zivo">
         <preConditions>
@@ -276,6 +287,7 @@
             </column>
         </createTable>
     </changeSet>
+
     <!--playlist_beat-->
     <changeSet id="1.1.2" author="zivo">
         <preConditions>
@@ -295,6 +307,7 @@
             </column>
         </createTable>
     </changeSet>
+
     <!--cart-->
     <changeSet id="1.1.3" author="zivo">
         <preConditions>
@@ -320,6 +333,7 @@
             </column>
         </createTable>
     </changeSet>
+
     <!--purchased-->
     <changeSet id="1.1.4" author="zivo">
         <preConditions>
@@ -345,6 +359,7 @@
             </column>
         </createTable>
     </changeSet>
+
     <!--favorite_beats-->
     <changeSet id="1.1.5" author="zivo">
         <preConditions>
@@ -364,6 +379,7 @@
             </column>
         </createTable>
     </changeSet>
+
     <!--history-->
     <changeSet id="1.1.6" author="zivo">
         <preConditions>
@@ -383,6 +399,7 @@
             </column>
         </createTable>
     </changeSet>
+
     <!--beat_comments-->
     <changeSet id="1.1.7" author="zivo">
         <preConditions>
@@ -408,6 +425,7 @@
             </column>
         </createTable>
     </changeSet>
+
     <!--tag-->
     <changeSet id="1.1.8" author="zivo">
         <preConditions>
@@ -425,6 +443,7 @@
             </column>
         </createTable>
     </changeSet>
+
     <!--beat_tags-->
     <changeSet id="1.1.9" author="zivo">
         <preConditions>
@@ -444,6 +463,7 @@
             </column>
         </createTable>
     </changeSet>
+
     <!--audio-->
     <changeSet id="1.2.0" author="zivo">
         <preConditions>
@@ -480,6 +500,7 @@
             </column>
         </createTable>
     </changeSet>
+
     <!--tags insert-->
     <changeSet id="1.2.1" author="zivo">
         <insert tableName="tag">
@@ -515,6 +536,7 @@
         </insert>
 
     </changeSet>
+
     <!--favorite_playlists-->
     <changeSet id="1.2.2" author="zivo">
         <preConditions>
@@ -534,5 +556,4 @@
             </column>
         </createTable>
     </changeSet>
-
 </databaseChangeLog>

@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.zivo.beatstore.model.Social;
 import ru.zivo.beatstore.service.SocialService;
+import ru.zivo.beatstore.web.dto.SocialDto;
+import ru.zivo.beatstore.web.mapper.SocialMapper;
 
 @Tag(name = "SocialController", description = "API для работы с социальными сетями")
 @RequestMapping("api/v1/socials")
@@ -18,13 +19,18 @@ public class SocialController {
 
     private final SocialService socialService;
 
+    private final SocialMapper mapper;
+
     @Autowired
-    public SocialController(SocialService socialService) {
+    public SocialController(SocialService socialService, SocialMapper mapper) {
         this.socialService = socialService;
+        this.mapper = mapper;
     }
 
     @PutMapping
-    public void update(@AuthenticationPrincipal OAuth2User principal, @RequestBody Social social) {
-        if (principal != null) socialService.update(principal.getAttribute("sub"), social);
+    public void update(@AuthenticationPrincipal OAuth2User principal, @RequestBody SocialDto socialDto) {
+        if (principal != null) {
+            socialService.update(principal.getAttribute("sub"), mapper.toEntity(socialDto));
+        }
     }
 }

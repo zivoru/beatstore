@@ -9,6 +9,8 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import ru.zivo.beatstore.model.Comment;
 import ru.zivo.beatstore.service.CommentService;
+import ru.zivo.beatstore.web.dto.CommentDto;
+import ru.zivo.beatstore.web.mapper.CommentMapper;
 
 import java.util.List;
 
@@ -18,10 +20,12 @@ import java.util.List;
 public class CommentController {
 
     private final CommentService commentService;
+    private final CommentMapper mapper;
 
     @Autowired
-    public CommentController(CommentService commentService) {
+    public CommentController(CommentService commentService, CommentMapper mapper) {
         this.commentService = commentService;
+        this.mapper = mapper;
     }
 
     @Operation(summary = "Получение комментариев по beatId")
@@ -34,14 +38,16 @@ public class CommentController {
     @PostMapping("{beatId}")
     public ResponseEntity<Comment> addComment(@PathVariable Long beatId,
                                               @AuthenticationPrincipal OAuth2User principal,
-                                              @RequestBody Comment comment) {
+                                              @RequestBody CommentDto commentDto) {
         return principal == null ? null :
-                ResponseEntity.ok(commentService.addComment(beatId, principal.getAttribute("sub"), comment));
+                ResponseEntity.ok(commentService.addComment(beatId, principal.getAttribute("sub"), mapper.toEntity(commentDto)));
     }
 
     @Operation(summary = "Удаление комментария по id")
     @DeleteMapping("{id}")
     public void delete(@AuthenticationPrincipal OAuth2User principal, @PathVariable Long id) {
-        if (principal != null) commentService.delete(principal.getAttribute("sub"), id);
+        if (principal != null) {
+            commentService.delete(principal.getAttribute("sub"), id);
+        }
     }
 }

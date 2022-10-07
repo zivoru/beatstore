@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.zivo.beatstore.model.Playlist;
 import ru.zivo.beatstore.service.PlaylistService;
 import ru.zivo.beatstore.web.dto.PlaylistDto;
+import ru.zivo.beatstore.web.mapper.PlaylistMapper;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,10 +24,12 @@ import java.util.List;
 public class PlaylistController {
 
     private final PlaylistService playlistService;
+    private final PlaylistMapper mapper;
 
     @Autowired
-    public PlaylistController(PlaylistService playlistService) {
+    public PlaylistController(PlaylistService playlistService, PlaylistMapper mapper) {
         this.playlistService = playlistService;
+        this.mapper = mapper;
     }
 
     @Operation(summary = "Получение дто плейлиста по id")
@@ -38,7 +41,7 @@ public class PlaylistController {
     }
 
     @Operation(summary = "Получение списка плейлистов по id пользователя")
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<List<Playlist>> findAllByUserId(@AuthenticationPrincipal OAuth2User principal) {
         return principal == null
                 ? null
@@ -46,16 +49,16 @@ public class PlaylistController {
     }
 
     @Operation(summary = "Получение страницы дто плейлистов по id пользователя")
-    @GetMapping("/user/{userId}")
+    @GetMapping("user/{userId}")
     public ResponseEntity<Page<PlaylistDto>> findAllByUserId(@PathVariable String userId, Pageable pageable) {
         return ResponseEntity.ok(playlistService.findPageByUserId(userId, pageable));
     }
 
     @Operation(summary = "Создание плейлиста")
-    @PostMapping()
-    public ResponseEntity<Long> create(@AuthenticationPrincipal OAuth2User principal, @RequestBody Playlist playlist) {
+    @PostMapping
+    public ResponseEntity<Long> create(@AuthenticationPrincipal OAuth2User principal, @RequestBody PlaylistDto playlistDto) {
         if (principal != null) {
-            Playlist savedPlaylist = playlistService.create(principal.getAttribute("sub"), playlist);
+            Playlist savedPlaylist = playlistService.create(principal.getAttribute("sub"), mapper.toEntity(playlistDto));
             return ResponseEntity.ok(savedPlaylist.getId());
         }
         return null;
@@ -65,14 +68,18 @@ public class PlaylistController {
     @PutMapping("{id}")
     public void update(@AuthenticationPrincipal OAuth2User principal,
                        @PathVariable Long id,
-                       @RequestBody Playlist playlist) {
-        if (principal != null) playlistService.update(principal.getAttribute("sub"), id, playlist);
+                       @RequestBody PlaylistDto playlistDto) {
+        if (principal != null) {
+            playlistService.update(principal.getAttribute("sub"), id, mapper.toEntity(playlistDto));
+        }
     }
 
     @Operation(summary = "Удаление плейлиста")
     @DeleteMapping("{id}")
     public void update(@AuthenticationPrincipal OAuth2User principal, @PathVariable Long id) {
-        if (principal != null) playlistService.delete(principal.getAttribute("sub"), id);
+        if (principal != null) {
+            playlistService.delete(principal.getAttribute("sub"), id);
+        }
     }
 
     @Operation(summary = "Загрузка фото плейлиста")
@@ -87,7 +94,9 @@ public class PlaylistController {
     public void addBeat(@AuthenticationPrincipal OAuth2User principal,
                         @PathVariable Long playlistId,
                         @PathVariable Long beatId) {
-        if (principal != null) playlistService.addBeat(principal.getAttribute("sub"), playlistId, beatId);
+        if (principal != null) {
+            playlistService.addBeat(principal.getAttribute("sub"), playlistId, beatId);
+        }
     }
 
     @Operation(summary = "Удаление бита из плейлиста")
@@ -95,23 +104,29 @@ public class PlaylistController {
     public void removeBeat(@AuthenticationPrincipal OAuth2User principal,
                            @PathVariable Long playlistId,
                            @PathVariable Long beatId) {
-        if (principal != null) playlistService.removeBeat(principal.getAttribute("sub"), playlistId, beatId);
+        if (principal != null) {
+            playlistService.removeBeat(principal.getAttribute("sub"), playlistId, beatId);
+        }
     }
 
     @Operation(summary = "Добавление в избранное")
     @PostMapping("addFavorite/{playlistId}")
     public void addFavorite(@PathVariable Long playlistId, @AuthenticationPrincipal OAuth2User principal) {
-        if (principal != null) playlistService.addFavorite(playlistId, principal.getAttribute("sub"));
+        if (principal != null) {
+            playlistService.addFavorite(playlistId, principal.getAttribute("sub"));
+        }
     }
 
     @Operation(summary = "Удаление из избранного")
     @PostMapping("removeFavorite/{playlistId}")
     public void removeFavorite(@PathVariable Long playlistId, @AuthenticationPrincipal OAuth2User principal) {
-        if (principal != null) playlistService.removeFavorite(playlistId, principal.getAttribute("sub"));
+        if (principal != null) {
+            playlistService.removeFavorite(playlistId, principal.getAttribute("sub"));
+        }
     }
 
     @Operation(summary = "Получение страницы плейлистов")
-    @GetMapping("/findAll")
+    @GetMapping("findAll")
     public ResponseEntity<Page<PlaylistDto>> findAll(@RequestParam(required = false) String nameFilter,
                                                      Pageable pageable) {
         return ResponseEntity.ok(playlistService.findAll(pageable, nameFilter));

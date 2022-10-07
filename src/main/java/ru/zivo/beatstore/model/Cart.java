@@ -1,31 +1,17 @@
 package ru.zivo.beatstore.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
-import ru.zivo.beatstore.model.common.AbstractLongPersistable;
+import lombok.AllArgsConstructor;
+import ru.zivo.beatstore.model.common.AbstractCart;
 import ru.zivo.beatstore.model.enums.Licensing;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
-@NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-@Builder
 @Entity
 @Table(name = "cart")
-public class Cart extends AbstractLongPersistable {
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "license")
-    private Licensing licensing;
-
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "beat_id")
-    private Beat beat;
+public class Cart extends AbstractCart {
+    public Cart(Licensing licensing, User user, Beat beat) {
+        super(licensing, user, beat);
+    }
 }

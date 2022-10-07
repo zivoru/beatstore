@@ -17,11 +17,6 @@ import javax.persistence.*;
 @Table(name = "profile")
 public class Profile extends AbstractLongPersistable {
 
-    @JsonIgnore
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
     @Column(name = "image_name")
     private String imageName;
 
@@ -39,4 +34,9 @@ public class Profile extends AbstractLongPersistable {
 
     @Column(name = "biography")
     private String biography;
+
+    @JsonIgnore
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }
