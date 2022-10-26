@@ -3,28 +3,26 @@ package ru.zivo.beatstore.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
-import ru.zivo.beatstore.model.Beat;
 import ru.zivo.beatstore.model.Comment;
-import ru.zivo.beatstore.repository.BeatRepository;
 import ru.zivo.beatstore.repository.CommentRepository;
+import ru.zivo.beatstore.service.BeatService;
 import ru.zivo.beatstore.service.CommentService;
 import ru.zivo.beatstore.service.UserService;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service
 public class CommentServiceImpl implements CommentService {
 
-    private final BeatRepository beatRepository;
+    private final BeatService beatService;
 
     private final CommentRepository commentRepository;
 
     private final UserService userService;
 
     @Autowired
-    public CommentServiceImpl(BeatRepository beatRepository, CommentRepository commentRepository, UserService userService) {
-        this.beatRepository = beatRepository;
+    public CommentServiceImpl(BeatService beatService, CommentRepository commentRepository, UserService userService) {
+        this.beatService = beatService;
         this.commentRepository = commentRepository;
         this.userService = userService;
     }
@@ -37,15 +35,16 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<Comment> findByBeatId(Long beatId) {
-        List<Comment> comments = getBeat(beatId).getComments();
-        Collections.reverse(comments);
-        return comments;
+        return beatService.findById(beatId).getComments();
     }
 
     @Override
     public Comment addComment(Long beatId, String userId, Comment comment) {
+        if (comment == null) {
+            throw new IllegalArgumentException("comment is null");
+        }
         comment.setAuthor(userService.findById(userId));
-        comment.setBeat(getBeat(beatId));
+        comment.setBeat(beatService.findById(beatId));
 
         return commentRepository.save(comment);
     }
@@ -56,10 +55,5 @@ public class CommentServiceImpl implements CommentService {
         if (comment.getAuthor().getId().equals(userId)) {
             commentRepository.delete(comment);
         }
-    }
-
-    private Beat getBeat(Long beatId) {
-        return beatRepository.findById(beatId)
-                .orElseThrow(() -> new NotFoundException("Бит с id = %d не найден".formatted(beatId)));
     }
 }

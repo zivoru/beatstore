@@ -18,4 +18,6 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     Optional<Cart> findByBeatAndUser(Beat beat, User user);
 
     List<Cart> findAllByBeat(Beat beat);
+
+    List<Cart> findAllByUser(User user);
 }

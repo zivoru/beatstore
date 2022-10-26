@@ -42,7 +42,8 @@ public class ProfilesController {
 
     @Operation(summary = "Изменение профиля")
     @PutMapping
-    public ResponseEntity<Long> updateProfile(@AuthenticationPrincipal OAuth2User principal, @RequestBody ProfileDto profileDto) {
+    public ResponseEntity<Long> updateProfile(@AuthenticationPrincipal OAuth2User principal,
+                                              @RequestBody ProfileDto profileDto) {
         if (principal != null) {
             Profile updatedProfile = profileService.updateProfile(principal.getAttribute("sub"), mapper.toEntity(profileDto));
             return ResponseEntity.ok(updatedProfile.getId());
@@ -52,7 +53,8 @@ public class ProfilesController {
 
     @Operation(summary = "Добавление и изменение фото профиля")
     @PostMapping("image/{profileId}")
-    public void updateImage(@PathVariable Long profileId, @RequestParam(name = "file") MultipartFile photo) throws IOException {
+    public void updateImage(@PathVariable Long profileId,
+                            @RequestParam(name = "file") MultipartFile photo) throws IOException {
         profileService.updateImage(profileId, photo);
     }
 }

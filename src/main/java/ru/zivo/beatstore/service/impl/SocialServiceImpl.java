@@ -23,6 +23,9 @@ public class SocialServiceImpl implements SocialService {
 
     @Override
     public void update(String userId, Social social) {
+        if (userId == null || social == null) {
+            throw new IllegalArgumentException("userId or social is null");
+        }
         User user = userService.findById(userId);
         social.setId(user.getSocial().getId());
         social.setUser(user);

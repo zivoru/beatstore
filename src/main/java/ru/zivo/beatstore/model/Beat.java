@@ -1,10 +1,7 @@
 package ru.zivo.beatstore.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import ru.zivo.beatstore.model.common.AbstractLongPersistable;
 import ru.zivo.beatstore.model.enums.BeatStatus;
 import ru.zivo.beatstore.model.enums.Genre;
@@ -19,6 +16,7 @@ import java.util.*;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @Entity
 @Table(name = "beat")
 public class Beat extends AbstractLongPersistable {
@@ -31,7 +29,7 @@ public class Beat extends AbstractLongPersistable {
     private String imageName;
 
     @Column(name = "free")
-    private Boolean free;
+    private Boolean free = false;
 
     @Column(name = "genre")
     @Enumerated(EnumType.STRING)

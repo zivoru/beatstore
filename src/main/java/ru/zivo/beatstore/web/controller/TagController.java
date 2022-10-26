@@ -34,9 +34,9 @@ public class TagController {
         return ResponseEntity.ok(tagService.getTrendTags(limit));
     }
 
-    @Operation(summary = "Получение тегов")
+    @Operation(summary = "Получение страницы тегов")
     @GetMapping
-    public ResponseEntity<Page<Tag>> getTrendTags(@RequestParam(required = false) String nameFilter, Pageable pageable) {
+    public ResponseEntity<Page<Tag>> findPage(@RequestParam(required = false) String nameFilter, Pageable pageable) {
         return ResponseEntity.ok(tagService.getPageTags(nameFilter, pageable));
     }
 }

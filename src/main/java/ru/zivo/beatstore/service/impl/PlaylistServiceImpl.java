@@ -13,9 +13,9 @@ import ru.zivo.beatstore.model.Beat;
 import ru.zivo.beatstore.model.Cart;
 import ru.zivo.beatstore.model.Playlist;
 import ru.zivo.beatstore.model.User;
-import ru.zivo.beatstore.repository.BeatRepository;
 import ru.zivo.beatstore.repository.PlaylistRepository;
 import ru.zivo.beatstore.repository.UserRepository;
+import ru.zivo.beatstore.service.BeatService;
 import ru.zivo.beatstore.service.PlaylistService;
 import ru.zivo.beatstore.service.UserService;
 import ru.zivo.beatstore.service.impl.common.DeleteFiles;
@@ -37,19 +37,20 @@ public class PlaylistServiceImpl implements PlaylistService {
 
     private final PlaylistRepository playlistRepository;
     private final UserRepository userRepository;
-    private final BeatRepository beatRepository;
     private final PlaylistMapper playlistMapper;
     private final UserService userService;
+    private final BeatService beatService;
 
     @Autowired
     public PlaylistServiceImpl(PlaylistRepository playlistRepository, UserRepository userRepository,
-                               BeatRepository beatRepository, BeatstoreProperties beatstoreProperties, PlaylistMapper playlistMapper, UserService userService) {
+                               BeatstoreProperties beatstoreProperties, PlaylistMapper playlistMapper,
+                               UserService userService, BeatService beatService) {
         this.playlistRepository = playlistRepository;
         this.userRepository = userRepository;
-        this.beatRepository = beatRepository;
         this.uploadPath = beatstoreProperties.getUploadPath();
         this.playlistMapper = playlistMapper;
         this.userService = userService;
+        this.beatService = beatService;
     }
 
     @Override
@@ -65,9 +66,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 
     @Override
     public List<Playlist> findAllByUserId(String userId) {
-        List<Playlist> playlists = userService.findById(userId).getPlaylists();
-        Collections.reverse(playlists);
-        return playlists;
+        return userService.findById(userId).getPlaylists();
     }
 
     @Override
@@ -75,8 +74,6 @@ public class PlaylistServiceImpl implements PlaylistService {
         List<Playlist> playlists = userService.findById(userId).getPlaylists();
         List<Playlist> publishedPlaylists = sortByVisibility(playlists);
         List<PlaylistDto> playlistDtoList = mapToDtoList(publishedPlaylists);
-
-        Collections.reverse(playlistDtoList);
 
         return mapToPage(pageable, playlistDtoList);
     }
@@ -89,18 +86,26 @@ public class PlaylistServiceImpl implements PlaylistService {
 
     private List<Playlist> sortByVisibility(List<Playlist> playlists) {
         return playlists.stream()
+                .filter(playlist -> playlist.getVisibility() != null)
                 .filter(Playlist::getVisibility)
                 .toList();
     }
 
     @Override
     public Playlist create(String userId, Playlist playlist) {
+        if (playlist == null) {
+            throw new IllegalArgumentException("playlist is null");
+        }
         playlist.setUser(userService.findById(userId));
         return playlistRepository.save(playlist);
     }
 
     @Override
     public void update(String userId, Long playlistId, Playlist playlist) {
+        if (playlist == null) {
+            throw new IllegalArgumentException("playlist is null");
+        }
+
         Playlist playlistById = findById(playlistId);
 
         if (!playlistById.getUser().getId().equals(userId)) {
@@ -132,11 +137,12 @@ public class PlaylistServiceImpl implements PlaylistService {
     @Override
     public void uploadImage(Long id, MultipartFile image) throws IOException {
         Playlist playlist = findById(id);
-        String pathname = uploadPath + PREFIX_USER + playlist.getUser().getId() + "/playlists/playlist-" + id;
+        String path = uploadPath == null ? "" : uploadPath;
+        String pathname = path + PREFIX_USER + playlist.getUser().getId() + "/playlists/playlist-" + id;
         List<File> files = List.of(
-                new File(uploadPath),
-                new File(uploadPath + PREFIX_USER + playlist.getUser().getId()),
-                new File(uploadPath + PREFIX_USER + playlist.getUser().getId() + "/playlists"),
+                new File(path),
+                new File(path + PREFIX_USER + playlist.getUser().getId()),
+                new File(path + PREFIX_USER + playlist.getUser().getId() + "/playlists"),
                 new File(pathname)
         );
 
@@ -170,7 +176,7 @@ public class PlaylistServiceImpl implements PlaylistService {
             return;
         }
 
-        playlist.getBeats().add(getBeat(beatId));
+        playlist.getBeats().add(beatService.findById(beatId));
         playlistRepository.save(playlist);
     }
 
@@ -182,7 +188,7 @@ public class PlaylistServiceImpl implements PlaylistService {
             return;
         }
 
-        playlist.getBeats().remove(getBeat(beatId));
+        playlist.getBeats().remove(beatService.findById(beatId));
         playlistRepository.save(playlist);
     }
 
@@ -202,6 +208,9 @@ public class PlaylistServiceImpl implements PlaylistService {
 
     @Override
     public Page<PlaylistDto> findAll(Pageable pageable, String nameFilter) {
+        if (pageable == null) {
+            throw new IllegalArgumentException("pageable is null");
+        }
         List<Playlist> playlists = nameFilter != null
                 ? playlistRepository.findAllByNameContainsIgnoreCase(nameFilter)
                 : playlistRepository.findAll();
@@ -211,7 +220,10 @@ public class PlaylistServiceImpl implements PlaylistService {
         return mapToPage(pageable, playlistDtoList);
     }
 
-    private PageImpl<PlaylistDto> mapToPage(Pageable pageable, List<PlaylistDto> playlistDtoList) {
+    private Page<PlaylistDto> mapToPage(Pageable pageable, List<PlaylistDto> playlistDtoList) {
+        if (pageable == Pageable.unpaged()) {
+            return new PageImpl<>(playlistDtoList);
+        }
         final int start = (int) pageable.getOffset();
         final int end = Math.min((start + pageable.getPageSize()), playlistDtoList.size());
         return new PageImpl<>(playlistDtoList.subList(start, end), pageable, playlistDtoList.size());
@@ -273,10 +285,5 @@ public class PlaylistServiceImpl implements PlaylistService {
         } else {
             playlistDto.setBeatCount(countBeats + " Битов");
         }
-    }
-
-    private Beat getBeat(Long beatId) {
-        return beatRepository.findById(beatId)
-                .orElseThrow(() -> new NotFoundException("Бит с id = %d не найден".formatted(beatId)));
     }
 }

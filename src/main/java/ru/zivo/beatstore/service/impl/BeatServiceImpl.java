@@ -8,12 +8,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.webjars.NotFoundException;
-import ru.zivo.beatstore.model.filters.Filters;
 import ru.zivo.beatstore.config.properties.BeatstoreProperties;
+import ru.zivo.beatstore.exception.NoMatchException;
 import ru.zivo.beatstore.model.*;
 import ru.zivo.beatstore.model.enums.BeatStatus;
 import ru.zivo.beatstore.model.enums.Genre;
 import ru.zivo.beatstore.model.enums.Licensing;
+import ru.zivo.beatstore.model.filters.Filters;
 import ru.zivo.beatstore.repository.*;
 import ru.zivo.beatstore.service.BeatService;
 import ru.zivo.beatstore.service.UserService;
@@ -86,6 +87,9 @@ public class BeatServiceImpl implements BeatService {
 
     @Override
     public Beat create(String userId, Beat beat) {
+        if (beat == null) {
+            throw new IllegalArgumentException("beat is null");
+        }
         beat.setUser(userService.findById(userId));
 
         Beat savedBeat = beatRepository.save(beat);
@@ -99,10 +103,13 @@ public class BeatServiceImpl implements BeatService {
 
     @Override
     public void update(String userId, Long beatId, Beat newBeat) {
+        if (newBeat == null) {
+            throw new IllegalArgumentException("newBeat is null");
+        }
         Beat beat = findById(beatId);
 
-        if (!beat.getUser().getId().equals(userId)) {
-            return;
+        if (!Objects.equals(beat.getUser().getId(), userId)) {
+            throw new NoMatchException("users not equal");
         }
 
         boolean free = newBeat.getFree();
@@ -123,22 +130,20 @@ public class BeatServiceImpl implements BeatService {
 
     @Override
     public void publication(String userId, Long beatId) {
-        User user = userService.findById(userId);
         Beat beat = findById(beatId);
-        if (user.getId().equals(beat.getUser().getId())) {
-            beat.setStatus(BeatStatus.PUBLISHED);
-            beatRepository.save(beat);
+        if (!Objects.equals(userId, beat.getUser().getId())) {
+            throw new NoMatchException("users not equal");
         }
+        beat.setStatus(BeatStatus.PUBLISHED);
+        beatRepository.save(beat);
     }
 
     @Override
     public void delete(String userId, Long beatId) {
         Beat beat = findById(beatId);
-        if (userId == null) {
-            return;
-        }
-        if (!beat.getUser().getId().equals(userId)) {
-            return;
+
+        if (!Objects.equals(beat.getUser().getId(), userId)) {
+            throw new NoMatchException("users not equal");
         }
 
         String pathname = uploadPath + PREFIX_USER + beat.getUser().getId() + PREFIX_BEAT + beatId;
@@ -151,7 +156,8 @@ public class BeatServiceImpl implements BeatService {
     @Override
     public void uploadImage(Long beatId, MultipartFile image) throws IOException {
         Beat beat = findById(beatId);
-        String pathname = uploadPath + PREFIX_USER + beat.getUser().getId() + PREFIX_BEAT + beatId;
+        String pathname = (uploadPath == null ? "" : uploadPath)
+                          + PREFIX_USER + beat.getUser().getId() + PREFIX_BEAT + beatId;
 
         makeDirectory(beat, pathname);
 
@@ -167,7 +173,8 @@ public class BeatServiceImpl implements BeatService {
     @Override
     public void uploadAudio(Long beatId, MultipartFile mp3, MultipartFile wav, MultipartFile zip) throws IOException {
         Beat beat = findById(beatId);
-        String pathname = uploadPath + PREFIX_USER + beat.getUser().getId() + PREFIX_BEAT + beatId;
+        String pathname = (uploadPath == null ? "" : uploadPath)
+                          + PREFIX_USER + beat.getUser().getId() + PREFIX_BEAT + beatId;
         Audio audio = beat.getAudio();
 
         makeDirectory(beat, pathname);
@@ -215,20 +222,31 @@ public class BeatServiceImpl implements BeatService {
             license.setId(beat.getLicense().getId());
         }
         license.setBeat(beat);
-        licenseRepository.save(license);
+        License savedLicense = licenseRepository.save(license);
+        beat.setLicense(savedLicense);
+        beatRepository.save(beat);
     }
 
     @Override
     public void addPlay(Long id) {
         Beat beat = findById(id);
-        beat.setPlays(beat.getPlays() + 1);
+        beat.setPlays((beat.getPlays() == null ? 0 : beat.getPlays()) + 1);
         beatRepository.save(beat);
     }
 
     @Override
     public void addToFavorite(Long beatId, String userId) {
         User user = userService.findById(userId);
-        user.getFavoriteBeats().add(findById(beatId));
+        Beat beat = findById(beatId);
+
+        List<Beat> favoriteBeats = user.getFavoriteBeats();
+
+        if (favoriteBeats == null) {
+            user.setFavoriteBeats(new ArrayList<>(List.of(beat)));
+        } else {
+            favoriteBeats.add(beat);
+        }
+
         userRepository.save(user);
     }
 
@@ -243,53 +261,43 @@ public class BeatServiceImpl implements BeatService {
     public Cart addToCart(String userId, Long beatId, String license) {
         User user = userService.findById(userId);
         Beat beat = findById(beatId);
+        Licensing licensing = Licensing.valueOf(license);
 
-        if (cartRepository.existsByBeatAndUserAndLicensing(beat, user, Licensing.valueOf(license))) {
+        if (cartRepository.existsByBeatAndUserAndLicensing(beat, user, licensing)) {
             return null;
         }
-        Optional<Cart> cartRepositoryByBeatAndUser = cartRepository.findByBeatAndUser(beat, user);
-        if (cartRepositoryByBeatAndUser.isEmpty()) {
-            Cart cart = new Cart(Licensing.valueOf(license), user, beat);
+        Optional<Cart> cartByBeatAndUser = cartRepository.findByBeatAndUser(beat, user);
 
-            Cart savedCart = cartRepository.save(cart);
+        Cart cart = cartByBeatAndUser.isEmpty()
+                ? new Cart(licensing, user, beat)
+                : cartByBeatAndUser.get();
 
-            user.getCart().add(savedCart);
+        cart.setLicensing(licensing);
 
-            userRepository.save(user);
+        Cart savedCart = cartRepository.save(cart);
+        user.getCart().add(savedCart);
+        userRepository.save(user);
 
-            return savedCart;
-        } else {
-            Cart cart = cartRepositoryByBeatAndUser.get();
-
-            cart.setLicensing(Licensing.valueOf(license));
-
-            Cart savedCart = cartRepository.save(cart);
-
-            user.getCart().add(savedCart);
-
-            userRepository.save(user);
-
-            return savedCart;
-        }
+        return savedCart;
     }
 
     @Override
     public void removeFromCart(String userId, Long beatId) {
         User user = userService.findById(userId);
         Beat beat = findById(beatId);
-        for (Cart cart : user.getCart()) {
-            if (cart.getBeat() == beat) {
-                user.getCart().remove(cart);
-                cartRepository.delete(cart);
-                return;
-            }
-        }
+        Optional<Cart> cartByBeatAndUser = cartRepository.findByBeatAndUser(beat, user);
+        cartByBeatAndUser.ifPresent(cartRepository::delete);
     }
 
     @Override
     public void addToHistory(String userId, Long beatId) {
         User user = userService.findById(userId);
         Beat beat = findById(beatId);
+
+        if (user.getHistory() == null) {
+            user.setHistory(new ArrayList<>());
+        }
+
         List<Beat> history = user.getHistory();
 
         if (history.contains(beat)) {
@@ -305,14 +313,12 @@ public class BeatServiceImpl implements BeatService {
     ) {
         User user = userId != null ? userService.findById(userId) : null;
 
-        List<Beat> sortedBeats = new ArrayList<>(sortedPublishedBeats(nameFilter != null
+        List<Beat> sortedBeats = new ArrayList<>(filterByPublished(nameFilter != null
                 ? beatRepository.findAllByTitleContainsIgnoreCase(nameFilter)
                 : beatRepository.findAll())
                 .stream()
-                .sorted((o1, o2) -> Integer.compare(o2.getPlays(), o1.getPlays()))
+                .sorted(Comparator.comparingInt(Beat::getPlays))
                 .toList());
-
-        Collections.reverse(sortedBeats);
 
         if (nameFilter == null && filters.getTag() == null && filters.getGenre() == null
             && filters.getPriceMin() == null && filters.getPriceMax() == null && filters.getKey() == null
@@ -329,14 +335,10 @@ public class BeatServiceImpl implements BeatService {
         List<Beat> filteredBeats = new ArrayList<>();
 
         for (Beat sortedBeat : sortedBeats) {
-            boolean add = checkTags(filters, sortedBeat);
-            add = add && checkGenre(filters, sortedBeat);
-            add = add && checkKey(filters, sortedBeat);
-            add = add && checkMood(filters, sortedBeat);
-            add = add && checkBpm(filters, sortedBeat);
-            add = add && (checkPrice(filters, sortedBeat) || checkFree(sortedBeat));
-
-            if (add) {
+            if (checkTags(filters, sortedBeat) && checkGenre(filters, sortedBeat)
+                && checkKey(filters, sortedBeat) && checkMood(filters, sortedBeat)
+                    && (checkPrice(filters, sortedBeat) || checkFree(sortedBeat))
+                        && checkBpm(filters, sortedBeat)) {
                 filteredBeats.add(sortedBeat);
             }
         }
@@ -348,54 +350,57 @@ public class BeatServiceImpl implements BeatService {
     }
 
     private static boolean checkPrice(Filters filters, Beat sortedBeat) {
-        return filters.getPriceMin() != null && filters.getPriceMax() != null
-               && (sortedBeat.getLicense().getPriceMp3() < filters.getPriceMin()
-                   || sortedBeat.getLicense().getPriceMp3() > filters.getPriceMax());
+        if (filters.getPriceMin() == null || filters.getPriceMax() == null) {
+            return true;
+        }
+        int price = sortedBeat.getLicense().getPriceMp3();
+
+        return price >= filters.getPriceMin() && price <= filters.getPriceMax();
     }
 
     private static boolean checkTags(Filters filters, Beat sortedBeat) {
-        return filters.getTag() == null || sortedBeat.getTags()
-                .stream()
-                .anyMatch(tag1 -> Objects.equals(tag1.getId(), filters.getTag()));
+        return filters.getTag() == null
+               || sortedBeat.getTags().stream()
+                       .anyMatch(tag1 -> Objects.equals(tag1.getId(), filters.getTag()));
     }
 
     private static boolean checkGenre(Filters filters, Beat sortedBeat) {
-        return filters.getGenre() != null && !sortedBeat.getGenre().name().equals(filters.getGenre());
+        return filters.getGenre() == null || sortedBeat.getGenre().name().equals(filters.getGenre());
     }
 
     private static boolean checkKey(Filters filters, Beat sortedBeat) {
-        return filters.getKey() != null && !sortedBeat.getKey().name().equals(filters.getKey());
+        return filters.getKey() == null || sortedBeat.getKey().name().equals(filters.getKey());
     }
 
     private static boolean checkMood(Filters filters, Beat sortedBeat) {
-        return filters.getMood() != null && !sortedBeat.getMood().name().equals(filters.getMood());
+        return filters.getMood() == null || sortedBeat.getMood().name().equals(filters.getMood());
     }
 
     private static boolean checkBpm(Filters filters, Beat sortedBeat) {
-        return sortedBeat.getBpm() != null
-               && (filters.getBpmMin() != null && filters.getBpmMax() != null
-                   && (sortedBeat.getBpm() < filters.getBpmMin() || sortedBeat.getBpm() > filters.getBpmMax()));
+        return sortedBeat.getBpm() == null
+               || (filters.getBpmMin() == null || filters.getBpmMax() == null)
+               || (sortedBeat.getBpm() >= filters.getBpmMin() && sortedBeat.getBpm() <= filters.getBpmMax());
     }
 
     @Override
     public Page<DisplayBeatDto> getFavoriteBeats(String userId, Pageable pageable) {
         User user = userService.findById(userId);
 
-        return listToPage(pageable, mapToDtoList(user, sortedPublishedBeats(user.getFavoriteBeats())));
+        return listToPage(pageable, mapToDtoList(user, filterByPublished(user.getFavoriteBeats())));
     }
 
     @Override
     public Page<DisplayBeatDto> getHistoryBeats(String userId, Pageable pageable) {
         User user = userService.findById(userId);
 
-        return listToPage(pageable, mapToDtoList(user, sortedPublishedBeats(user.getHistory())));
+        return listToPage(pageable, mapToDtoList(user, filterByPublished(user.getHistory())));
     }
 
     @Override
     public Page<DisplayBeatDto> getBeats(String userId, String authUserId, Pageable pageable) {
         User authUser = authUserId != null ? userService.findById(authUserId) : null;
 
-        return listToPage(pageable, mapToDtoList(authUser, sortedPublishedBeats(userService.findById(userId).getBeats())));
+        return listToPage(pageable, mapToDtoList(authUser, filterByPublished(userService.findById(userId).getBeats())));
     }
 
     @Override
@@ -418,7 +423,7 @@ public class BeatServiceImpl implements BeatService {
     public List<Beat> getSimilarBeats(Long beatId, Integer limit) {
         Genre genre = findById(beatId).getGenre();
 
-        return sortedPublishedBeats(beatRepository.findAll())
+        return filterByPublished(beatRepository.findAll())
                 .stream()
                 .filter(beat -> beat.getGenre() == genre)
                 .sorted((o1, o2) -> Integer.compare(o2.getPlays(), o1.getPlays()))
@@ -428,7 +433,7 @@ public class BeatServiceImpl implements BeatService {
 
     @Override
     public Page<DisplayBeatDto> getFreeBeats(String userId, Pageable pageable) {
-        List<Beat> freeBeats = sortedPublishedBeats(beatRepository.findAll())
+        List<Beat> freeBeats = filterByPublished(beatRepository.findAll())
                 .stream()
                 .filter(Beat::getFree)
                 .toList();
@@ -438,7 +443,7 @@ public class BeatServiceImpl implements BeatService {
 
     @Override
     public Page<DisplayBeatDto> findAllByGenre(String userId, String genre, Pageable pageable) {
-        List<Beat> findAllByGenre = sortedPublishedBeats(beatRepository.findAll())
+        List<Beat> findAllByGenre = filterByPublished(beatRepository.findAll())
                 .stream()
                 .filter(beat -> beat.getGenre().toString().equals(genre))
                 .toList();
@@ -448,7 +453,7 @@ public class BeatServiceImpl implements BeatService {
 
     @Override
     public Page<DisplayBeatDto> findAllByTag(String userId, Long tagId, Pageable pageable) {
-        List<Beat> findAllByTag = sortedPublishedBeats(beatRepository.findAll())
+        List<Beat> findAllByTag = filterByPublished(beatRepository.findAll())
                 .stream()
                 .filter(beat -> beat.getTags().stream().anyMatch(tag1 -> Objects.equals(tag1.getId(), tagId)))
                 .toList();
@@ -457,10 +462,11 @@ public class BeatServiceImpl implements BeatService {
     }
 
     private void makeDirectory(Beat beat, String pathname) {
+        String path = uploadPath == null ? "" : uploadPath;
         List<File> files = List.of(
-                new File(uploadPath),
-                new File(uploadPath + PREFIX_USER + beat.getUser().getId()),
-                new File(uploadPath + PREFIX_USER + beat.getUser().getId() + "/beats"),
+                new File(path),
+                new File(path + PREFIX_USER + beat.getUser().getId()),
+                new File(path + PREFIX_USER + beat.getUser().getId() + "/beats"),
                 new File(pathname)
         );
 
@@ -481,7 +487,7 @@ public class BeatServiceImpl implements BeatService {
         return resultFilename;
     }
 
-    private List<Beat> sortedPublishedBeats(List<Beat> beats) {
+    private List<Beat> filterByPublished(List<Beat> beats) {
         return beats.stream()
                 .filter(beat -> beat.getStatus() == BeatStatus.PUBLISHED)
                 .toList();

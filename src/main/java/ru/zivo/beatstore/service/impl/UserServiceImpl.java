@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
+import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 import ru.zivo.beatstore.config.properties.BeatstoreProperties;
 import ru.zivo.beatstore.model.Beat;
@@ -93,6 +93,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User update(String id, String username, String email) {
+        if (username == null || email == null) {
+            throw new IllegalArgumentException("username or email is null");
+        }
         User user = findById(id);
         user.setUsername(username);
         user.setEmail(email);
@@ -107,10 +110,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean findByUsername(String username) {
+        if (username == null) {
+            throw new IllegalArgumentException("username is null");
+        }
         return userRepository.findByUsername(username).isPresent();
     }
 
     @Override
+    @Transactional
     public void delete(String id) {
         User user = findById(id);
 
@@ -118,7 +125,7 @@ public class UserServiceImpl implements UserService {
 
         String s = "/user-" + id;
 
-        if (!CollectionUtils.isEmpty(beats)) {
+        if (!beats.isEmpty()) {
             for (Beat beat : beats) {
                 String pathname = uploadPath + s + "/beats" + "/beat-" + beat.getId();
 
@@ -135,6 +142,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getRecommended(Integer limit) {
+        if (limit == null) {
+            throw new IllegalArgumentException("limit is null");
+        }
         return userRepository.findAll()
                 .stream()
                 .sorted((o1, o2) -> Integer.compare(o2.getSubscribers().size(), o1.getSubscribers().size()))
@@ -193,6 +203,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<User> findAll(Pageable pageable, String nameFilter) {
+        if (pageable == null) {
+            throw new IllegalArgumentException("pageable is null");
+        }
         return nameFilter != null
                 ? userRepository.findAllByUsernameContainsIgnoreCase(pageable, nameFilter)
                 : userRepository.findAll(pageable);
