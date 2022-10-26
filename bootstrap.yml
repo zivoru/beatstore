@@ -1,0 +1,12 @@
+embedded:
+  postgresql:
+    user: u
+    password: p
+    database: db
+    dockerImage: postgres:14-alpine
+
+spring:
+  profiles: localtest
+  cloud:
+    config:
+      enabled: false

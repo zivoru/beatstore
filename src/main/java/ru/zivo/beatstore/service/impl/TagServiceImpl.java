@@ -45,6 +45,9 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public List<Tag> getTrendTags(Integer limit) {
+        if (limit == null) {
+            throw new IllegalArgumentException("limit is null");
+        }
         return tagRepository.findAll()
                 .stream()
                 .sorted((o1, o2) -> Integer.compare(o2.getBeats().size(), o1.getBeats().size()))

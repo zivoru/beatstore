@@ -2,10 +2,10 @@ package ru.zivo.beatstore.service.impl;
 
 import org.springframework.stereotype.Service;
 import ru.zivo.beatstore.model.Purchased;
+import ru.zivo.beatstore.model.User;
 import ru.zivo.beatstore.service.PurchasedService;
 import ru.zivo.beatstore.service.UserService;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -19,8 +19,10 @@ public class PurchasedServiceImpl implements PurchasedService {
 
     @Override
     public List<Purchased> getPurchasedBeats(String userId) {
-        List<Purchased> purchased = userService.findById(userId).getPurchased();
-        Collections.reverse(purchased);
-        return purchased;
+        if (userId == null) {
+            throw new IllegalArgumentException("userId is null");
+        }
+        User user = userService.findById(userId);
+        return user.getPurchased();
     }
 }

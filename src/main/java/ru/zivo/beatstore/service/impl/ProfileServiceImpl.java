@@ -37,6 +37,9 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public Profile updateProfile(String userId, Profile profile) {
+        if (userId == null || profile == null) {
+            throw new IllegalArgumentException("userId or profile is null");
+        }
         Profile userProfile = userService.findById(userId).getProfile();
 
         userProfile.setFirstName(profile.getFirstName());
@@ -50,6 +53,9 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public void updateImage(Long profileId, MultipartFile photo) throws IOException {
+        if (profileId == null) {
+            throw new IllegalArgumentException("profileId is null");
+        }
         Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new NotFoundException("Профиль с id = %d не найден".formatted(profileId)));
 
@@ -59,11 +65,13 @@ public class ProfileServiceImpl implements ProfileService {
             return;
         }
 
-        String pathname = uploadPath + "/user-" + userId + "/profile";
+        String path = uploadPath == null ? "" : uploadPath;
+
+        String pathname = path + "/user-" + userId + "/profile";
 
         List<File> files = List.of(
-                new File(uploadPath),
-                new File(uploadPath + "/user-" + userId),
+                new File(path),
+                new File(path + "/user-" + userId),
                 new File(pathname)
         );
 

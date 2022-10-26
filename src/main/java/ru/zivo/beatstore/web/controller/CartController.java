@@ -28,22 +28,22 @@ public class CartController {
     @GetMapping
     public ResponseEntity<List<CartDto>> findCartByUserId(@AuthenticationPrincipal OAuth2User principal) {
         return principal == null ? null :
-                ResponseEntity.ok(cartService.findCartByUserId(principal.getAttribute("sub")));
+                ResponseEntity.ok(cartService.findAllByUserId(principal.getAttribute("sub")));
     }
 
     @Operation(summary = "Удаление элемента корзины")
-    @DeleteMapping("{id}")
-    public void delete(@AuthenticationPrincipal OAuth2User principal, @PathVariable Long id) {
+    @DeleteMapping("{beatId}")
+    public void delete(@AuthenticationPrincipal OAuth2User principal, @PathVariable Long beatId) {
         if (principal != null) {
-            cartService.delete(principal.getAttribute("sub"), id);
+            cartService.delete(principal.getAttribute("sub"), beatId);
         }
     }
 
-    @Operation(summary = "Удаление элементов корзины по id пользователя")
-    @DeleteMapping("userId/{userId}")
-    public void deleteByUserId(@AuthenticationPrincipal OAuth2User principal, @PathVariable String userId) {
+    @Operation(summary = "Удаление элементов корзины по id автора")
+    @DeleteMapping("userId/{authorId}")
+    public void deleteByUserId(@AuthenticationPrincipal OAuth2User principal, @PathVariable String authorId) {
         if (principal != null) {
-            cartService.deleteByUserId(principal.getAttribute("sub"), userId);
+            cartService.deleteByAuthorId(principal.getAttribute("sub"), authorId);
         }
     }
 }

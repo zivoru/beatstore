@@ -3,7 +3,6 @@
 Музыкальный маркетплейс для покупки и продажи битов
 
 ## Стек технологий
-**В проекте используются**:
 
 * Backend:
   - Java 17
@@ -23,6 +22,10 @@
   - PostgreSQL
   - Liquibase
   - Docker
+* Tests:
+  - JUnit 5
+  - Mockito
+  - AssertJ
 * Frontend:
   - CSS
   - HTML

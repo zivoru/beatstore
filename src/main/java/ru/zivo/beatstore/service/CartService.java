@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface CartService {
 
-    List<CartDto> findCartByUserId(String userId);
+    List<CartDto> findAllByUserId(String userId);
 
-    void delete(String authUserId, Long cartId);
+    void delete(String authUserId, Long beatId);
 
-    void deleteByUserId(String authUserId, String userId);
+    void deleteByAuthorId(String authUserId, String authorId);
 }
