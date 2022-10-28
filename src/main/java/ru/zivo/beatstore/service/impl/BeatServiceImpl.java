@@ -311,7 +311,14 @@ public class BeatServiceImpl implements BeatService {
     @Override
     public Page<DisplayBeatDto> getTopChart(String nameFilter, Filters filters, String userId, Pageable pageable
     ) {
-        User user = userId != null ? userService.findById(userId) : null;
+        User user = null;
+        try {
+            if (userId != null) {
+                user = userService.findById(userId);
+            }
+        } catch (NotFoundException e) {
+            log.debug("Пользователь с id = {} не найден", userId);
+        }
 
         List<Beat> sortedBeats = new ArrayList<>(filterByPublished(nameFilter != null
                 ? beatRepository.findAllByTitleContainsIgnoreCase(nameFilter)
@@ -438,7 +445,16 @@ public class BeatServiceImpl implements BeatService {
                 .filter(Beat::getFree)
                 .toList();
 
-        return listToPage(pageable, mapToDtoList(userId != null ? userService.findById(userId) : null, freeBeats));
+        User user = null;
+        try {
+            if (userId != null) {
+                user = userService.findById(userId);
+            }
+        } catch (NotFoundException e) {
+            log.debug("Пользователь с id = {} не найден", userId);
+        }
+
+        return listToPage(pageable, mapToDtoList(user, freeBeats));
     }
 
     @Override

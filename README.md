@@ -38,11 +38,19 @@
 ## Запуск
 
 **Для запуска нужно:**
-- Клонировать проект в среду разработки
-- Прописать properties в файле **[application-dev.properties](src/main/resources/application-dev.properties)** 
-- Запустить **[Docker](https://www.docker.com)**, 
-- Запустить **[docker-compose.yml](docker/docker-compose.yml)**, 
-- Запустить метод **main** в файле **[BeatstoreApplication.java](src/main/java/ru/zivo/beatstore/BeatstoreApplication.java)**
+1. Клонировать проект в среду разработки
+2. Для авторизации с помощью **OAuth2** через Google нужно создать проект на сайте https://console.cloud.google.com/projectcreate и настроить **OAuth 2.0 Client IDs** в разделе **Credentials**
+3. Добавить следующие переменные среды:
+
+| name                           | value                                                   |
+|--------------------------------|---------------------------------------------------------|
+| BEATSTORE_GOOGLE_CLIENT_ID     | client_id который вы получили при выполнении шага 2     |
+| BEATSTORE_GOOGLE_CLIENT_SECRET | client_secret который вы получили при выполнении шага 2 |
+| BEATSTORE_UPLOAD_PATH          | путь до места где будут храниться файлы пользователей   |
+
+4. Запустить **[Docker](https://www.docker.com)**
+5. Запустить **[docker-compose.yml](docker/docker-compose.yml)**
+6. Запустить метод **main** в файле **[BeatstoreApplication.java](src/main/java/ru/zivo/beatstore/BeatstoreApplication.java)**
 
 После выполнения всех действий сайт будет доступен по ссылке http://localhost:7777 и Swagger по [ссылке](http://localhost:7777/swagger-ui/index.html#).
 
