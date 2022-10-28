@@ -33,7 +33,3 @@ build/
 .vscode/
 
 /uploads/
-
-#/src/main/resources/static/js
-
-/src/main/resources/js/

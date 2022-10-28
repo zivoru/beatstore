@@ -88,6 +88,9 @@ public class UserServiceImpl implements UserService {
         social.setUser(savedUser);
         socialRepository.save(social);
 
+        savedUser.setProfile(profile);
+        savedUser.setSocial(social);
+
         return userRepository.save(savedUser);
     }
 
