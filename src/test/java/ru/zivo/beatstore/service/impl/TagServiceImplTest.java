@@ -26,9 +26,10 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class TagServiceImplTest {
 
+    private static final long TAG_ID = 1L;
+
     @Mock
     private TagRepository tagRepository;
-
     @InjectMocks
     private TagServiceImpl tagService;
 
@@ -65,14 +66,14 @@ class TagServiceImplTest {
         void FindById_TagIsFound_ReturnTag() {
             Tag tag = new Tag();
 
-            when(tagRepository.findById(1L)).thenReturn(Optional.of(tag));
+            when(tagRepository.findById(TAG_ID)).thenReturn(Optional.of(tag));
 
-            assertThat(tagService.findById(1L)).isEqualTo(tag);
+            assertThat(tagService.findById(TAG_ID)).isEqualTo(tag);
         }
 
         @Test
         void FindById_TagIsNotFound_ThrowException() {
-            assertThrows(NotFoundException.class, () -> tagService.findById(-1L));
+            assertThrows(NotFoundException.class, () -> tagService.findById(TAG_ID));
         }
 
         @Test

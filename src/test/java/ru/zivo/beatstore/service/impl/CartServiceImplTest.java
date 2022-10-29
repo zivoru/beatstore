@@ -28,15 +28,14 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class CartServiceImplTest {
 
+    private static final String USER_ID = "1";
+
     @Mock
     private CartRepository cartRepository;
-
     @Mock
     private UserService userService;
-
     @Mock
     private BeatService beatService;
-
     @InjectMocks
     private CartServiceImpl cartService;
 
@@ -68,12 +67,12 @@ class CartServiceImplTest {
             beat.setLicense(new License(100, 200, 500, 1000, beat));
             Cart cart = new Cart(licensing, new User(), beat);
 
-            when(userService.findById("1"))
+            when(userService.findById(USER_ID))
                     .thenReturn(User.builder()
                             .cart(List.of(cart))
                             .build());
 
-            List<CartDto> cartDtoList = cartService.findAllByUserId("1");
+            List<CartDto> cartDtoList = cartService.findAllByUserId(USER_ID);
 
             CartDto cartDto = cartDtoList.get(0);
 
@@ -110,7 +109,7 @@ class CartServiceImplTest {
         @Test
         void DeleteByAuthorId_CartsByAuthorNotFound_CartsNotDeleted() {
             Beat beat = new Beat();
-            beat.setUser(User.builder().id("1").build());
+            beat.setUser(User.builder().id(USER_ID).build());
 
             Cart cart = new Cart();
             cart.setBeat(beat);
@@ -127,7 +126,7 @@ class CartServiceImplTest {
         @Test
         void DeleteByAuthorId_CartsByAuthorFound_CartsDeleted() {
             Beat beat = new Beat();
-            beat.setUser(User.builder().id("1").build());
+            beat.setUser(User.builder().id(USER_ID).build());
 
             Cart cart = new Cart();
             cart.setBeat(beat);
@@ -136,7 +135,7 @@ class CartServiceImplTest {
 
             when(cartRepository.findAllByUser(any())).thenReturn(carts);
 
-            cartService.deleteByAuthorId(null, "1");
+            cartService.deleteByAuthorId(null, USER_ID);
 
             verify(cartRepository, times(1)).delete(cart);
         }

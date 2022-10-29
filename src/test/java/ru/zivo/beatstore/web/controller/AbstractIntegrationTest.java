@@ -8,9 +8,9 @@ import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.WebApplicationContext;
-import ru.zivo.beatstore.TestWithContext;
+import ru.zivo.beatstore.annotation.IT;
 
-@TestWithContext
+@IT
 public abstract class AbstractIntegrationTest {
 
     @Autowired

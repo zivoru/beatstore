@@ -2,7 +2,7 @@ package ru.zivo.beatstore.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -17,16 +17,11 @@ import java.util.List;
 @Tag(name = "CommentController", description = "API для работы с комментариями")
 @RequestMapping("api/v1/comments")
 @RestController
+@RequiredArgsConstructor
 public class CommentController {
 
     private final CommentService commentService;
     private final CommentMapper mapper;
-
-    @Autowired
-    public CommentController(CommentService commentService, CommentMapper mapper) {
-        this.commentService = commentService;
-        this.mapper = mapper;
-    }
 
     @Operation(summary = "Получение комментариев по beatId")
     @GetMapping("{beatId}")
@@ -39,8 +34,13 @@ public class CommentController {
     public ResponseEntity<Comment> addComment(@PathVariable Long beatId,
                                               @AuthenticationPrincipal OAuth2User principal,
                                               @RequestBody CommentDto commentDto) {
-        return principal == null ? null :
-                ResponseEntity.ok(commentService.addComment(beatId, principal.getAttribute("sub"), mapper.toEntity(commentDto)));
+        if (principal == null) {
+            return null;
+        }
+        String userId = principal.getAttribute("sub");
+        Comment comment = mapper.toEntity(commentDto);
+
+        return ResponseEntity.ok(commentService.addComment(beatId, userId, comment));
     }
 
     @Operation(summary = "Удаление комментария по id")

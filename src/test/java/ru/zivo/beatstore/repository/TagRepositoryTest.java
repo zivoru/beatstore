@@ -1,10 +1,10 @@
 package ru.zivo.beatstore.repository;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import ru.zivo.beatstore.TestWithContext;
+import ru.zivo.beatstore.annotation.IT;
 import ru.zivo.beatstore.model.Tag;
 
 import java.util.Set;
@@ -12,11 +12,11 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@TestWithContext
+@IT
+@RequiredArgsConstructor
 class TagRepositoryTest {
 
-    @Autowired
-    private TagRepository tagRepository;
+    private final TagRepository tagRepository;
 
     @Test
     void findByNameIgnoreCase() {

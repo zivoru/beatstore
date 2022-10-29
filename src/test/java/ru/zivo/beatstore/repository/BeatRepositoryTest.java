@@ -1,8 +1,8 @@
 package ru.zivo.beatstore.repository;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import ru.zivo.beatstore.TestWithContext;
+import ru.zivo.beatstore.annotation.IT;
 import ru.zivo.beatstore.model.Beat;
 import ru.zivo.beatstore.model.User;
 import ru.zivo.beatstore.model.enums.BeatStatus;
@@ -14,13 +14,12 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@TestWithContext
+@IT
+@RequiredArgsConstructor
 class BeatRepositoryTest {
 
-    @Autowired
-    private BeatRepository beatRepository;
-    @Autowired
-    private UserRepository userRepository;
+    private final BeatRepository beatRepository;
+    private final UserRepository userRepository;
 
     @Test
     void findAllByTitleContainsIgnoreCase() {

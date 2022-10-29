@@ -1,6 +1,6 @@
 package ru.zivo.beatstore.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 import ru.zivo.beatstore.model.Cart;
@@ -15,20 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;
-
     private final UserService userService;
-
     private final BeatService beatService;
-
-    @Autowired
-    public CartServiceImpl(CartRepository cartRepository, UserService userService, BeatService beatService) {
-        this.cartRepository = cartRepository;
-        this.userService = userService;
-        this.beatService = beatService;
-    }
 
     @Override
     public List<CartDto> findAllByUserId(String userId) {

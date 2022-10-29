@@ -2,7 +2,7 @@ package ru.zivo.beatstore.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -18,14 +18,10 @@ import java.util.List;
 @Tag(name = "UserController", description = "API для работы с пользователями")
 @RequestMapping("api/v1/users")
 @RestController
+@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
-
-    @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @Operation(summary = "Пользователь по id")
     @GetMapping("{id}")
@@ -43,7 +39,7 @@ public class UserController {
     @PutMapping
     public ResponseEntity<User> findById(@AuthenticationPrincipal OAuth2User principal,
                                          @RequestParam String username, @RequestParam String email) {
-        String id = principal != null ? principal.getAttribute("sub") : null;
+        String id = principal == null ? null : principal.getAttribute("sub");
         return ResponseEntity.ok(userService.update(id, username, email));
     }
 

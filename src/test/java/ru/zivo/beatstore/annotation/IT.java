@@ -1,4 +1,4 @@
-package ru.zivo.beatstore;
+package ru.zivo.beatstore.annotation;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -14,5 +14,5 @@ import java.lang.annotation.Target;
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("localtest")
-public @interface TestWithContext {
+public @interface IT {
 }

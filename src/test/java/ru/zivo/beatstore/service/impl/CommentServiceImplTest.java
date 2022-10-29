@@ -26,15 +26,16 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class CommentServiceImplTest {
 
+    private static final long COMMENT_ID = 1L;
+    private static final long BEAT_ID = 1L;
+    private static final String USER_ID = "1";
+
     @Mock
     private BeatService beatService;
-
     @Mock
     private CommentRepository commentRepository;
-
     @Mock
     private UserService userService;
-
     @InjectMocks
     private CommentServiceImpl commentService;
 
@@ -45,14 +46,14 @@ class CommentServiceImplTest {
         void FindById_CommentIsFound_ReturnComment() {
             Comment testComment = new Comment();
 
-            when(commentRepository.findById(1L)).thenReturn(Optional.of(testComment));
+            when(commentRepository.findById(COMMENT_ID)).thenReturn(Optional.of(testComment));
 
-            assertThat(commentService.findById(1L)).isEqualTo(testComment);
+            assertThat(commentService.findById(COMMENT_ID)).isEqualTo(testComment);
         }
 
         @Test
         void FindById_CommentIsNotFound_ThrowException() {
-            assertThrows(NotFoundException.class, () -> commentService.findById(-1L));
+            assertThrows(NotFoundException.class, () -> commentService.findById(COMMENT_ID));
         }
 
         @Test
@@ -67,9 +68,9 @@ class CommentServiceImplTest {
         Beat testBeat = new Beat();
         testBeat.setComments(testComments);
 
-        when(beatService.findById(1L)).thenReturn(testBeat);
+        when(beatService.findById(BEAT_ID)).thenReturn(testBeat);
 
-        List<Comment> comments = commentService.findByBeatId(1L);
+        List<Comment> comments = commentService.findByBeatId(COMMENT_ID);
         assertEquals(testComments, comments);
     }
 
@@ -78,7 +79,7 @@ class CommentServiceImplTest {
 
         @Test
         void AddComment_CommentIsNull_ThrowException() {
-            assertThrows(IllegalArgumentException.class, () -> commentService.addComment(1L, "1", null));
+            assertThrows(IllegalArgumentException.class, () -> commentService.addComment(COMMENT_ID, USER_ID, null));
         }
 
         @Test
@@ -87,10 +88,10 @@ class CommentServiceImplTest {
             Beat beat = new Beat();
             Comment comment = new Comment();
 
-            when(userService.findById("1")).thenReturn(user);
-            when(beatService.findById(1L)).thenReturn(beat);
+            when(userService.findById(USER_ID)).thenReturn(user);
+            when(beatService.findById(BEAT_ID)).thenReturn(beat);
 
-            commentService.addComment(1L, "1", comment);
+            commentService.addComment(COMMENT_ID, USER_ID, comment);
 
             assertEquals(user, comment.getAuthor());
             assertEquals(beat, comment.getBeat());
@@ -100,11 +101,11 @@ class CommentServiceImplTest {
     @Test
     void Delete_IdEqual_CommentDeleted() {
         Comment comment = new Comment();
-        comment.setAuthor(User.builder().id("1").build());
+        comment.setAuthor(User.builder().id(USER_ID).build());
 
-        when(commentRepository.findById(1L)).thenReturn(Optional.of(comment));
+        when(commentRepository.findById(COMMENT_ID)).thenReturn(Optional.of(comment));
 
-        commentService.delete("1", 1L);
+        commentService.delete(USER_ID, COMMENT_ID);
 
         verify(commentRepository, times(1)).delete(any());
     }

@@ -27,18 +27,16 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
+    private static final String USER_ID = "1";
+
     @Mock
     private BeatstoreProperties beatstoreProperties;
-
     @Mock
     private UserRepository userRepository;
-
     @Mock
     private ProfileRepository profileRepository;
-
     @Mock
     private SocialRepository socialRepository;
-
     @InjectMocks
     private UserServiceImpl userService;
 
@@ -46,8 +44,8 @@ class UserServiceImplTest {
     void register() {
         when(userRepository.save(any())).thenReturn(new User());
 
-        userService.register("1", "username", "email");
-        userService.register("1", "feed", "email");
+        userService.register(USER_ID, "username", "email");
+        userService.register(USER_ID, "feed", "email");
 
         verify(userRepository, times(4)).save(any());
     }
@@ -57,14 +55,14 @@ class UserServiceImplTest {
 
         @Test
         void Update_UserUpdated_UsernameAndEmailUpdated() {
-            User testUser = User.builder().id("1").build();
+            User testUser = User.builder().id(USER_ID).build();
 
-            when(userRepository.findById("1")).thenReturn(Optional.of(testUser));
+            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(testUser));
 
             String email = "ivan@gmail.com";
             String username = "ivan";
 
-            userService.update("1", username, email);
+            userService.update(USER_ID, username, email);
 
             assertAll(
                     () -> assertEquals(username, testUser.getUsername()),
@@ -81,13 +79,13 @@ class UserServiceImplTest {
         @Test
         void Update_UsernameIsNull_ThrowException() {
             assertThrows(IllegalArgumentException.class,
-                    () -> userService.update("1", null, "ivan@gmail.com"));
+                    () -> userService.update(USER_ID, null, "ivan@gmail.com"));
         }
 
         @Test
         void Update_EmailIsNull_ThrowException() {
             assertThrows(IllegalArgumentException.class,
-                    () -> userService.update("1", "ivan", null));
+                    () -> userService.update(USER_ID, "ivan", null));
         }
     }
 
@@ -96,11 +94,11 @@ class UserServiceImplTest {
 
         @Test
         void FindById_UserIsFound_ReturnUser() {
-            User testUser = User.builder().id("1").build();
+            User testUser = User.builder().id(USER_ID).build();
 
-            when(userRepository.findById("1")).thenReturn(Optional.of(testUser));
+            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(testUser));
 
-            assertThat(userService.findById("1")).isEqualTo(testUser);
+            assertThat(userService.findById(USER_ID)).isEqualTo(testUser);
         }
 
         @Test
@@ -157,9 +155,9 @@ class UserServiceImplTest {
                     "zip", null, beat));
             User testUser = User.builder().beats(List.of(beat)).build();
 
-            when(userRepository.findById("1")).thenReturn(Optional.of(testUser));
+            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(testUser));
 
-            userService.delete("1");
+            userService.delete(USER_ID);
 
             verify(userRepository, times(1)).delete(testUser);
         }
@@ -237,9 +235,9 @@ class UserServiceImplTest {
             authUser.setSubscriptions(new HashSet<>(Set.of(user)));
 
             when(userRepository.findByUsername("name")).thenReturn(Optional.of(user));
-            when(userRepository.findById("1")).thenReturn(Optional.of(authUser));
+            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(authUser));
 
-            userService.getDisplayUserDto("name", "1");
+            userService.getDisplayUserDto("name", USER_ID);
         }
 
         @Test
@@ -264,10 +262,10 @@ class UserServiceImplTest {
             User channel = new User();
             User user = new User();
 
-            when(userRepository.findById("1")).thenReturn(Optional.of(user));
+            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
             when(userRepository.findById("2")).thenReturn(Optional.of(channel));
 
-            boolean subscribed = userService.subscribeAndUnsubscribe("1", "2");
+            boolean subscribed = userService.subscribeAndUnsubscribe(USER_ID, "2");
 
             assertTrue(subscribed);
 
@@ -279,10 +277,10 @@ class UserServiceImplTest {
             User channel = new User();
             User user = User.builder().subscriptions(new HashSet<>(Set.of(channel))).build();
 
-            when(userRepository.findById("1")).thenReturn(Optional.of(user));
+            when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
             when(userRepository.findById("2")).thenReturn(Optional.of(channel));
 
-            boolean subscribed = userService.subscribeAndUnsubscribe("1", "2");
+            boolean subscribed = userService.subscribeAndUnsubscribe(USER_ID, "2");
 
             assertFalse(subscribed);
 

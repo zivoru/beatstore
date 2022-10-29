@@ -1,9 +1,9 @@
 package ru.zivo.beatstore.web.controller;
 
 import io.restassured.http.ContentType;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import ru.zivo.beatstore.model.Beat;
@@ -25,16 +25,14 @@ import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
+@RequiredArgsConstructor
 class CommentControllerTest extends AbstractIntegrationTest {
 
-    @Autowired
-    private UserRepository userRepository;
+    public static final DefaultOAuth2User PRINCIPAL = new DefaultOAuth2User(new ArrayList<>(), Map.of("sub", "1"), "sub");
 
-    @Autowired
-    private BeatRepository beatRepository;
-
-    @Autowired
-    private CommentRepository commentRepository;
+    private final UserRepository userRepository;
+    private final BeatRepository beatRepository;
+    private final CommentRepository commentRepository;
 
     private User user = User.builder()
             .id("1")
@@ -74,12 +72,10 @@ class CommentControllerTest extends AbstractIntegrationTest {
 
     @Test
     void addComment() {
-        DefaultOAuth2User principal = new DefaultOAuth2User(new ArrayList<>(), Map.of("sub", "1"), "sub");
-
         CommentDto comment = new CommentDto("new comment", beat, user);
 
         given()
-                .auth().principal(principal)
+                .auth().principal(PRINCIPAL)
                 .contentType(ContentType.JSON)
                 .body(comment)
                 .post("/api/v1/comments/" + beat.getId())
@@ -92,12 +88,10 @@ class CommentControllerTest extends AbstractIntegrationTest {
 
     @Test
     void delete() {
-        DefaultOAuth2User principal = new DefaultOAuth2User(new ArrayList<>(), Map.of("sub", "1"), "sub");
-
         Comment comment = commentRepository.save(new Comment("new comment", beat, user));
 
         given()
-                .auth().principal(principal)
+                .auth().principal(PRINCIPAL)
                 .contentType(ContentType.JSON)
                 .delete("/api/v1/comments/" + comment.getId())
                 .then()
