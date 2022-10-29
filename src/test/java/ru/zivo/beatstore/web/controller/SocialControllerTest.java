@@ -8,7 +8,6 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import ru.zivo.beatstore.model.Social;
 import ru.zivo.beatstore.model.User;
 import ru.zivo.beatstore.model.enums.Status;
-import ru.zivo.beatstore.repository.BeatRepository;
 import ru.zivo.beatstore.repository.SocialRepository;
 import ru.zivo.beatstore.repository.UserRepository;
 import ru.zivo.beatstore.web.dto.SocialDto;
@@ -23,9 +22,6 @@ class SocialControllerTest extends AbstractIntegrationTest {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private BeatRepository beatRepository;
 
     @Autowired
     private SocialRepository socialRepository;

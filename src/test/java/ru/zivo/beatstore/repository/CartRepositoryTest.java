@@ -98,11 +98,4 @@ class CartRepositoryTest {
         carts = cartRepository.findAllByUser(user);
         assertThat(carts).contains(cart1, cart2);
     }
-
-//    @AfterEach
-//    void deleteUserAndBeat() {
-//        userRepository.delete(user);
-//        beatRepository.delete(beat);
-//        cartRepository.deleteAll();
-//    }
 }

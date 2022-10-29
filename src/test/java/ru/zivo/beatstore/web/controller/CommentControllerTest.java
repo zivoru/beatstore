@@ -82,7 +82,7 @@ class CommentControllerTest extends AbstractIntegrationTest {
                 .auth().principal(principal)
                 .contentType(ContentType.JSON)
                 .body(comment)
-                .post("/api/v1/comments/"+ beat.getId())
+                .post("/api/v1/comments/" + beat.getId())
                 .then()
                 .log().body()
                 .statusCode(HttpStatus.OK.value())
@@ -99,7 +99,7 @@ class CommentControllerTest extends AbstractIntegrationTest {
         given()
                 .auth().principal(principal)
                 .contentType(ContentType.JSON)
-                .delete("/api/v1/comments/"+ comment.getId())
+                .delete("/api/v1/comments/" + comment.getId())
                 .then()
                 .log().body()
                 .statusCode(HttpStatus.OK.value());

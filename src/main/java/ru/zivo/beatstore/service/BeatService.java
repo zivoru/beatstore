@@ -3,11 +3,11 @@ package ru.zivo.beatstore.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
-import ru.zivo.beatstore.model.filters.Filters;
 import ru.zivo.beatstore.model.Beat;
 import ru.zivo.beatstore.model.Cart;
 import ru.zivo.beatstore.model.License;
 import ru.zivo.beatstore.model.Tag;
+import ru.zivo.beatstore.model.filters.Filters;
 import ru.zivo.beatstore.web.dto.DisplayBeatDto;
 
 import java.io.IOException;

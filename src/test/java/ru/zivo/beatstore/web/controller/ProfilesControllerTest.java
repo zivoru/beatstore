@@ -94,24 +94,4 @@ class ProfilesControllerTest extends AbstractIntegrationTest {
         assertThat(updatedProfile.getLocation()).isEqualTo(profileDto.getLocation());
         assertThat(updatedProfile.getBiography()).isEqualTo(profileDto.getBiography());
     }
-
-//    @Test
-//    void updateImage() throws IOException {
-//        DefaultOAuth2User principal = new DefaultOAuth2User(new ArrayList<>(), Map.of("sub", "1"), "sub");
-//
-//        Profile profile = profileRepository.save(new Profile(null, null, null, null, null, null, user));
-//
-//        given()
-//                .auth().principal(principal)
-//                .contentType(ContentType.JSON)
-//                .param("file", new MockMultipartFile("name", "originalFilename", "image/jpeg", new byte[0]))
-//                .post("/api/v1/profiles/image/" + profile.getId())
-//                .then()
-//                .log().body()
-//                .statusCode(HttpStatus.OK.value());
-//
-//        Profile actual = profileRepository.findById(profile.getId()).get();
-//
-//        assertThat(actual.getImageName()).isNotNull();
-//    }
 }
