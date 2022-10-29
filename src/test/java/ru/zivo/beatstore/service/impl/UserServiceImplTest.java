@@ -44,6 +44,8 @@ class UserServiceImplTest {
 
     @Test
     void register() {
+        when(userRepository.save(any())).thenReturn(new User());
+
         userService.register("1", "username", "email");
         userService.register("1", "feed", "email");
 

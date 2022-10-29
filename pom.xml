@@ -54,6 +54,12 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- Spring Session-->
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-jdbc</artifactId>
+        </dependency>
+
         <!-- Swagger -->
         <dependency>
             <groupId>org.springdoc</groupId>
@@ -80,11 +86,6 @@
             <optional>true</optional>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.session</groupId>
-            <artifactId>spring-session-jdbc</artifactId>
-        </dependency>
-
         <!-- Mapstruct -->
         <dependency>
             <groupId>org.mapstruct</groupId>
@@ -102,32 +103,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>4.6.1</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -157,24 +132,28 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured-common</artifactId>
             <version>${io.rest-assured.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
             <version>${io.rest-assured.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>json-path</artifactId>
             <version>${io.rest-assured.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>xml-path</artifactId>
