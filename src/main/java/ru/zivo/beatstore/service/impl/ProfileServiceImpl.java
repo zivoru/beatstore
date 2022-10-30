@@ -1,7 +1,7 @@
 package ru.zivo.beatstore.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.webjars.NotFoundException;
@@ -20,20 +20,12 @@ import java.util.UUID;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ProfileServiceImpl implements ProfileService {
 
-    private final String uploadPath;
-
+    private final BeatstoreProperties beatstoreProperties;
     private final ProfileRepository profileRepository;
-
     private final UserService userService;
-
-    @Autowired
-    public ProfileServiceImpl(ProfileRepository profileRepository, BeatstoreProperties beatstoreProperties, UserService userService) {
-        this.profileRepository = profileRepository;
-        this.uploadPath = beatstoreProperties.getUploadPath();
-        this.userService = userService;
-    }
 
     @Override
     public Profile updateProfile(String userId, Profile profile) {
@@ -65,7 +57,7 @@ public class ProfileServiceImpl implements ProfileService {
             return;
         }
 
-        String path = uploadPath == null ? "" : uploadPath;
+        String path = beatstoreProperties.getUploadPath() == null ? "" : beatstoreProperties.getUploadPath();
 
         String pathname = path + "/user-" + userId + "/profile";
 

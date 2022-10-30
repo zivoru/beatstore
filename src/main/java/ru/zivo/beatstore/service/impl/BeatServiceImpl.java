@@ -1,7 +1,7 @@
 package ru.zivo.beatstore.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -28,37 +28,19 @@ import java.util.*;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class BeatServiceImpl implements BeatService {
 
     private static final String PREFIX_USER = "/user-";
     private static final String PREFIX_BEAT = "/beats/beat-";
 
-    private final String uploadPath;
-
+    private final BeatstoreProperties beatstoreProperties;
     private final BeatRepository beatRepository;
-
     private final UserRepository userRepository;
-
     private final AudioRepository audioRepository;
-
     private final CartRepository cartRepository;
-
     private final LicenseRepository licenseRepository;
-
     private final UserService userService;
-
-    @Autowired
-    public BeatServiceImpl(BeatRepository beatRepository, UserRepository userRepository,
-                           AudioRepository audioRepository, CartRepository cartRepository,
-                           LicenseRepository licenseRepository, BeatstoreProperties beatstoreProperties, UserService userService) {
-        this.beatRepository = beatRepository;
-        this.userRepository = userRepository;
-        this.audioRepository = audioRepository;
-        this.cartRepository = cartRepository;
-        this.licenseRepository = licenseRepository;
-        this.uploadPath = beatstoreProperties.getUploadPath();
-        this.userService = userService;
-    }
 
     @Override
     public Beat findById(Long id) {
@@ -146,7 +128,7 @@ public class BeatServiceImpl implements BeatService {
             throw new NoMatchException("users not equal");
         }
 
-        String pathname = uploadPath + PREFIX_USER + beat.getUser().getId() + PREFIX_BEAT + beatId;
+        String pathname = beatstoreProperties.getUploadPath() + PREFIX_USER + beat.getUser().getId() + PREFIX_BEAT + beatId;
         DeleteFiles.delete(beat, pathname);
         DeleteFiles.deleteFile(Path.of(pathname));
 
@@ -156,7 +138,7 @@ public class BeatServiceImpl implements BeatService {
     @Override
     public void uploadImage(Long beatId, MultipartFile image) throws IOException {
         Beat beat = findById(beatId);
-        String pathname = (uploadPath == null ? "" : uploadPath)
+        String pathname = (beatstoreProperties.getUploadPath() == null ? "" : beatstoreProperties.getUploadPath())
                           + PREFIX_USER + beat.getUser().getId() + PREFIX_BEAT + beatId;
 
         makeDirectory(beat, pathname);
@@ -173,7 +155,7 @@ public class BeatServiceImpl implements BeatService {
     @Override
     public void uploadAudio(Long beatId, MultipartFile mp3, MultipartFile wav, MultipartFile zip) throws IOException {
         Beat beat = findById(beatId);
-        String pathname = (uploadPath == null ? "" : uploadPath)
+        String pathname = (beatstoreProperties.getUploadPath() == null ? "" : beatstoreProperties.getUploadPath())
                           + PREFIX_USER + beat.getUser().getId() + PREFIX_BEAT + beatId;
         Audio audio = beat.getAudio();
 
@@ -478,7 +460,7 @@ public class BeatServiceImpl implements BeatService {
     }
 
     private void makeDirectory(Beat beat, String pathname) {
-        String path = uploadPath == null ? "" : uploadPath;
+        String path = beatstoreProperties.getUploadPath() == null ? "" : beatstoreProperties.getUploadPath();
         List<File> files = List.of(
                 new File(path),
                 new File(path + PREFIX_USER + beat.getUser().getId()),

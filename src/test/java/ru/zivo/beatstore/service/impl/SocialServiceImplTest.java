@@ -17,32 +17,31 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class SocialServiceImplTest {
 
+    private static final String USER_ID = "1";
+    private static final long SOCIAL_ID = 1L;
+
     @Mock
     private SocialRepository socialRepository;
-
     @Mock
     private UserService userService;
-
     @InjectMocks
     private SocialServiceImpl socialService;
 
     @Test
     void Update_SocialUpdated_UserAndIdUpdated() {
-        long id = 1L;
-
         Social social = new Social();
-        social.setId(id);
+        social.setId(SOCIAL_ID);
 
         User user = User.builder().social(social).build();
 
-        when(userService.findById("1")).thenReturn(user);
+        when(userService.findById(USER_ID)).thenReturn(user);
 
         Social updatedSocial = new Social();
 
-        socialService.update("1", updatedSocial);
+        socialService.update(USER_ID, updatedSocial);
 
         assertEquals(user, updatedSocial.getUser());
-        assertEquals(id, updatedSocial.getId());
+        assertEquals(SOCIAL_ID, updatedSocial.getId());
     }
 
     @Test
@@ -52,6 +51,6 @@ class SocialServiceImplTest {
 
     @Test
     void Update_SocialIsNull_ThrowException() {
-        assertThrows(IllegalArgumentException.class, () -> socialService.update("1", null));
+        assertThrows(IllegalArgumentException.class, () -> socialService.update(USER_ID, null));
     }
 }

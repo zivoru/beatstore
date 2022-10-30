@@ -1,9 +1,9 @@
 package ru.zivo.beatstore.web.controller;
 
 import io.restassured.http.ContentType;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import ru.zivo.beatstore.model.Beat;
@@ -24,16 +24,12 @@ import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
+@RequiredArgsConstructor
 class BeatControllerTest extends AbstractIntegrationTest {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private BeatRepository beatRepository;
-
-    @Autowired
-    private CartRepository cartRepository;
+    private final UserRepository userRepository;
+    private final BeatRepository beatRepository;
+    private final CartRepository cartRepository;
 
     private User user = User.builder()
             .id("1")
@@ -55,7 +51,7 @@ class BeatControllerTest extends AbstractIntegrationTest {
             .comments(new ArrayList<>())
             .build();
 
-    private final DefaultOAuth2User principal = new DefaultOAuth2User(new ArrayList<>(), Map.of("sub", "1"), "sub");
+    private static final DefaultOAuth2User PRINCIPAL = new DefaultOAuth2User(new ArrayList<>(), Map.of("sub", "1"), "sub");
 
     @BeforeEach
     void saveUser() {
@@ -77,7 +73,7 @@ class BeatControllerTest extends AbstractIntegrationTest {
     @Test
     void findDtoById() {
         given()
-                .auth().principal(principal)
+                .auth().principal(PRINCIPAL)
                 .contentType(ContentType.JSON)
                 .get("/api/v1/beats/dto/" + beat.getId())
                 .then()
@@ -92,7 +88,7 @@ class BeatControllerTest extends AbstractIntegrationTest {
                 BeatStatus.PUBLISHED, null, null, user, null, null, null);
 
         Long id = given()
-                .auth().principal(principal)
+                .auth().principal(PRINCIPAL)
                 .body(beatDto)
                 .contentType(ContentType.JSON)
                 .post("/api/v1/beats")
@@ -116,7 +112,7 @@ class BeatControllerTest extends AbstractIntegrationTest {
                 BeatStatus.PUBLISHED, null, null, user, null, null, null);
 
         given()
-                .auth().principal(principal)
+                .auth().principal(PRINCIPAL)
                 .body(beatDto)
                 .contentType(ContentType.JSON)
                 .put("/api/v1/beats/" + beat.getId())
@@ -137,7 +133,7 @@ class BeatControllerTest extends AbstractIntegrationTest {
         assertThat(beatRepository.findById(beat.getId()).get().getStatus()).isEqualTo(BeatStatus.DRAFT);
 
         given()
-                .auth().principal(principal)
+                .auth().principal(PRINCIPAL)
                 .contentType(ContentType.JSON)
                 .put("/api/v1/beats/publication/" + beat.getId())
                 .then()
@@ -152,7 +148,7 @@ class BeatControllerTest extends AbstractIntegrationTest {
         assertThat(beatRepository.findById(beat.getId())).isNotEmpty();
 
         given()
-                .auth().principal(principal)
+                .auth().principal(PRINCIPAL)
                 .contentType(ContentType.JSON)
                 .delete("/api/v1/beats/" + beat.getId())
                 .then()
@@ -165,7 +161,7 @@ class BeatControllerTest extends AbstractIntegrationTest {
     @Test
     void createTag() {
         given()
-                .auth().principal(principal)
+                .auth().principal(PRINCIPAL)
                 .param("nameTag1", "drill")
                 .param("nameTag2", "808")
                 .param("nameTag3", "free")
@@ -221,7 +217,7 @@ class BeatControllerTest extends AbstractIntegrationTest {
     @Test
     void addToFavorite() {
         given()
-                .auth().principal(principal)
+                .auth().principal(PRINCIPAL)
                 .contentType(ContentType.JSON)
                 .post("/api/v1/beats/addToFavorite/" + beat.getId())
                 .then()
@@ -238,7 +234,7 @@ class BeatControllerTest extends AbstractIntegrationTest {
         userRepository.save(user);
 
         given()
-                .auth().principal(principal)
+                .auth().principal(PRINCIPAL)
                 .contentType(ContentType.JSON)
                 .post("/api/v1/beats/removeFromFavorite/" + beat.getId())
                 .then()
@@ -252,7 +248,7 @@ class BeatControllerTest extends AbstractIntegrationTest {
     @Test
     void addToCart() {
         given()
-                .auth().principal(principal)
+                .auth().principal(PRINCIPAL)
                 .contentType(ContentType.JSON)
                 .post("/api/v1/beats/beat/" + beat.getId() + "/license/" + "WAV")
                 .then()
@@ -268,7 +264,7 @@ class BeatControllerTest extends AbstractIntegrationTest {
         cartRepository.save(cart);
 
         given()
-                .auth().principal(principal)
+                .auth().principal(PRINCIPAL)
                 .contentType(ContentType.JSON)
                 .post("/api/v1/beats/removeFromCart/beat/" + beat.getId())
                 .then()
@@ -281,7 +277,7 @@ class BeatControllerTest extends AbstractIntegrationTest {
     @Test
     void addToHistory() {
         given()
-                .auth().principal(principal)
+                .auth().principal(PRINCIPAL)
                 .contentType(ContentType.JSON)
                 .post("/api/v1/beats/beat/" + beat.getId())
                 .then()

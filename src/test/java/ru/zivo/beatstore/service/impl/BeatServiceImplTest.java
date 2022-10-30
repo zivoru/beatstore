@@ -28,27 +28,23 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class BeatServiceImplTest {
 
+    private static final long BEAT_ID = 1L;
+    private static final String USER_ID = "1";
+
     @Mock
     private BeatstoreProperties beatstoreProperties;
-
     @Mock
     private BeatRepository beatRepository;
-
     @Mock
     private UserRepository userRepository;
-
     @Mock
     private AudioRepository audioRepository;
-
     @Mock
     private CartRepository cartRepository;
-
     @Mock
     private LicenseRepository licenseRepository;
-
     @Mock
     private UserService userService;
-
     @InjectMocks
     private BeatServiceImpl beatService;
 
@@ -58,16 +54,16 @@ class BeatServiceImplTest {
         @Test
         void FindById_BeatIsFound_ReturnBeat() {
             Beat beat = new Beat();
-            beat.setId(1L);
+            beat.setId(BEAT_ID);
 
-            when(beatRepository.findById(1L)).thenReturn(Optional.of(beat));
+            when(beatRepository.findById(BEAT_ID)).thenReturn(Optional.of(beat));
 
-            assertThat(beatService.findById(1L)).isEqualTo(beat);
+            assertThat(beatService.findById(BEAT_ID)).isEqualTo(beat);
         }
 
         @Test
         void FindById_BeatIsNotFound_ThrowException() {
-            assertThrows(NotFoundException.class, () -> beatService.findById(-1L));
+            assertThrows(NotFoundException.class, () -> beatService.findById(BEAT_ID));
         }
 
         @Test
@@ -79,15 +75,15 @@ class BeatServiceImplTest {
     @Test
     void findDtoById() {
         Beat beat = new Beat();
-        beat.setId(1L);
+        beat.setId(BEAT_ID);
 
         User user = new User();
         user.getCart().add(new Cart(Licensing.EXCLUSIVE, user, beat));
 
-        when(beatRepository.findById(1L)).thenReturn(Optional.of(beat));
-        when(userService.findById("1")).thenReturn(user);
+        when(beatRepository.findById(BEAT_ID)).thenReturn(Optional.of(beat));
+        when(userService.findById(USER_ID)).thenReturn(user);
 
-        assertThat(beatService.findDtoById("1", 1L).getBeat()).isEqualTo(beat);
+        assertThat(beatService.findDtoById(USER_ID, BEAT_ID).getBeat()).isEqualTo(beat);
     }
 
     @Nested
@@ -95,7 +91,7 @@ class BeatServiceImplTest {
 
         @Test
         void Create_BeatIsNull_ThrowException() {
-            assertThrows(IllegalArgumentException.class, () -> beatService.create("1", null));
+            assertThrows(IllegalArgumentException.class, () -> beatService.create(USER_ID, null));
         }
 
         @Test
@@ -103,10 +99,10 @@ class BeatServiceImplTest {
             Beat beat = new Beat();
             User user = new User();
 
-            when(userService.findById("1")).thenReturn(user);
+            when(userService.findById(USER_ID)).thenReturn(user);
             when(beatRepository.save(beat)).thenReturn(beat);
 
-            Beat savedBeat = beatService.create("1", beat);
+            Beat savedBeat = beatService.create(USER_ID, beat);
 
             assertThat(savedBeat.getUser()).isEqualTo(user);
         }
@@ -117,30 +113,30 @@ class BeatServiceImplTest {
 
         @Test
         void Update_BeatIsNull_ThrowException() {
-            assertThrows(IllegalArgumentException.class, () -> beatService.update("1", 1L, null));
+            assertThrows(IllegalArgumentException.class, () -> beatService.update(USER_ID, BEAT_ID, null));
         }
 
         @Test
         void Update_UsersNotEqual_ThrowException() {
             Beat beat = new Beat();
-            beat.setUser(User.builder().id("1").build());
+            beat.setUser(User.builder().id(USER_ID).build());
 
-            when(beatRepository.findById(1L)).thenReturn(Optional.of(beat));
+            when(beatRepository.findById(BEAT_ID)).thenReturn(Optional.of(beat));
 
-            assertThrows(NoMatchException.class, () -> beatService.publication("2", 1L));
+            assertThrows(NoMatchException.class, () -> beatService.publication("2", BEAT_ID));
         }
 
         @Test
         void Update_BeatIsNotNull_BeatUpdated() {
             Beat beat = new Beat();
-            beat.setUser(User.builder().id("1").build());
+            beat.setUser(User.builder().id(USER_ID).build());
 
-            when(beatRepository.findById(1L)).thenReturn(Optional.of(beat));
+            when(beatRepository.findById(BEAT_ID)).thenReturn(Optional.of(beat));
 
             Beat newBeat = new Beat();
             newBeat.setTitle("title");
 
-            beatService.update("1", 1L, newBeat);
+            beatService.update(USER_ID, BEAT_ID, newBeat);
 
             verify(beatRepository, times(1)).save(beat);
             assertThat(beat.getTitle()).isEqualTo(newBeat.getTitle());
@@ -153,23 +149,23 @@ class BeatServiceImplTest {
         @Test
         void Publication_UsersEqual_BeatPublished() {
             Beat beat = new Beat();
-            beat.setUser(User.builder().id("1").build());
+            beat.setUser(User.builder().id(USER_ID).build());
             beat.setStatus(BeatStatus.DRAFT);
 
-            when(beatRepository.findById(1L)).thenReturn(Optional.of(beat));
+            when(beatRepository.findById(BEAT_ID)).thenReturn(Optional.of(beat));
 
-            beatService.publication("1", 1L);
+            beatService.publication(USER_ID, BEAT_ID);
             assertThat(beat.getStatus()).isEqualTo(BeatStatus.PUBLISHED);
         }
 
         @Test
         void Publication_UsersNotEqual_ThrowException() {
             Beat beat = new Beat();
-            beat.setUser(User.builder().id("1").build());
+            beat.setUser(User.builder().id(USER_ID).build());
 
-            when(beatRepository.findById(1L)).thenReturn(Optional.of(beat));
+            when(beatRepository.findById(BEAT_ID)).thenReturn(Optional.of(beat));
 
-            assertThrows(NoMatchException.class, () -> beatService.publication("2", 1L));
+            assertThrows(NoMatchException.class, () -> beatService.publication("2", BEAT_ID));
         }
     }
 
@@ -179,21 +175,21 @@ class BeatServiceImplTest {
         @Test
         void Delete_UsersNotEqual_ThrowException() {
             Beat beat = new Beat();
-            beat.setUser(User.builder().id("1").build());
+            beat.setUser(User.builder().id(USER_ID).build());
 
-            when(beatRepository.findById(1L)).thenReturn(Optional.of(beat));
+            when(beatRepository.findById(BEAT_ID)).thenReturn(Optional.of(beat));
 
-            assertThrows(NoMatchException.class, () -> beatService.delete("2", 1L));
+            assertThrows(NoMatchException.class, () -> beatService.delete("2", BEAT_ID));
         }
 
         @Test
         void Delete_UsersEqual_BeatDeleted() {
             Beat beat = new Beat();
-            beat.setUser(User.builder().id("1").build());
+            beat.setUser(User.builder().id(USER_ID).build());
 
-            when(beatRepository.findById(1L)).thenReturn(Optional.of(beat));
+            when(beatRepository.findById(BEAT_ID)).thenReturn(Optional.of(beat));
 
-            beatService.delete("1", 1L);
+            beatService.delete(USER_ID, BEAT_ID);
 
             verify(beatRepository, times(1)).delete(beat);
         }
@@ -202,11 +198,11 @@ class BeatServiceImplTest {
     @Test
     void uploadImage() throws IOException {
         Beat beat = new Beat();
-        beat.setUser(User.builder().id("1").build());
+        beat.setUser(User.builder().id(USER_ID).build());
 
-        when(beatRepository.findById(1L)).thenReturn(Optional.of(beat));
+        when(beatRepository.findById(BEAT_ID)).thenReturn(Optional.of(beat));
 
-        beatService.uploadImage(1L, new MockMultipartFile("name", new byte[0]));
+        beatService.uploadImage(BEAT_ID, new MockMultipartFile("name", new byte[0]));
 
         assertThat(beat.getImageName()).isNotNull();
     }
@@ -214,13 +210,13 @@ class BeatServiceImplTest {
     @Test
     void uploadAudio() throws IOException {
         Beat beat = new Beat();
-        beat.setUser(User.builder().id("1").build());
+        beat.setUser(User.builder().id(USER_ID).build());
         Audio audio = new Audio();
         beat.setAudio(audio);
 
-        when(beatRepository.findById(1L)).thenReturn(Optional.of(beat));
+        when(beatRepository.findById(BEAT_ID)).thenReturn(Optional.of(beat));
 
-        beatService.uploadAudio(1L,
+        beatService.uploadAudio(BEAT_ID,
                 new MockMultipartFile("mp3", "mp3", "audio/mpeg", new byte[0]),
                 new MockMultipartFile("wav", "wav", "audio/wav", new byte[0]),
                 new MockMultipartFile("zip", "zip", "application/zip", new byte[0]));
@@ -238,9 +234,9 @@ class BeatServiceImplTest {
         Beat beat = new Beat();
         List<Tag> list = new ArrayList<>();
 
-        when(beatRepository.findById(1L)).thenReturn(Optional.of(beat));
+        when(beatRepository.findById(BEAT_ID)).thenReturn(Optional.of(beat));
 
-        beatService.addTags(1L, list);
+        beatService.addTags(BEAT_ID, list);
 
         assertThat(beat.getTags()).isEqualTo(list);
     }
@@ -253,9 +249,9 @@ class BeatServiceImplTest {
         beat.setLicense(license);
         License newLicense = new License();
 
-        when(beatRepository.findById(1L)).thenReturn(Optional.of(beat));
+        when(beatRepository.findById(BEAT_ID)).thenReturn(Optional.of(beat));
 
-        beatService.addLicense(1L, newLicense);
+        beatService.addLicense(BEAT_ID, newLicense);
 
         assertThat(newLicense.getBeat()).isEqualTo(beat);
         assertThat(newLicense.getId()).isEqualTo(license.getId());
@@ -265,9 +261,9 @@ class BeatServiceImplTest {
     void addPlay() {
         Beat beat = new Beat();
 
-        when(beatRepository.findById(1L)).thenReturn(Optional.of(beat));
+        when(beatRepository.findById(BEAT_ID)).thenReturn(Optional.of(beat));
 
-        beatService.addPlay(1L);
+        beatService.addPlay(BEAT_ID);
 
         assertThat(beat.getPlays()).isEqualTo(1);
     }
@@ -277,10 +273,10 @@ class BeatServiceImplTest {
         Beat beat = new Beat();
         User user = new User();
 
-        when(userService.findById("1")).thenReturn(user);
-        when(beatRepository.findById(1L)).thenReturn(Optional.of(beat));
+        when(userService.findById(USER_ID)).thenReturn(user);
+        when(beatRepository.findById(BEAT_ID)).thenReturn(Optional.of(beat));
 
-        beatService.addToFavorite(1L, "1");
+        beatService.addToFavorite(BEAT_ID, USER_ID);
 
         assertThat(user.getFavoriteBeats()).contains(beat);
     }
@@ -291,10 +287,10 @@ class BeatServiceImplTest {
         User user = new User();
         user.getFavoriteBeats().add(beat);
 
-        when(userService.findById("1")).thenReturn(user);
-        when(beatRepository.findById(1L)).thenReturn(Optional.of(beat));
+        when(userService.findById(USER_ID)).thenReturn(user);
+        when(beatRepository.findById(BEAT_ID)).thenReturn(Optional.of(beat));
 
-        beatService.removeFromFavorite(1L, "1");
+        beatService.removeFromFavorite(BEAT_ID, USER_ID);
 
         assertThat(user.getFavoriteBeats()).doesNotContain(beat);
     }
@@ -304,20 +300,20 @@ class BeatServiceImplTest {
 
         @Test
         void AddToCart_NoEnumConstant_ThrowException() {
-            when(userService.findById("1")).thenReturn(new User());
-            when(beatRepository.findById(1L)).thenReturn(Optional.of(new Beat()));
+            when(userService.findById(USER_ID)).thenReturn(new User());
+            when(beatRepository.findById(BEAT_ID)).thenReturn(Optional.of(new Beat()));
 
             assertThrows(IllegalArgumentException.class,
-                    () -> beatService.addToCart("1", 1L, ""));
+                    () -> beatService.addToCart(USER_ID, BEAT_ID, ""));
         }
 
         @Test
         void AddToCart_ExistsByBeatAndUserAndLicensing_ReturnNull() {
-            when(userService.findById("1")).thenReturn(new User());
-            when(beatRepository.findById(1L)).thenReturn(Optional.of(new Beat()));
+            when(userService.findById(USER_ID)).thenReturn(new User());
+            when(beatRepository.findById(BEAT_ID)).thenReturn(Optional.of(new Beat()));
             when(cartRepository.existsByBeatAndUserAndLicensing(any(), any(), any())).thenReturn(true);
 
-            Cart cart = beatService.addToCart("1", 1L, "UNLIMITED");
+            Cart cart = beatService.addToCart(USER_ID, BEAT_ID, "UNLIMITED");
 
             assertThat(cart).isNull();
         }
@@ -327,13 +323,13 @@ class BeatServiceImplTest {
             Cart testCart = new Cart();
             User user = new User();
 
-            when(userService.findById("1")).thenReturn(user);
-            when(beatRepository.findById(1L)).thenReturn(Optional.of(new Beat()));
+            when(userService.findById(USER_ID)).thenReturn(user);
+            when(beatRepository.findById(BEAT_ID)).thenReturn(Optional.of(new Beat()));
             when(cartRepository.existsByBeatAndUserAndLicensing(any(), any(), any())).thenReturn(false);
             when(cartRepository.findByBeatAndUser(any(), any())).thenReturn(Optional.of(testCart));
             when(cartRepository.save(any())).thenReturn(testCart);
 
-            Cart cart = beatService.addToCart("1", 1L, "UNLIMITED");
+            Cart cart = beatService.addToCart(USER_ID, BEAT_ID, "UNLIMITED");
 
             assertThat(cart.getLicensing()).isEqualTo(Licensing.UNLIMITED);
             assertThat(user.getCart()).contains(cart);
@@ -347,11 +343,11 @@ class BeatServiceImplTest {
         Cart cart = new Cart(Licensing.EXCLUSIVE, user, beat);
         user.getCart().add(cart);
 
-        when(userService.findById("1")).thenReturn(user);
-        when(beatRepository.findById(1L)).thenReturn(Optional.of(beat));
+        when(userService.findById(USER_ID)).thenReturn(user);
+        when(beatRepository.findById(BEAT_ID)).thenReturn(Optional.of(beat));
         when(cartRepository.findByBeatAndUser(beat, user)).thenReturn(Optional.of(cart));
 
-        beatService.removeFromCart("1", 1L);
+        beatService.removeFromCart(USER_ID, BEAT_ID);
 
         verify(cartRepository, times(1)).delete(cart);
     }
@@ -361,10 +357,10 @@ class BeatServiceImplTest {
         Beat beat = new Beat();
         User user = new User();
 
-        when(userService.findById("1")).thenReturn(user);
-        when(beatRepository.findById(1L)).thenReturn(Optional.of(beat));
+        when(userService.findById(USER_ID)).thenReturn(user);
+        when(beatRepository.findById(BEAT_ID)).thenReturn(Optional.of(beat));
 
-        beatService.addToHistory("1", 1L);
+        beatService.addToHistory(USER_ID, BEAT_ID);
 
         assertThat(user.getHistory()).contains(beat);
     }

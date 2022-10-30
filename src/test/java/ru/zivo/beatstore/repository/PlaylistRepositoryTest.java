@@ -1,10 +1,10 @@
 package ru.zivo.beatstore.repository;
 
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import ru.zivo.beatstore.TestWithContext;
+import ru.zivo.beatstore.annotation.IT;
 import ru.zivo.beatstore.model.Playlist;
 import ru.zivo.beatstore.model.User;
 import ru.zivo.beatstore.model.enums.Status;
@@ -15,14 +15,12 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@TestWithContext
+@IT
+@RequiredArgsConstructor
 class PlaylistRepositoryTest {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PlaylistRepository playlistRepository;
+    private final UserRepository userRepository;
+    private final PlaylistRepository playlistRepository;
 
     private User user;
 

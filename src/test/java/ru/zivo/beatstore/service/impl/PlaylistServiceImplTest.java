@@ -37,27 +37,24 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class PlaylistServiceImplTest {
 
+    private static final long PLAYLIST_ID = 1L;
+    private static final long BEAT_ID = 1L;
+    private static final String USER_ID = "1";
+
     @Mock
     private BeatstoreProperties beatstoreProperties;
-
     @Mock
     private PlaylistRepository playlistRepository;
-
     @Mock
     private UserRepository userRepository;
-
     @Mock
     private BeatRepository beatRepository;
-
     @Mock
     private PlaylistMapper playlistMapper;
-
     @Mock
     private UserService userService;
-
     @Mock
     private BeatService beatService;
-
     @InjectMocks
     private PlaylistServiceImpl playlistService;
 
@@ -67,16 +64,16 @@ class PlaylistServiceImplTest {
         @Test
         void FindById_PlaylistIsFound_ReturnPlaylist() {
             Playlist playlist = new Playlist();
-            playlist.setId(1L);
+            playlist.setId(PLAYLIST_ID);
 
-            when(playlistRepository.findById(1L)).thenReturn(Optional.of(playlist));
+            when(playlistRepository.findById(PLAYLIST_ID)).thenReturn(Optional.of(playlist));
 
-            assertThat(playlistService.findById(1L)).isEqualTo(playlist);
+            assertThat(playlistService.findById(PLAYLIST_ID)).isEqualTo(playlist);
         }
 
         @Test
         void FindById_PlaylistIsNotFound_ThrowException() {
-            assertThrows(NotFoundException.class, () -> playlistService.findById(-1L));
+            assertThrows(NotFoundException.class, () -> playlistService.findById(PLAYLIST_ID));
         }
 
         @Test
@@ -95,19 +92,19 @@ class PlaylistServiceImplTest {
         playlist.setBeats(new ArrayList<>(List.of(beat)));
         PlaylistDto playlistDto = new PlaylistDto();
 
-        when(playlistRepository.findById(1L)).thenReturn(Optional.of(playlist));
+        when(playlistRepository.findById(PLAYLIST_ID)).thenReturn(Optional.of(playlist));
         when(playlistMapper.toDto(playlist)).thenReturn(playlistDto);
-        when(userService.findById("1")).thenReturn(user);
+        when(userService.findById(USER_ID)).thenReturn(user);
 
-        assertThat(playlistService.findDtoById(1L, "1")).isEqualTo(playlistDto);
+        assertThat(playlistService.findDtoById(PLAYLIST_ID, USER_ID)).isEqualTo(playlistDto);
 
         playlist.getLikes().add(user);
         playlist.getBeats().add(beat);
-        assertThat(playlistService.findDtoById(1L, "1")).isEqualTo(playlistDto);
+        assertThat(playlistService.findDtoById(PLAYLIST_ID, USER_ID)).isEqualTo(playlistDto);
 
         playlist.getLikes().add(new User());
         playlist.getBeats().add(beat);
-        assertThat(playlistService.findDtoById(1L, "1")).isEqualTo(playlistDto);
+        assertThat(playlistService.findDtoById(PLAYLIST_ID, USER_ID)).isEqualTo(playlistDto);
     }
 
     @Nested
@@ -115,9 +112,9 @@ class PlaylistServiceImplTest {
 
         @Test
         void FindPageByUserId_NoPlaylistAdded_PlaylistsEmpty() {
-            when(userService.findById("1")).thenReturn(new User());
+            when(userService.findById(USER_ID)).thenReturn(new User());
 
-            assertThat(playlistService.findPageByUserId("1", Pageable.ofSize(1))).isEmpty();
+            assertThat(playlistService.findPageByUserId(USER_ID, Pageable.ofSize(1))).isEmpty();
         }
 
         @Test
@@ -135,9 +132,9 @@ class PlaylistServiceImplTest {
             when(playlistMapper.toDto(playlist2))
                     .thenReturn(PlaylistDto.builder().visibility(playlist2.getVisibility()).build());
 
-            when(userService.findById("1")).thenReturn(user);
+            when(userService.findById(USER_ID)).thenReturn(user);
 
-            assertThat(playlistService.findPageByUserId("1", Pageable.unpaged())).hasSize(2);
+            assertThat(playlistService.findPageByUserId(USER_ID, Pageable.unpaged())).hasSize(2);
         }
     }
 
@@ -148,18 +145,18 @@ class PlaylistServiceImplTest {
         void FindAllByUserId_NoPlaylistAdded_PlaylistsEmpty() {
             User user = User.builder().playlists(new ArrayList<>()).build();
 
-            when(userService.findById("1")).thenReturn(user);
+            when(userService.findById(USER_ID)).thenReturn(user);
 
-            assertThat(playlistService.findAllByUserId("1")).isEmpty();
+            assertThat(playlistService.findAllByUserId(USER_ID)).isEmpty();
         }
 
         @Test
         void FindAllByUserId_PlaylistAdded_PlaylistsSize() {
             User user = User.builder().playlists(new ArrayList<>(List.of(new Playlist(), new Playlist()))).build();
 
-            when(userService.findById("1")).thenReturn(user);
+            when(userService.findById(USER_ID)).thenReturn(user);
 
-            assertThat(playlistService.findAllByUserId("1")).hasSize(2);
+            assertThat(playlistService.findAllByUserId(USER_ID)).hasSize(2);
         }
     }
 
@@ -168,7 +165,7 @@ class PlaylistServiceImplTest {
 
         @Test
         void Create_PlaylistIsNull_ThrowException() {
-            assertThrows(IllegalArgumentException.class, () -> playlistService.create("1", null));
+            assertThrows(IllegalArgumentException.class, () -> playlistService.create(USER_ID, null));
         }
 
         @Test
@@ -176,9 +173,9 @@ class PlaylistServiceImplTest {
             User user = new User();
             Playlist playlist = new Playlist();
 
-            when(userService.findById("1")).thenReturn(user);
+            when(userService.findById(USER_ID)).thenReturn(user);
 
-            playlistService.create("1", playlist);
+            playlistService.create(USER_ID, playlist);
 
             assertThat(playlist.getUser()).isEqualTo(user);
 
@@ -191,17 +188,17 @@ class PlaylistServiceImplTest {
 
         @Test
         void Update_PlaylistIsNull_ThrowException() {
-            assertThrows(IllegalArgumentException.class, () -> playlistService.update("1", 1L, null));
+            assertThrows(IllegalArgumentException.class, () -> playlistService.update(USER_ID, PLAYLIST_ID, null));
         }
 
         @Test
         void Update_UsersNotEqual_PlaylistNotSaved() {
             Playlist playlist = new Playlist();
-            playlist.setUser(User.builder().id("1").build());
+            playlist.setUser(User.builder().id(USER_ID).build());
 
-            when(playlistRepository.findById(1L)).thenReturn(Optional.of(playlist));
+            when(playlistRepository.findById(PLAYLIST_ID)).thenReturn(Optional.of(playlist));
 
-            playlistService.update("2", 1L, new Playlist());
+            playlistService.update("2", PLAYLIST_ID, new Playlist());
 
             verify(playlistRepository, never()).save(playlist);
         }
@@ -209,15 +206,15 @@ class PlaylistServiceImplTest {
         @Test
         void Update_UsersEqual_PlaylistSaved() {
             Playlist playlist = new Playlist();
-            playlist.setUser(User.builder().id("1").build());
+            playlist.setUser(User.builder().id(USER_ID).build());
             playlist.setName("name");
             playlist.setDescription("description");
             playlist.setVisibility(true);
 
-            when(playlistRepository.findById(1L)).thenReturn(Optional.of(playlist));
+            when(playlistRepository.findById(PLAYLIST_ID)).thenReturn(Optional.of(playlist));
 
             Playlist updatedPlaylist = new Playlist();
-            playlistService.update("1", 1L, updatedPlaylist);
+            playlistService.update(USER_ID, PLAYLIST_ID, updatedPlaylist);
 
             verify(playlistRepository, times(1)).save(playlist);
 
@@ -233,11 +230,11 @@ class PlaylistServiceImplTest {
         @Test
         void Delete_UsersNotEqual_PlaylistNotDeleted() {
             Playlist playlist = new Playlist();
-            playlist.setUser(User.builder().id("1").build());
+            playlist.setUser(User.builder().id(USER_ID).build());
 
-            when(playlistRepository.findById(1L)).thenReturn(Optional.of(playlist));
+            when(playlistRepository.findById(PLAYLIST_ID)).thenReturn(Optional.of(playlist));
 
-            playlistService.delete("2", 1L);
+            playlistService.delete("2", PLAYLIST_ID);
 
             verify(playlistRepository, never()).delete(playlist);
         }
@@ -245,11 +242,11 @@ class PlaylistServiceImplTest {
         @Test
         void Delete_UsersEqual_PlaylistDeleted() {
             Playlist playlist = new Playlist();
-            playlist.setUser(User.builder().id("1").build());
+            playlist.setUser(User.builder().id(USER_ID).build());
 
-            when(playlistRepository.findById(1L)).thenReturn(Optional.of(playlist));
+            when(playlistRepository.findById(PLAYLIST_ID)).thenReturn(Optional.of(playlist));
 
-            playlistService.delete("1", 1L);
+            playlistService.delete(USER_ID, PLAYLIST_ID);
 
             verify(playlistRepository, times(1)).delete(playlist);
         }
@@ -258,11 +255,11 @@ class PlaylistServiceImplTest {
     @Test
     void uploadImage() throws IOException {
         Playlist playlist = new Playlist();
-        playlist.setUser(User.builder().id("1").build());
+        playlist.setUser(User.builder().id(USER_ID).build());
 
-        when(playlistRepository.findById(1L)).thenReturn(Optional.of(playlist));
+        when(playlistRepository.findById(PLAYLIST_ID)).thenReturn(Optional.of(playlist));
 
-        playlistService.uploadImage(1L, new MockMultipartFile("file", new byte[0]));
+        playlistService.uploadImage(PLAYLIST_ID, new MockMultipartFile("file", new byte[0]));
 
         assertThat(playlist.getImageName()).isNotNull();
     }
@@ -273,11 +270,11 @@ class PlaylistServiceImplTest {
         @Test
         void AddBeat_UsersNotEqual_BeatNotAdded() {
             Playlist playlist = new Playlist();
-            playlist.setUser(User.builder().id("1").build());
+            playlist.setUser(User.builder().id(USER_ID).build());
 
-            when(playlistRepository.findById(1L)).thenReturn(Optional.of(playlist));
+            when(playlistRepository.findById(PLAYLIST_ID)).thenReturn(Optional.of(playlist));
 
-            playlistService.addBeat("2", 1L, 1L);
+            playlistService.addBeat("2", PLAYLIST_ID, BEAT_ID);
 
             assertThat(playlist.getBeats()).isEmpty();
             verify(playlistRepository, never()).save(playlist);
@@ -286,12 +283,12 @@ class PlaylistServiceImplTest {
         @Test
         void AddBeat_UsersEqual_BeatAdded() {
             Playlist playlist = new Playlist();
-            playlist.setUser(User.builder().id("1").build());
+            playlist.setUser(User.builder().id(USER_ID).build());
 
-            when(playlistRepository.findById(1L)).thenReturn(Optional.of(playlist));
-            when(beatService.findById(1L)).thenReturn(new Beat());
+            when(playlistRepository.findById(PLAYLIST_ID)).thenReturn(Optional.of(playlist));
+            when(beatService.findById(BEAT_ID)).thenReturn(new Beat());
 
-            playlistService.addBeat("1", 1L, 1L);
+            playlistService.addBeat(USER_ID, PLAYLIST_ID, BEAT_ID);
 
             assertThat(playlist.getBeats()).hasSize(1);
             verify(playlistRepository, times(1)).save(playlist);
@@ -304,12 +301,12 @@ class PlaylistServiceImplTest {
         @Test
         void RemoveBeat_UsersNotEqual_BeatNotAdded() {
             Playlist playlist = new Playlist();
-            playlist.setUser(User.builder().id("1").build());
+            playlist.setUser(User.builder().id(USER_ID).build());
             playlist.getBeats().add(new Beat());
 
-            when(playlistRepository.findById(1L)).thenReturn(Optional.of(playlist));
+            when(playlistRepository.findById(PLAYLIST_ID)).thenReturn(Optional.of(playlist));
 
-            playlistService.removeBeat("2", 1L, 1L);
+            playlistService.removeBeat("2", PLAYLIST_ID, BEAT_ID);
 
             assertThat(playlist.getBeats()).hasSize(1);
             verify(playlistRepository, never()).save(playlist);
@@ -318,14 +315,14 @@ class PlaylistServiceImplTest {
         @Test
         void RemoveBeat_UsersEqual_BeatAdded() {
             Playlist playlist = new Playlist();
-            playlist.setUser(User.builder().id("1").build());
+            playlist.setUser(User.builder().id(USER_ID).build());
             Beat beat = new Beat();
             playlist.getBeats().add(beat);
 
-            when(playlistRepository.findById(1L)).thenReturn(Optional.of(playlist));
-            when(beatService.findById(1L)).thenReturn(beat);
+            when(playlistRepository.findById(PLAYLIST_ID)).thenReturn(Optional.of(playlist));
+            when(beatService.findById(BEAT_ID)).thenReturn(beat);
 
-            playlistService.removeBeat("1", 1L, 1L);
+            playlistService.removeBeat(USER_ID, PLAYLIST_ID, BEAT_ID);
 
             assertThat(playlist.getBeats()).isEmpty();
             verify(playlistRepository, times(1)).save(playlist);
@@ -337,10 +334,10 @@ class PlaylistServiceImplTest {
         User user = new User();
         Playlist playlist = new Playlist();
 
-        when(userService.findById("1")).thenReturn(user);
-        when(playlistRepository.findById(1L)).thenReturn(Optional.of(playlist));
+        when(userService.findById(USER_ID)).thenReturn(user);
+        when(playlistRepository.findById(PLAYLIST_ID)).thenReturn(Optional.of(playlist));
 
-        playlistService.addFavorite(1L, "1");
+        playlistService.addFavorite(PLAYLIST_ID, USER_ID);
 
         assertThat(user.getFavoritePlaylists()).contains(playlist);
     }
@@ -351,10 +348,10 @@ class PlaylistServiceImplTest {
         Playlist playlist = new Playlist();
         user.getFavoritePlaylists().add(playlist);
 
-        when(userService.findById("1")).thenReturn(user);
-        when(playlistRepository.findById(1L)).thenReturn(Optional.of(playlist));
+        when(userService.findById(USER_ID)).thenReturn(user);
+        when(playlistRepository.findById(PLAYLIST_ID)).thenReturn(Optional.of(playlist));
 
-        playlistService.removeFavorite(1L, "1");
+        playlistService.removeFavorite(PLAYLIST_ID, USER_ID);
 
         assertThat(user.getFavoritePlaylists()).isEmpty();
     }

@@ -1,11 +1,11 @@
 package ru.zivo.beatstore.repository;
 
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import ru.zivo.beatstore.TestWithContext;
+import ru.zivo.beatstore.annotation.IT;
 import ru.zivo.beatstore.model.User;
 import ru.zivo.beatstore.model.enums.Status;
 
@@ -13,11 +13,11 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@TestWithContext
+@IT
+@RequiredArgsConstructor
 class UserRepositoryTest {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Test
     void findByUsername() {

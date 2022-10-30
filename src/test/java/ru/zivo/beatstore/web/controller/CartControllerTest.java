@@ -1,9 +1,9 @@
 package ru.zivo.beatstore.web.controller;
 
 import io.restassured.http.ContentType;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import ru.zivo.beatstore.model.Beat;
@@ -23,16 +23,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 
+@RequiredArgsConstructor
 class CartControllerTest extends AbstractIntegrationTest {
 
-    @Autowired
-    private UserRepository userRepository;
+    public static final DefaultOAuth2User PRINCIPAL = new DefaultOAuth2User(new ArrayList<>(), Map.of("sub", "1"), "sub");
 
-    @Autowired
-    private BeatRepository beatRepository;
-
-    @Autowired
-    private CartRepository cartRepository;
+    private final UserRepository userRepository;
+    private final BeatRepository beatRepository;
+    private final CartRepository cartRepository;
 
     private User user = User.builder()
             .id("1")
@@ -54,18 +52,19 @@ class CartControllerTest extends AbstractIntegrationTest {
             .comments(new ArrayList<>())
             .build();
 
+    Cart cart;
+
     @BeforeEach
     void saveUserAndBeat() {
         user = userRepository.save(user);
         beat = beatRepository.save(beat);
+        cart = cartRepository.save(new Cart(Licensing.WAV, user, beat));
     }
 
     @Test
     void findCartByUserId() {
-        DefaultOAuth2User principal = new DefaultOAuth2User(new ArrayList<>(), Map.of("sub", "1"), "sub");
-
         given()
-                .auth().principal(principal)
+                .auth().principal(PRINCIPAL)
                 .contentType(ContentType.JSON)
                 .get("/api/v1/carts/")
                 .then()
@@ -73,7 +72,6 @@ class CartControllerTest extends AbstractIntegrationTest {
                 .statusCode(HttpStatus.OK.value())
                 .body("$", empty());
 
-        Cart cart = cartRepository.save(new Cart(Licensing.WAV, user, beat));
         user.getCart().add(cart);
         userRepository.save(user);
 
@@ -81,7 +79,7 @@ class CartControllerTest extends AbstractIntegrationTest {
         beatRepository.save(beat);
 
         given()
-                .auth().principal(principal)
+                .auth().principal(PRINCIPAL)
                 .contentType(ContentType.JSON)
                 .get("/api/v1/carts/")
                 .then()
@@ -92,12 +90,8 @@ class CartControllerTest extends AbstractIntegrationTest {
 
     @Test
     void delete() {
-        DefaultOAuth2User principal = new DefaultOAuth2User(new ArrayList<>(), Map.of("sub", "1"), "sub");
-
-        Cart cart = cartRepository.save(new Cart(Licensing.WAV, user, beat));
-
         given()
-                .auth().principal(principal)
+                .auth().principal(PRINCIPAL)
                 .contentType(ContentType.JSON)
                 .delete("/api/v1/carts/" + beat.getId())
                 .then()
@@ -110,12 +104,8 @@ class CartControllerTest extends AbstractIntegrationTest {
 
     @Test
     void deleteByUserId() {
-        DefaultOAuth2User principal = new DefaultOAuth2User(new ArrayList<>(), Map.of("sub", "1"), "sub");
-
-        Cart cart = cartRepository.save(new Cart(Licensing.WAV, user, beat));
-
         given()
-                .auth().principal(principal)
+                .auth().principal(PRINCIPAL)
                 .contentType(ContentType.JSON)
                 .delete("/api/v1/carts/userId/" + user.getId())
                 .then()

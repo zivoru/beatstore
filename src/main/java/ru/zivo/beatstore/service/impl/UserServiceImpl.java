@@ -1,6 +1,6 @@
 package ru.zivo.beatstore.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,22 +23,13 @@ import java.nio.file.Path;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final String uploadPath;
-
+    private final BeatstoreProperties beatstoreProperties;
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
     private final SocialRepository socialRepository;
-
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository, ProfileRepository profileRepository,
-                           SocialRepository socialRepository, BeatstoreProperties beatstoreProperties) {
-        this.userRepository = userRepository;
-        this.profileRepository = profileRepository;
-        this.socialRepository = socialRepository;
-        this.uploadPath = beatstoreProperties.getUploadPath();
-    }
 
     @Override
     public User register(String id, String username, String email) {
@@ -130,15 +121,15 @@ public class UserServiceImpl implements UserService {
 
         if (!beats.isEmpty()) {
             for (Beat beat : beats) {
-                String pathname = uploadPath + s + "/beats" + "/beat-" + beat.getId();
+                String pathname = beatstoreProperties.getUploadPath() + s + "/beats" + "/beat-" + beat.getId();
 
                 DeleteFiles.delete(beat, pathname);
                 DeleteFiles.deleteFile(Path.of(pathname));
             }
         }
 
-        DeleteFiles.deleteFile(Path.of(uploadPath + s + "/beats"));
-        DeleteFiles.deleteFile(Path.of(uploadPath + s));
+        DeleteFiles.deleteFile(Path.of(beatstoreProperties.getUploadPath() + s + "/beats"));
+        DeleteFiles.deleteFile(Path.of(beatstoreProperties.getUploadPath() + s));
 
         userRepository.delete(user);
     }

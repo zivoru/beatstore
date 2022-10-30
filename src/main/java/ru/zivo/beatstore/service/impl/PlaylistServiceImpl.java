@@ -1,7 +1,7 @@
 package ru.zivo.beatstore.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -30,28 +30,17 @@ import java.util.*;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class PlaylistServiceImpl implements PlaylistService {
+
     private static final String PREFIX_USER = "/user-";
 
-    private final String uploadPath;
-
+    private final BeatstoreProperties beatstoreProperties;
     private final PlaylistRepository playlistRepository;
     private final UserRepository userRepository;
     private final PlaylistMapper playlistMapper;
     private final UserService userService;
     private final BeatService beatService;
-
-    @Autowired
-    public PlaylistServiceImpl(PlaylistRepository playlistRepository, UserRepository userRepository,
-                               BeatstoreProperties beatstoreProperties, PlaylistMapper playlistMapper,
-                               UserService userService, BeatService beatService) {
-        this.playlistRepository = playlistRepository;
-        this.userRepository = userRepository;
-        this.uploadPath = beatstoreProperties.getUploadPath();
-        this.playlistMapper = playlistMapper;
-        this.userService = userService;
-        this.beatService = beatService;
-    }
 
     @Override
     public Playlist findById(Long id) {
@@ -124,7 +113,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 
         if (playlist.getUser().getId().equals(userId)) {
             if (playlist.getImageName() != null && !Objects.equals(playlist.getImageName(), "")) {
-                String pathname = uploadPath + PREFIX_USER + playlist.getUser().getId()
+                String pathname = beatstoreProperties.getUploadPath() + PREFIX_USER + playlist.getUser().getId()
                                   + "/playlists/playlist-" + playlist.getId();
 
                 DeleteFiles.deleteFile(Path.of(pathname, playlist.getImageName()));
@@ -137,7 +126,7 @@ public class PlaylistServiceImpl implements PlaylistService {
     @Override
     public void uploadImage(Long id, MultipartFile image) throws IOException {
         Playlist playlist = findById(id);
-        String path = uploadPath == null ? "" : uploadPath;
+        String path = beatstoreProperties.getUploadPath() == null ? "" : beatstoreProperties.getUploadPath();
         String pathname = path + PREFIX_USER + playlist.getUser().getId() + "/playlists/playlist-" + id;
         List<File> files = List.of(
                 new File(path),

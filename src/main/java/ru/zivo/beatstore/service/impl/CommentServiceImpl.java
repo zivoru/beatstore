@@ -1,6 +1,6 @@
 package ru.zivo.beatstore.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 import ru.zivo.beatstore.model.Comment;
@@ -12,20 +12,12 @@ import ru.zivo.beatstore.service.UserService;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
     private final BeatService beatService;
-
     private final CommentRepository commentRepository;
-
     private final UserService userService;
-
-    @Autowired
-    public CommentServiceImpl(BeatService beatService, CommentRepository commentRepository, UserService userService) {
-        this.beatService = beatService;
-        this.commentRepository = commentRepository;
-        this.userService = userService;
-    }
 
     @Override
     public Comment findById(Long id) {

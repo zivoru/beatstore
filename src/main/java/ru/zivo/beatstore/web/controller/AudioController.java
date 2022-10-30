@@ -1,7 +1,7 @@
 package ru.zivo.beatstore.web.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,17 +18,11 @@ import java.nio.file.Files;
 @Tag(name = "AudioController", description = "API для работы с аудио")
 @RequestMapping("api/v1/audio")
 @RestController
+@RequiredArgsConstructor
 public class AudioController {
 
-    private final String uploadPath;
-
+    private final BeatstoreProperties beatstoreProperties;
     private final BeatService beatService;
-
-    @Autowired
-    public AudioController(BeatService beatService, BeatstoreProperties beatstoreProperties) {
-        this.beatService = beatService;
-        this.uploadPath = beatstoreProperties.getUploadPath();
-    }
 
     @GetMapping(value = "downloadMp3/{beatId}", produces = "audio/mpeg")
     public byte[] downloadMp3(@PathVariable("beatId") Long beatId, HttpServletResponse response) throws IOException {
@@ -45,21 +39,24 @@ public class AudioController {
         return returnBytes(beatId, response, "zip", "application/zip");
     }
 
-    public byte[] returnBytes(Long beatId, HttpServletResponse response, String type, String contentType) throws IOException {
+    public byte[] returnBytes(Long beatId, HttpServletResponse response,
+                              String type, String contentType) throws IOException {
         Beat beat = beatService.findById(beatId);
-        String path = "%s/user-%s/beats/beat-%d/".formatted(uploadPath, beat.getUser().getId(), beat.getId());
-        File file = switch (type) {
-            case "mp3" -> new File(path + beat.getAudio().getMp3Name());
-            case "wav" -> new File(path + beat.getAudio().getWavName());
-            case "zip" -> new File(path + beat.getAudio().getZipName());
+
+        String path = "%s/user-%s/beats/beat-%d/"
+                .formatted(beatstoreProperties.getUploadPath(), beat.getUser().getId(), beat.getId());
+
+        File file = new File(path + switch (type) {
+            case "mp3" -> beat.getAudio().getMp3Name();
+            case "wav" -> beat.getAudio().getWavName();
+            case "zip" -> beat.getAudio().getZipName();
             default -> null;
-        };
+        });
 
         response.setContentType(contentType);
         response.setStatus(HttpServletResponse.SC_OK);
         response.addHeader("Content-Disposition", "attachment");
 
-        assert file != null;
         return Files.readAllBytes(file.toPath());
     }
 }

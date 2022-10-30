@@ -19,28 +19,29 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class PurchasedServiceImplTest {
 
+    private static final String USER_ID = "1";
+
     @Mock
     private UserService userService;
-
     @InjectMocks
     private PurchasedServiceImpl purchasedService;
 
     @Test
     void GetPurchasedBeats_NoPurchasedAdded_PurchasedEmpty() {
-        when(userService.findById("1"))
+        when(userService.findById(USER_ID))
                 .thenReturn(User.builder().purchased(new ArrayList<>()).build());
 
-        List<Purchased> purchasedBeats = purchasedService.getPurchasedBeats("1");
+        List<Purchased> purchasedBeats = purchasedService.getPurchasedBeats(USER_ID);
 
         assertThat(purchasedBeats).isEmpty();
     }
 
     @Test
     void GetPurchasedBeats_PurchasedAdded_PurchasedSize() {
-        when(userService.findById("1"))
+        when(userService.findById(USER_ID))
                 .thenReturn(User.builder().purchased(List.of(new Purchased(), new Purchased())).build());
 
-        List<Purchased> purchasedBeats = purchasedService.getPurchasedBeats("1");
+        List<Purchased> purchasedBeats = purchasedService.getPurchasedBeats(USER_ID);
 
         assertThat(purchasedBeats).hasSize(2);
     }

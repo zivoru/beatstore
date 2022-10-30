@@ -1,7 +1,7 @@
 package ru.zivo.beatstore.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -13,14 +13,10 @@ import java.util.List;
 
 @RequestMapping("api/v1/tags")
 @RestController
+@RequiredArgsConstructor
 public class TagController {
 
     private final TagService tagService;
-
-    @Autowired
-    public TagController(TagService tagService) {
-        this.tagService = tagService;
-    }
 
     @Operation(summary = "Получение тега по id")
     @GetMapping("{id}")

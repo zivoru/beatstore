@@ -2,7 +2,7 @@ package ru.zivo.beatstore.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -21,30 +21,24 @@ import java.util.List;
 @Tag(name = "PlaylistController", description = "API для работы с плейлистами")
 @RequestMapping("api/v1/playlists")
 @RestController
+@RequiredArgsConstructor
 public class PlaylistController {
 
     private final PlaylistService playlistService;
     private final PlaylistMapper mapper;
 
-    @Autowired
-    public PlaylistController(PlaylistService playlistService, PlaylistMapper mapper) {
-        this.playlistService = playlistService;
-        this.mapper = mapper;
-    }
-
     @Operation(summary = "Получение дто плейлиста по id")
     @GetMapping("{id}")
     public ResponseEntity<PlaylistDto> findById(@AuthenticationPrincipal OAuth2User principal,
                                                 @PathVariable Long id) {
-        return ResponseEntity.ok(playlistService.findDtoById(id,
-                principal == null ? null : principal.getAttribute("sub")));
+        String userId = principal == null ? null : principal.getAttribute("sub");
+        return ResponseEntity.ok(playlistService.findDtoById(id, userId));
     }
 
     @Operation(summary = "Получение списка плейлистов по id пользователя")
     @GetMapping
     public ResponseEntity<List<Playlist>> findAllByUserId(@AuthenticationPrincipal OAuth2User principal) {
-        return principal == null
-                ? null
+        return principal == null ? null
                 : ResponseEntity.ok(playlistService.findAllByUserId(principal.getAttribute("sub")));
     }
 
@@ -57,11 +51,11 @@ public class PlaylistController {
     @Operation(summary = "Создание плейлиста")
     @PostMapping
     public ResponseEntity<Long> create(@AuthenticationPrincipal OAuth2User principal, @RequestBody PlaylistDto playlistDto) {
-        if (principal != null) {
-            Playlist savedPlaylist = playlistService.create(principal.getAttribute("sub"), mapper.toEntity(playlistDto));
-            return ResponseEntity.ok(savedPlaylist.getId());
+        if (principal == null) {
+            return null;
         }
-        return null;
+        Playlist playlist = playlistService.create(principal.getAttribute("sub"), mapper.toEntity(playlistDto));
+        return ResponseEntity.ok(playlist.getId());
     }
 
     @Operation(summary = "Изменение плейлиста")

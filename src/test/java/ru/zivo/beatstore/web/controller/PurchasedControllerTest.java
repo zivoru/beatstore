@@ -1,8 +1,8 @@
 package ru.zivo.beatstore.web.controller;
 
 import io.restassured.http.ContentType;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import ru.zivo.beatstore.model.Purchased;
@@ -17,10 +17,10 @@ import java.util.Map;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.Matchers.equalTo;
 
+@RequiredArgsConstructor
 class PurchasedControllerTest extends AbstractIntegrationTest {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Test
     void getPurchased() {
